@@ -101,4 +101,10 @@ public class Product {
 	public Double getPrice() {
 		return this.price;
 	}
+	
+	@Override
+	public String toString() {
+		return "[" + this.productName + "-" + this.productDescription + "-" + this.productType + "-" +
+				this.quantity + "-" + this.price + "]";
+	}
 }
