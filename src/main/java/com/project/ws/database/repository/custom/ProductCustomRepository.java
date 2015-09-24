@@ -10,5 +10,6 @@ public interface ProductCustomRepository {
 	public List<Product> getProductsWithQuantityLessThan(Integer quantity);
 	public Integer deleteProduct(String productName);
 	public Integer updateProductName(String oldProductName, String newProductName);
+	public Integer buyProduct(Integer customerId, Integer productId, Double productPrice);
 
 }

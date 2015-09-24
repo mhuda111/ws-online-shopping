@@ -8,7 +8,6 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
-import com.project.ws.database.domain.Customer;
 import com.project.ws.database.domain.Product;
 
 public class ProductRepositoryImpl implements ProductCustomRepository {
@@ -56,5 +55,14 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 		Query query = em.createQuery(SQL);
 		Integer updateCount = query.executeUpdate();
 		return updateCount;
+	}
+	
+	@Override
+	@Transactional
+	public Integer buyProduct(Integer customerId, Integer productId, Double productPrice) {
+		String SQL = "INSERT INTO cart (cust_id, product_id, price) VALUES (" + customerId + ", " + productId + ", " + productPrice + ")";
+		Query query = em.createNativeQuery(SQL);
+		Integer insertCount = query.executeUpdate();
+		return insertCount;
 	}
 }

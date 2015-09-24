@@ -3,7 +3,9 @@ package com.project.ws.database.domain;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -12,7 +14,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * which we may expose to others.
  *
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@Table(name="order")
 public class Order {
 	
 	@Id
@@ -132,9 +135,9 @@ public class Order {
 		return this.orderStatus;
 	}
 	
-	
-	//Order Process methods
-	public void completeOrder() {
-		
+	@Override
+	public String toString() {
+		return "Order Details[" + this.orderId + ", " + this.orderStatus + ", " + this.orderDeliveryDate +
+				", " + this.orderAmount + ", " + this.orderDate + "]";
 	}
 }
