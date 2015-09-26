@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class Customer {
 	@Id
 	@Column(name="cust_id")
-	private long custId;
+	private Integer custId;
 	@Column(name="cust_firstname")
 	private String custFirstname;
 	@Column(name="cust_lastname")
@@ -24,10 +24,10 @@ public class Customer {
 	@Column(name="cust_password")
 	private String custPassword;
 	
-	public long getCustId() {
+	public Integer getCustId() {
 		return custId;
 	}
-	public void setCustId(long custId) {
+	public void setCustId(Integer custId) {
 		this.custId = custId;
 	}
 	public String getCustFirstname() {

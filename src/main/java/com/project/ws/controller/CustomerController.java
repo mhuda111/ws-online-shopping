@@ -26,11 +26,11 @@ public class CustomerController {
 	 * This expose "/customer/" end point and looks for a URL parameter "id"
 	 * then gets customer information with address.  
 	 */
-	@RequestMapping("/customer")
-    public List<CustomerBO> getCustomers(HttpServletRequest request) {
-		String id = request.getParameter("id");
-    	return customerRepository.getCustomerWithAddressById(Long.parseLong(id));
-    }
+//	@RequestMapping("/customer")
+//    public List<CustomerBO> getCustomers(HttpServletRequest request) {
+//		String id = request.getParameter("id");
+//    	return customerRepository.getCustomerWithAddressById(Long.parseLong(id));
+//    }
 	
 	/*
 	 * This expose "/customer/firstLetter/" end point and looks for a URL parameter "letter"

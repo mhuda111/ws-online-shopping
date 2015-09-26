@@ -3,8 +3,6 @@ package com.project.ws.database.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -18,11 +16,14 @@ public class CustomerAddress {
 	
 	@Id
 	@Column(name = "cust_addr_id")
-	private long custAddrId;
+	private Integer custAddrId;
 	
-	@ManyToOne
-	@JoinColumn(name="cust_id", referencedColumnName="cust_id")
-    private Customer customer;
+//	@ManyToOne
+//	@JoinColumn(name="cust_id", referencedColumnName="cust_id")
+//    private Customer customer;
+	
+	@Column(name="cust_id")
+	private Integer customerId;
 	
 	@Column(name = "cust_addr_code")
     private String custAddrCode;
@@ -39,18 +40,27 @@ public class CustomerAddress {
 	@Column(name = "cust_phone")
 	private long custPhone;
 	
-	public long getCustAddrId() {
+	public Integer getCustAddrId() {
 		return custAddrId;
 	}
-	public void setCustAddrId(long custAddrId) {
+	public void setCustAddrId(Integer custAddrId) {
 		this.custAddrId = custAddrId;
 	}
-	public Customer getCustomer() {
-		return customer;
+	
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	
+	public Integer getCustomerId() {
+		return this.customerId;
 	}
+	
+//	public Customer getCustomer() {
+//		return customer;
+//	}
+//	public void setCustomer(Customer customer) {
+//		this.customer = customer;
+//	}
 	public String getCustAddrCode() {
 		return custAddrCode;
 	}
