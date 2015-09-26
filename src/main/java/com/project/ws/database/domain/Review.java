@@ -22,11 +22,17 @@ public class Review {
 	@Column(name="review_desc")
 	private char reviewDesc;
 
+	@Column(name="review_type")
+	private char reviewType;
+
 	@Column(name="cust_id")
 	private Integer custId;
 
 	@Column(name="product_id")
 	private Integer productId;
+
+	@Column(name="vendor_id")
+	private Integer vendorId;
 
 	public Integer getReviewId() {
 		return reviewId;
@@ -66,13 +72,6 @@ public class Review {
 
 	public void setVendorId(Integer vendorId) {
 		this.vendorId = vendorId;
-	}
-
-	@Column(name="vendor_id")
-	private Integer vendorId;
-
-	public Review() {
-
 	}
 
 }
