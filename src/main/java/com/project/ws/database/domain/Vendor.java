@@ -29,7 +29,7 @@ public class Vendor {
 	private String vendorState;
 	@Column(name = "vendor_zip_code")
 	private String vendorZipCode;
-	@Column(name = "vendor_state")
+	@Column(name = "vendor_country")
 	private String vendorCountry;
 
 	public Vendor(){

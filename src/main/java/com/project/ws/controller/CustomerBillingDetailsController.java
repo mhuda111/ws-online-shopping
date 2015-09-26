@@ -9,28 +9,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.database.domain.CustomerBillingDetails;
-import com.project.ws.database.repository.custom.CustomerBillingDetailsRepository;
+import com.project.ws.database.repository.custom.CustomerBillingRepository;
 
 @RestController
 public class CustomerBillingDetailsController {
 	
 	@Autowired
-    private CustomerBillingDetailsRepository customerBillingDetailsRepository;
+    private CustomerBillingRepository customerBillingsRepository;
 
-	/*
-	 * This expose "/customer/" end point and looks for a URL parameter "id"
-	 * then gets customer information with address.  
-	 */
-
-	/*
-	 * This expose "/customer/firstLetter/" end point and looks for a URL parameter "letter"
-	 * then gets customer information based on first name's first letter
-	 * of the customer
-	 */
 	@RequestMapping("/billing")
-    public List<CustomerBillingDetails> getCardNameByBillingId(HttpServletRequest request) {
-		String cardId = request.getParameter("cardId");
-		return customerBillingDetailsRepository.getCardNameByBillId(Long.parseLong(cardId));
+    public String chargeCard(HttpServletRequest request) {
+		int idcustomerId = Integer.parseInt(request.getParameter("customerId"));
+		int billId = Integer.parseInt(request.getParameter("billId"));
+		Double amount = Double.parseDouble(request.getParameter("amount"));
+		int card = customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
+		if (card>0) {
+			return "Successful"; 
+		}
+		else return "Denied";
+		//return customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
     	
     }
 
