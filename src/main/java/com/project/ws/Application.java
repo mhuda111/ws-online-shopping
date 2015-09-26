@@ -1,5 +1,10 @@
 package com.project.ws;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +14,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import com.project.ws.database.domain.Customer;
@@ -24,9 +31,11 @@ import com.project.ws.database.repository.custom.*;
  * and deploy this application. 
  */
 
+@Configuration
 @SpringBootApplication
 @EnableAutoConfiguration
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:/application.properties")
+@ConfigurationProperties(locations="classpath:/application.properties")
 public class Application implements CommandLineRunner {
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
@@ -34,6 +43,16 @@ public class Application implements CommandLineRunner {
 	public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+	
+//	private Connection getConnection() throws URISyntaxException, SQLException {
+//		  URI dbUri = new URI(System.getenv("DATABASE_URL"));
+//
+//		  String username = dbUri.getUserInfo().split(":")[0];
+//		  String password = dbUri.getUserInfo().split(":")[1];
+//		  String dbUrl = "jdbc:mysql://" + dbUri.getHost() + ":" + dbUri.getPort() + dbUri.getPath();
+//
+//		  return DriverManager.getConnection(dbUrl, username, password);
+//	}
 	
 	@Autowired
 	CustomerRepository custRepo;
