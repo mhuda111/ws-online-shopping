@@ -48,6 +48,9 @@ public class CustomerBillingDetails {
 	@Column(name="bill_zip_code")
 	private String billZipCode;
 	
+	@Column(name="amount_charged")
+	private Double amountCharged;
+	
 	//setters
 	
 	public void setCustomerId(Integer customerId) {
@@ -98,6 +101,10 @@ public class CustomerBillingDetails {
 		this.billZipCode = billZipCode;
 	}
 	
+	public void setAmountCharged(Double amountCharged) {
+		this.amountCharged = amountCharged;
+	}
+	
 	//getters
 	public Integer getCustomerId() {
 		return this.customerId;
@@ -145,5 +152,9 @@ public class CustomerBillingDetails {
 
 	public String getBillZipCode() {
 		return this.billZipCode;
+	}
+	
+	public Double getAmountCharged() {
+		return this.amountCharged;
 	}
 }

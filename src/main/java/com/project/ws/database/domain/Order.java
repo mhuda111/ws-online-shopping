@@ -7,15 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 /**
  * This is sample business object that contains customer information with address 
  * which we may expose to others.
  *
  */
 @Entity
-@Table(name="order")
+@Table(name="order_details")
 public class Order {
 	
 	@Id
@@ -45,6 +43,9 @@ public class Order {
 	
 	@Column(name="cust_id")
 	private Integer orderCustomerId;
+	
+	@Column(name="cust_bill_id")
+	private Integer billId;
 
 	
 	public Order() {
@@ -93,6 +94,10 @@ public class Order {
 		this.orderStatus =status;
 	}
 	
+	public void setBillId(Integer billId) {
+		this.billId = billId;
+	}
+	
 	//getters
 	
 	public Integer getOrderId() {
@@ -123,7 +128,7 @@ public class Order {
 		return this.shipAmount;
 	}
 	
-	public Integer getCustomerId(Integer id) {
+	public Integer getCustomerId() {
 		return this.orderCustomerId;
 	}
 	
@@ -133,6 +138,10 @@ public class Order {
 	
 	public String getOrderStatus() {
 		return this.orderStatus;
+	}
+	
+	public Integer getBillId() {
+		return this.billId;
 	}
 	
 	@Override

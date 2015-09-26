@@ -1,10 +1,9 @@
 package com.project.ws.database.repository.custom;
 
-import java.util.Date;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import com.project.ws.database.domain.CustomerBillingDetails;
 
@@ -32,6 +31,15 @@ public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepos
 				customerBillingDetail.getCardExpiry() + ")";
 		Query query = em.createNativeQuery(SQL);
 		count = query.executeUpdate();
+		return count;
+	}
+	
+	@Override
+	@Transactional
+	public Integer chargeCard(Integer customerId, Integer billId, Double amount) {
+		String SQL="update customer_billing_details set amount_charged = " + amount + 
+				" where cust_id = " + customerId + " and cust_bill_id = " + billId ;
+		count = em.createNativeQuery(SQL).executeUpdate();
 		return count;
 	}
 }
