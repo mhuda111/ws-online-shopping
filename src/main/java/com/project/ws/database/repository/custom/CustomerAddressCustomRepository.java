@@ -6,7 +6,9 @@ import com.project.ws.database.domain.CustomerAddress;
 
 public interface CustomerAddressCustomRepository {
 		
-		public List<CustomerAddress> getCustomersAddressByCustId(Integer id);
-		
+	public List<CustomerAddress> getAddress(Integer customerId);
+	public Integer addCustomerAddress(Integer customerId, CustomerAddress customerAddress);
+	public Integer updateCustomerAddress(Integer customerId, CustomerAddress customerAddress);
+	public Integer setDefaultAddress(Integer addressId);
 
 }

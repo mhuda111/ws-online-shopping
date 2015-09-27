@@ -26,6 +26,9 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
 	@Autowired
 	private CustomerBillingRepository custRepo;
+	
+	@Autowired
+	private CustomerAddressRepository addrRepo;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -33,10 +36,6 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
-
-
-
-
 
 	@Override
 	@Transactional
@@ -49,7 +48,7 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
 		custRepo.chargeCard(customerId, billId, orderAmount);
 
-		List<CustomerAddress> addrList = getAddress(customerId);
+		List<CustomerAddress> addrList = addrRepo.getAddress(customerId);
 		System.out.println("for customer" + customerId + " address is ");
 
 		addrId = addrList.get(0).getCustAddrId();
@@ -78,8 +77,8 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 		return count;
 	}
 
-	public List<Order> getOrderByOrderID(Integer orderId) {
-		String SQL = "select o from Order o where order_id = " + orderId;
+	public List<Order> findAllOrders(Integer customerId) {
+		String SQL = "select o from Order o where cust_id = " + customerId;
 		TypedQuery<Order> query = em.createQuery(SQL, Order.class);
 		List<Order> resultList = query.getResultList();
 		return resultList;
@@ -94,13 +93,6 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 		return resultList;
 	}
 
-	public List<CustomerAddress> getAddress(Integer customerId) {
-		String SQL = "select c from CustomerAddress c where customerId = " + customerId;
-		TypedQuery<CustomerAddress> query = em.createQuery(SQL, CustomerAddress.class);
-		List<CustomerAddress> resultList = query.getResultList();
-		return resultList;
-	}
-
 	@Override
 	@Transactional
 	public Integer cancelOrder(Integer orderId) {
@@ -110,7 +102,7 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 		SQL = "select o from Order o where orderId = " + orderId;
 		Order order = em.createQuery(SQL, Order.class).getSingleResult();
 
-		SQL = "delete from order_details where order_id = " + orderId;
+		SQL = "update order_details set status_cd = 'CAN' where order_id = " + orderId;
 		count = em.createNativeQuery(SQL).executeUpdate();
 
 		SQL = "select c.amountCharged from CustomerBillingDetails c where custBillId = " + order.getBillId();
@@ -124,7 +116,6 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 		return count;
 	}
 
-
 	@Override
 	public Integer findActiveOrder(Integer customerId) {
 		//select the order just created
@@ -133,6 +124,14 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 		return orderId;
 	}
 
+	@Override
+	public List<Order> findAllActiveOrders(Integer customerId) {
+		String SQL = "select o from Order o where status_cd = 'ACT' and customerId = " + customerId;
+		TypedQuery<Order> query = em.createQuery(SQL, Order.class);
+		List<Order> orderList = query.getResultList();
+		return orderList;
+	}
+	
 	@Override
 	public List<Order> getOrderStatus(Integer customerId, Integer orderId) {
 		String SQL = "select o from Order o where orderId = " + orderId + " and orderCustomerId = " + customerId;
@@ -145,6 +144,22 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 	public Integer shipOrder(Integer customerId, Integer orderId) {
 		String SQL = "update order_details set status_cd = 'SHP' where order_id = " + orderId;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
+		if (count == 1) 
+			System.out.println("order shipped successfully");
+		else
+			System.out.println("ERROR!!! Check logs/database");
+		return count;
+	}
+	
+	@Override
+	@Transactional
+	public Integer updateOrderStatus(Integer orderId, String status) {
+		String SQL = "update order_details set status_cd = '" + status + "' where order_id = " + orderId;
+		Integer count = em.createNativeQuery(SQL).executeUpdate();
+		if (count == 1) 
+			System.out.println("order status updated successfully");
+		else
+			System.out.println("ERROR!!! Check logs/database");
 		return count;
 	}
 }

@@ -1,7 +1,6 @@
 package com.project.ws.database.repository.custom;
 
 import java.util.List;
-import com.project.ws.business.domain.CustomerBO;
 import com.project.ws.database.domain.Customer;
 
 /**
@@ -12,6 +11,11 @@ import com.project.ws.database.domain.Customer;
 public interface CustomerCustomRepository {
 	
 	public List<Customer> getCustomersByNamesFirstLetter(String letter);
-	public List<CustomerBO> getCustomerWithAddressById(long id);
+	public Integer addCustomer(String firstName, String lastName, String email);
+	public Integer updateName(Integer customerId, String firstName, String lastName);
+	public Integer updateEmail(Integer customerId, String email);
+	public Integer updatePassword(Integer customerId, String password);
+	public void notifyCustomer(Integer customerId);
+	public Integer changeStatus(Integer customerId, char flag);
 
 }

@@ -20,6 +20,7 @@ public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepos
 	}
 	
 	@Override
+	@Transactional
 	public Integer addCardDetails(CustomerBillingDetails customerBillingDetail) {
 		SQL = "INSERT INTO customer_billing_details(cust_id, bill_addr_line1, bill_addr_line2, bill_city, " + 
 				"bill_state, bill_zip_code, card_type, card_no, cvv, card_name, card_expiry) VALUES (" +
@@ -40,6 +41,24 @@ public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepos
 		String SQL="update customer_billing_details set amount_charged = " + amount + 
 				" where cust_id = " + customerId + " and cust_bill_id = " + billId ;
 		count = em.createNativeQuery(SQL).executeUpdate();
+		if (count == 1) 
+			System.out.println("billing address updated successfully");
+		else
+			System.out.println("ERROR!!! Check logs/database");
+		return count;
+	}
+	
+	@Override
+	@Transactional
+	public Integer updateBillingAddress(Integer customerId, String addrLine1, String addrLine2, String city, String state, String zip) {
+		String SQL="update customer_billing_details set bill_addr_line1 = '" + addrLine1 + "', bill_addr_line2 = '" +
+				addrLine2 + "', bill_city = '" + city + "', bill_state = '" + state + "', bill_zip_code = '" + zip + "' where cust_id = " + 
+				customerId;
+		Integer count = em.createNativeQuery(SQL).executeUpdate();
+		if (count == 1) 
+			System.out.println("billing address updated successfully");
+		else
+			System.out.println("ERROR!!! Check logs/database");
 		return count;
 	}
 }
