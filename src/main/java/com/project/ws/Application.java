@@ -1,5 +1,6 @@
 package com.project.ws;
 
+<<<<<<< HEAD
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -11,9 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+=======
+>>>>>>> origin/master
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+<<<<<<< HEAD
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -30,19 +33,24 @@ import com.project.ws.database.repository.custom.*;
  * It also starts the embedded tomcat server,
  * and deploy this application. 
  */
+=======
+>>>>>>> origin/master
 
 @Configuration
 @SpringBootApplication
+<<<<<<< HEAD
 @EnableAutoConfiguration
 @PropertySource("classpath:/application.properties")
 @ConfigurationProperties(locations="classpath:/application.properties")
 public class Application implements CommandLineRunner {
+=======
+public class Application {
+>>>>>>> origin/master
 
-	private static final Logger log = LoggerFactory.getLogger(Application.class);
-	
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+<<<<<<< HEAD
 	
 //	private Connection getConnection() throws URISyntaxException, SQLException {
 //		  URI dbUri = new URI(System.getenv("DATABASE_URL"));
@@ -178,3 +186,6 @@ public class Application implements CommandLineRunner {
 
 	}
 }
+=======
+}
+>>>>>>> origin/master
