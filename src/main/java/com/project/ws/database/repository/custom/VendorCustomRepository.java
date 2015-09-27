@@ -1,12 +1,13 @@
 package com.project.ws.database.repository.custom;
 
-import java.util.List;
-
-
 import com.project.ws.database.domain.Vendor;
 
 public interface VendorCustomRepository {
 	
-	public List<Vendor> getVendorByNamesFirstLetter(String letter);
+	public Integer addVendor(Vendor vendor);
+	public Integer changeStatus(Integer vendorId, String flag);
+	public Integer updateAddress(Vendor vendor);
+	public Integer settleAccount(Integer vendorId, Double amount);
+	public String notifyVendor(Integer vendorId);
 
 }

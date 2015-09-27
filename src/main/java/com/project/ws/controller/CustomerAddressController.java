@@ -33,12 +33,12 @@ public class CustomerAddressController {
 	 * then gets customer information based on first name's first letter
 	 * of the customer
 	 */
-	@RequestMapping("/customeraddress/id/")
-    public List<CustomerAddress> getCustomersAddressByCustId(HttpServletRequest request) {
-		int id = Integer.parseInt(request.getParameter("id"));
-		//String id = request.getParameter("id");
-    	return customerAddressRepository.getCustomersAddressByCustId(id);
-    }
+//	@RequestMapping("/customeraddress/id/")
+//    public List<CustomerAddress> getCustomersAddressByCustId(HttpServletRequest request) {
+//		int id = Integer.parseInt(request.getParameter("id"));
+//		//String id = request.getParameter("id");
+//    	return customerAddressRepository.getCustomersAddressByCustId(id);
+//    }
 
 
 }

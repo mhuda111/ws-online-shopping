@@ -10,37 +10,53 @@ import javax.persistence.Table;
  * We used JPA annotations to map it with database table.
  */
 @Entity
-@Table(name="VENDOR")
+@Table(name="vendor")
 public class Vendor {
+	
 	@Id
 	@Column(name="vendor_id")
-	private long vendorId;
+	private Integer vendorId;
 
 	@Column(name="vendor_name")
 	private String vendorName;
 
 	@Column(name = "vendor_addr_line1")
 	private String vendorAddrLine1;
+	
 	@Column(name = "vendor_addr_line2")
 	private String vendorAddrLine2;
+	
 	@Column(name = "vendor_city")
 	private String vendorCity;
+	
 	@Column(name = "vendor_state")
 	private String vendorState;
+	
 	@Column(name = "vendor_zip_code")
 	private String vendorZipCode;
+	
 	@Column(name = "vendor_country")
 	private String vendorCountry;
 
-	public Vendor(){
+	@Column(name = "active_flag")
+	private String activeFlag;
+	
+	public Vendor() {
 
 	};
 
-
-	public long getVendorId() {
+	public void setFlag(String flag) {
+		this.activeFlag = flag;
+	}
+	
+	public String getFlag() {
+		return this.activeFlag;
+	}
+	
+	public Integer getVendorId() {
 		return vendorId;
 	}
-	public void setVendorId(long vendorId) {
+	public void setVendorId(Integer vendorId) {
 		this.vendorId = vendorId;
 	}
 	public String getVendorName() {

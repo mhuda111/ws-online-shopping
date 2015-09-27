@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.project.ws.database.domain.Cart;
 import com.project.ws.database.domain.CustomerAddress;
 import com.project.ws.database.domain.Order;
+import com.project.ws.database.domain.OrderLineItem;
 
 @Repository
 @EnableAutoConfiguration
@@ -29,6 +30,9 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 	
 	@Autowired
 	private CustomerAddressRepository addrRepo;
+	
+	@Autowired
+	private ProductRepository prodRepo;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -46,7 +50,10 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 			orderAmount = orderAmount + cart.getPrice() * cart.getQuantity();
 		}
 
+		//charge card
 		custRepo.chargeCard(customerId, billId, orderAmount);
+		
+
 
 		List<CustomerAddress> addrList = addrRepo.getAddress(customerId);
 		System.out.println("for customer" + customerId + " address is ");
@@ -65,6 +72,8 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
 		//make entries for each product in the order placed in table order_line_item
 		for(Cart cart:list) {
+			//update product quantity
+			prodRepo.updateProductQuantity(cart.getProductId(), cart.getQuantity(), "subtract");
 			SQL = "insert into order_line_item (order_id, product_id, order_line_quantity, order_line_price) " +
 					"values(" + orderId + ", " + cart.getProductId() + ", " + cart.getQuantity() + ", " +
 					cart.getPrice() + ")";
@@ -96,7 +105,14 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 	@Override
 	@Transactional
 	public Integer cancelOrder(Integer orderId) {
-		String SQL = "delete from order_Line_item where order_id = " + orderId;
+		String SQL = "select l from OrderLineItem l where order_id = " + orderId;
+		List<OrderLineItem> orderList= em.createQuery(SQL, OrderLineItem.class).getResultList();
+		
+		for(OrderLineItem item:orderList) {
+			prodRepo.updateProductQuantity(item.getProductId(), item.getOrderLineQuantity(), "add");
+		}
+		
+		SQL = "delete from order_Line_item where order_id = " + orderId;
 		count = em.createNativeQuery(SQL).executeUpdate();
 
 		SQL = "select o from Order o where orderId = " + orderId;

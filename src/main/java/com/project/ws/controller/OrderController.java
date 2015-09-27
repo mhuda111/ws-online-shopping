@@ -17,12 +17,6 @@ import com.project.ws.database.repository.custom.OrderRepository;
 @RestController
 public class OrderController {
 
-	@Autowired
-    private OrderRepository orderRepository;
-	@RequestMapping("/Order/")
-    public List<Order> getOrderByOrderID(HttpServletRequest request) {
-		Integer orderId = Integer.parseInt(request.getParameter("orderId"));
-    	return orderRepository.getOrderByOrderID(orderId);
-    }
+
 
 }

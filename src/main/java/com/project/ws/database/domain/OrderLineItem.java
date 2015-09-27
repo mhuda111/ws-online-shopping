@@ -26,10 +26,10 @@ public class OrderLineItem {
 	private Integer productId;
 
 	@Column(name="order_line_quantity")
-	private float orderLineQuantity;
+	private Integer orderLineQuantity;
 
 	@Column(name="order_line_price")
-	private float orderLinePrice;
+	private Double orderLinePrice;
 
 
 	public OrderLineItem() {
@@ -67,22 +67,22 @@ public class OrderLineItem {
 	}
 
 
-	public float getOrderLineQuantity() {
+	public Integer getOrderLineQuantity() {
 		return orderLineQuantity;
 	}
 
 
-	public void setOrderLineQuantity(float orderLineQuantity) {
+	public void setOrderLineQuantity(Integer orderLineQuantity) {
 		this.orderLineQuantity = orderLineQuantity;
 	}
 
 
-	public float getOrderLinePrice() {
+	public Double getOrderLinePrice() {
 		return orderLinePrice;
 	}
 
 
-	public void setOrderLinePrice(float orderLinePrice) {
+	public void setOrderLinePrice(Double orderLinePrice) {
 		this.orderLinePrice = orderLinePrice;
 	}
 

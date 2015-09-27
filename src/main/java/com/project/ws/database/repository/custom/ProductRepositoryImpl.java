@@ -54,9 +54,18 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 	
 	@Override
 	@Transactional
-	public Integer updateProductQuantity(Integer productId, Integer quantity) {
-		String SQL = "UPDATE Product SET quantity = " + quantity + " where productId = " + productId;
+	public Integer updateProductQuantity(Integer productId, Integer quantity, String operation) {
+		String SQL = "select quantity from Product where productId = " + productId;
 		Query query = em.createQuery(SQL);
+		Integer oldQuantity = query.executeUpdate();
+		Integer newQuantity;
+		if(operation == "add") 
+			newQuantity = oldQuantity + quantity;
+		else
+			newQuantity = oldQuantity - quantity;
+		
+		SQL = "UPDATE Product SET quantity = " + newQuantity + " where productId = " + productId;
+		query = em.createQuery(SQL);
 		Integer count = query.executeUpdate();
 		if (count == 1) 
 			System.out.println("quantity updated successfully");
