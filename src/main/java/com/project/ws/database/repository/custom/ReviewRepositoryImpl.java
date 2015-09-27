@@ -1,17 +1,10 @@
 package com.project.ws.database.repository.custom;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import com.project.ws.business.domain.CustomerBO;
-import com.project.ws.database.domain.Customer;
-import com.project.ws.database.domain.CustomerAddress;
 import com.project.ws.database.domain.Review;
 
 /**

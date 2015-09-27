@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import com.project.ws.database.domain.Cart;
 import com.project.ws.database.domain.CustomerAddress;
 import com.project.ws.database.domain.Order;
-import com.project.ws.database.domain.OrderLineItem;
 
 @Repository
 @EnableAutoConfiguration
