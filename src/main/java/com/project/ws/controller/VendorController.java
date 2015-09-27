@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.database.domain.Vendor;
-import com.project.ws.database.repository.custom.VendorRepository;
 
 @RestController
 public class VendorController {
 		
-		@Autowired
-	    private VendorRepository vendorRepository;
+//		@Autowired
+//	    private VendorRepository vendorRepository;
 
 		/*
 		 * This expose "/customer/" end point and looks for a URL parameter "id"
@@ -32,11 +31,11 @@ public class VendorController {
 		 * then gets customer information based on first name's first letter
 		 * of the customer
 		 */
-		@RequestMapping("/vendor/firstLetter/")
-	    public List<Vendor> getVendorByNamesFirstLetter(HttpServletRequest request) {
-			String letter = request.getParameter("letter");
-	    	return vendorRepository.getVendorByNamesFirstLetter(letter);
-	    }
+//		@RequestMapping("/vendor/firstLetter/")
+//	    public List<Vendor> getVendorByNamesFirstLetter(HttpServletRequest request) {
+//			String letter = request.getParameter("letter");
+//	    	return vendorRepository.getVendorByNamesFirstLetter(letter);
+//	    }
 
 	
 }

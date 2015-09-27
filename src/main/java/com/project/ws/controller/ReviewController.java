@@ -18,12 +18,4 @@ import com.project.ws.database.repository.custom.ReviewRepository;
 @RestController
 public class ReviewController {
 
-	@Autowired
-    private ReviewRepository reviewRepository;
-	@RequestMapping("/review/")
-    public List<Review> getReviewByReviewID(HttpServletRequest request) {
-		Integer reviewId = Integer.parseInt(request.getParameter("reviewId"));
-    	return reviewRepository.getReviewByReviewID(reviewId);
-    }
-
 }
