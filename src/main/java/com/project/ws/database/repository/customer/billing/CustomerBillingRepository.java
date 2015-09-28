@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.customer.billing;
 
 import java.util.List;
 

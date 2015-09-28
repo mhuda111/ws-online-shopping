@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.database.domain.Review;
 import com.project.ws.database.domain.Vendor;
-import com.project.ws.database.repository.custom.ReviewRepository;
-import com.project.ws.database.repository.custom.VendorRepository;
+import com.project.ws.database.repository.review.ReviewRepository;
+import com.project.ws.database.repository.vendor.VendorRepository;
 
 /**
  * This is customer spring controller which has methods

@@ -3,7 +3,7 @@ package com.project.ws.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.database.repository.custom.CustomerAddressRepository;
+import com.project.ws.database.repository.customer.address.CustomerAddressRepository;
 
 
 @RestController

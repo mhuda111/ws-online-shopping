@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.order;
 
 import java.util.List;
 

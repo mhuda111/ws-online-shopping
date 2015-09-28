@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.order;
 
 import java.util.List;
 
@@ -15,6 +15,9 @@ import com.project.ws.database.domain.Cart;
 import com.project.ws.database.domain.CustomerAddress;
 import com.project.ws.database.domain.Order;
 import com.project.ws.database.domain.OrderLineItem;
+import com.project.ws.database.repository.customer.address.CustomerAddressRepository;
+import com.project.ws.database.repository.customer.billing.CustomerBillingRepository;
+import com.project.ws.database.repository.product.ProductRepository;
 
 @Repository
 @EnableAutoConfiguration

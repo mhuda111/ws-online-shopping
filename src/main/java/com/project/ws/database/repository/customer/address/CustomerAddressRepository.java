@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.customer.address;
 
 import java.util.List;
 

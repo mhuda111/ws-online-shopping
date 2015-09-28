@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.database.domain.Customer;
-import com.project.ws.database.repository.custom.CustomerRepository;
+import com.project.ws.database.repository.customer.CustomerRepository;
 
 /**
  * This is customer spring controller which has methods 

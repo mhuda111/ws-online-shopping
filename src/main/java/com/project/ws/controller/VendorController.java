@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.database.domain.Vendor;
-import com.project.ws.database.repository.custom.VendorRepository;
+import com.project.ws.database.repository.vendor.VendorRepository;
 
 @RestController
 public class VendorController {
