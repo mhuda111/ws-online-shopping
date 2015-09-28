@@ -24,6 +24,20 @@ public class Customer {
 	@Column(name="cust_password")
 	private String custPassword;
 	
+	public Customer() {
+		this.custFirstname = "";
+		this.custLastName = "";
+		this.custEmail = "";
+		this.custPassword = "";
+	}
+	
+	public Customer(String firstName, String lastName, String email, String password) {
+		this.custFirstname = firstName;
+		this.custLastName = lastName;
+		this.custEmail = email;
+		this.custPassword = password;
+	}
+	
 	public Integer getCustId() {
 		return custId;
 	}

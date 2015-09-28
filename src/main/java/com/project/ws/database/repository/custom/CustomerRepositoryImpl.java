@@ -52,7 +52,7 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	@Transactional
 	public Integer updateName(Integer customerId, String firstName, String lastName) {
 		String SQL = "Update customer set cust_firstname = '" + firstName + "', cust_lastname = '" + lastName +
-				"' where cust_id = " + customerId + ")";
+				"' where cust_id = " + customerId;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("name updated successfully");
