@@ -5,7 +5,7 @@ import java.util.List;
 import com.project.ws.database.domain.Product;
 
 public interface ProductCustomRepository {
-	
+
 	public List<Product> readByProductName(String productName);
 	public List<Product> getProductsWithQuantityLessThan(Integer quantity);
 	public Integer addProduct(Product product);
