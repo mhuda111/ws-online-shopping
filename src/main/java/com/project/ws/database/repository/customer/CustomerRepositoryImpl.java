@@ -64,7 +64,7 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	@Override
 	@Transactional
 	public Integer updateEmail(Integer customerId, String email) {
-		String SQL = "Update customer set cust_email = '" + email + "' where cust_id = " + customerId + ")";
+		String SQL = "Update customer set cust_email = '" + email + "' where cust_id = " + customerId ;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("email updated successfully");
@@ -76,7 +76,7 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	@Override
 	@Transactional
 	public Integer updatePassword(Integer customerId, String password) {
-		String SQL = "Update customer set cust_password = '" + password + "' where cust_id = " + customerId + ")";
+		String SQL = "Update customer set cust_password = '" + password + "' where cust_id = " + customerId ;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("password updated successfully");
@@ -88,7 +88,7 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	@Override
 	@Transactional
 	public Integer changeStatus(Integer customerId, char flag) {
-		String SQL = "Update customer set active_flag = '" + flag + "' where cust_id = " + customerId + ")";
+		String SQL = "Update customer set active_flag = '" + flag + "' where cust_id = " + customerId ;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("status updated successfully");

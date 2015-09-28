@@ -21,13 +21,23 @@
 <h2>CUSTOMER</h2>
 <p><a th:href="@{/customer/addCustomer/(firstName='George',lastName='Cloony',email='gcloony@gmail.com',password='abc')}">Add George Cloony as a Customer.</a></p>
 <p><a th:href="@{/customer/firstLetter/(letter='G')}">Search Customer who's first name starts with G</a></p>
-<p><a th:href="@{/customer/updateCustomer/(customerId='10000065',firstName='Azrin',lastName='Alom')}">Customer Name Updated.</a></p>
+<p><a th:href="@{/customer/updateCustomer/(customerId='10000066',firstName='Naznin',lastName='Hasan')}">Customer Name Updated.</a></p>
 <p><a th:href="@{/billing/chargeCard(customerId='10000060',billId='10000002',amount='20.00')}">Charging customer.</a></p>
+<p><a th:href="@{/customer/updateCustomerEmail/(customerId='10000066',email='naznin@yahoo.com')}">Customer Email Updated.</a></p>
+<p><a th:href="@{/customer/updateCustomerPassword/(customerId='10000066',password='newpassword')}">Customer Password Updated.</a></p>
+<p><a th:href="@{/customer/updateCustomerStatus/(customerId='10000066',flag='N')}">Customer Status Updated.</a></p>
 
-<h3>VENDOR</h3>
+
+<h3>CUSTOMER ADDRESS</h3>
+<p><a th:href="@{/customeraddress/id/(customerId='10000062')}">Customer's Address Find by Customer ID</a></p>
+<p><a th:href="@{/customer/addCustomerAddress/(customerId='10000066',custAddrLine1='Monroe',custAddrLine2='South',custCity='Chicago',custState='IL',custZipCode='50986', custPhone='6309987609')}">Customer's Address Added</a></p>
+<p><a th:href="@{/customer/defAddress/(addressId='10000001')}">Customer's Default Address Update</a></p>
+
+
+<h4>VENDOR</h4>
 <p><a th:href="@{/vendor/addVendor/(vendorName='iSmartOnlineBoutique',vendor_addr_line1='NewYorkStreet',vendor_addr_line2='1200 South',vendor_city='Aurora',state='IL',vendor_zip_code='60502')}">Add Vendor Information.</a></p>
 
-<h3>REVIEW</h3>
+<h5>REVIEW</h5>
 <p><a th:href="@{/review/add/(reviewDesc='Productisverygood',reviewType='product',custId='10000062',productId='10000069',rating='5.00')}">Add Review Information about product.</a></p>
 
 
