@@ -5,6 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Database entity for product table.
+ * We used JPA annotations to map it with database table.
+ */
 @Entity
 @Table(name="product")
 public class Product {

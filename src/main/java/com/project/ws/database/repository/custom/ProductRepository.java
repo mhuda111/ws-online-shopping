@@ -17,6 +17,7 @@ import com.project.ws.database.domain.Product;
 public interface ProductRepository extends CrudRepository<Product, Integer>, ProductCustomRepository {
 	
 	public List<Product> findByProductName(String productName);
+	@Override
 	public List<Product> findAll();
 
 }

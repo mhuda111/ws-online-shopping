@@ -10,7 +10,8 @@ import com.project.ws.database.domain.Vendor;
 public interface VendorRepository extends CrudRepository<Vendor, Long>, VendorCustomRepository {
 
 	    public List<Vendor> findByVendorName(String vendorName);
-	    public List<Vendor> findAll();
+	    @Override
+		public List<Vendor> findAll();
 	}
 
 

@@ -13,5 +13,6 @@ import com.project.ws.database.domain.Customer;
 public interface CustomerRepository extends CrudRepository<Customer, Long>, CustomerCustomRepository {
 
     public List<Customer> findByCustFirstname(String custFirstname);
-    public List<Customer> findAll();
+    @Override
+	public List<Customer> findAll();
 }

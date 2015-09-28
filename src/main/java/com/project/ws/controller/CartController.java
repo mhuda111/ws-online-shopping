@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.database.domain.Cart;
-import com.project.ws.database.domain.CustomerAddress;
 import com.project.ws.database.repository.custom.CartRepository;
-import com.project.ws.database.repository.custom.CustomerAddressRepository;
 
 @RestController
 public class CartController {

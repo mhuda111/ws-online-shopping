@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Database entity for customer table.
+ * Database entity for vendor table.
  * We used JPA annotations to map it with database table.
  */
 @Entity

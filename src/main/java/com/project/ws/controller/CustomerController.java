@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.business.domain.CustomerBO;
 import com.project.ws.database.domain.Customer;
 import com.project.ws.database.repository.custom.CustomerRepository;
 
@@ -56,5 +55,18 @@ public class CustomerController {
 		else return "Failed to add";
     	
     }
+	
+	@RequestMapping("/customer/updateCustomer/")
+	 public String updateCustomerWithInfo(HttpServletRequest request) {
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		int customerUpdate = customerRepository.updateName(customerId, firstName, lastName);
+		if (customerUpdate > 0) {
+			return "Successfully updated the customer " + firstName;
+		}
+		else return "Failed to Update";
+	}
+	
 
 }

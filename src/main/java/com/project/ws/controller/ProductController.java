@@ -25,5 +25,18 @@ public class ProductController {
 		String productName = request.getParameter("productName");
     	return productRepository.readByProductName(productName);
     }
+	
+	@RequestMapping("/product/buy/")
+    public String buyProducts(HttpServletRequest request) {
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		int productId = Integer.parseInt(request.getParameter("productId"));
+		Double productPrice = Double.parseDouble(request.getParameter("productPrice"));
+		int customerAdded = productRepository.buyProduct(customerId, productId, productPrice);
+		if (customerAdded > 0) {
+			return "cart inserted successfully. Price of the product is $" + productPrice;
+		}
+		else return "Failed to add";
+    	
+    }
 
 }

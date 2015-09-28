@@ -86,6 +86,7 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 		return count;
 	}
 
+	@Override
 	public List<Order> findAllOrders(Integer customerId) {
 		String SQL = "select o from Order o where cust_id = " + customerId;
 		TypedQuery<Order> query = em.createQuery(SQL, Order.class);
