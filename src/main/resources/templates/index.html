@@ -10,5 +10,7 @@
 <p></p><p></p><p></p>
 <p><i>Click on the following links to test the project</i></p>
 <p><a href="http://localhost:8080/product/?productName=Flakes">Search for products containing Flakes</a></p>
+<p><a th:href="@{/customer/addCustomer/(firstName='George',lastName='Cloony',email='gcloony@gmail.com',password='abc')}">Add George Cloony as a Customer.</a></p>
+<p><a th:href="@{/customer/firstLetter/(letter='G')}">Search Customer who's first name starts with G</a></p>
 </body>
 </html>

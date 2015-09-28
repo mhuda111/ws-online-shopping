@@ -42,5 +42,19 @@ public class CustomerController {
 		String letter = request.getParameter("letter");
     	return customerRepository.getCustomersByNamesFirstLetter(letter);
     }
+	
+	@RequestMapping("/customer/addCustomer/")
+    public String addCustomerWithInfo(HttpServletRequest request) {
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
+		int customerAdded = customerRepository.addCustomer(firstName, lastName, email, password);
+		if (customerAdded > 0) {
+			return "Successfully added the customer " + firstName;
+		}
+		else return "Failed to add";
+    	
+    }
 
 }

@@ -11,7 +11,7 @@ import com.project.ws.database.domain.Customer;
 public interface CustomerCustomRepository {
 	
 	public List<Customer> getCustomersByNamesFirstLetter(String letter);
-	public Integer addCustomer(String firstName, String lastName, String email);
+	public Integer addCustomer(String firstName, String lastName, String email, String password);
 	public Integer updateName(Integer customerId, String firstName, String lastName);
 	public Integer updateEmail(Integer customerId, String email);
 	public Integer updatePassword(Integer customerId, String password);
