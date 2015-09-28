@@ -30,10 +30,10 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
 	@Autowired
 	private CustomerBillingRepository custRepo;
-	
+
 	@Autowired
 	private CustomerAddressRepository addrRepo;
-	
+
 	@Autowired
 	private ProductRepository prodRepo;
 
@@ -55,7 +55,7 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
 		//charge card
 		custRepo.chargeCard(customerId, billId, orderAmount);
-		
+
 
 
 		List<CustomerAddress> addrList = addrRepo.getAddress(customerId);
@@ -111,11 +111,11 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 	public Integer cancelOrder(Integer orderId) {
 		String SQL = "select l from OrderLineItem l where order_id = " + orderId;
 		List<OrderLineItem> orderList= em.createQuery(SQL, OrderLineItem.class).getResultList();
-		
+
 		for(OrderLineItem item:orderList) {
 			prodRepo.updateProductQuantity(item.getProductId(), item.getOrderLineQuantity(), "add");
 		}
-		
+
 		SQL = "delete from order_Line_item where order_id = " + orderId;
 		count = em.createNativeQuery(SQL).executeUpdate();
 
@@ -146,12 +146,12 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
 	@Override
 	public List<Order> findAllActiveOrders(Integer customerId) {
-		String SQL = "select o from Order o where status_cd = 'ACT' and customerId = " + customerId;
+		String SQL = "select o from Order o where status_cd = 'ACT' and cust_id = " + customerId;
 		TypedQuery<Order> query = em.createQuery(SQL, Order.class);
 		List<Order> orderList = query.getResultList();
 		return orderList;
 	}
-	
+
 	@Override
 	public List<Order> getOrderStatus(Integer customerId, Integer orderId) {
 		String SQL = "select o from Order o where orderId = " + orderId + " and orderCustomerId = " + customerId;
@@ -164,19 +164,19 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 	public Integer shipOrder(Integer customerId, Integer orderId) {
 		String SQL = "update order_details set status_cd = 'SHP' where order_id = " + orderId;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
-		if (count == 1) 
+		if (count == 1)
 			System.out.println("order shipped successfully");
 		else
 			System.out.println("ERROR!!! Check logs/database");
 		return count;
 	}
-	
+
 	@Override
 	@Transactional
 	public Integer updateOrderStatus(Integer orderId, String status) {
 		String SQL = "update order_details set status_cd = '" + status + "' where order_id = " + orderId;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
-		if (count == 1) 
+		if (count == 1)
 			System.out.println("order status updated successfully");
 		else
 			System.out.println("ERROR!!! Check logs/database");
