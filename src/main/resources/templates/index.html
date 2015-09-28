@@ -24,11 +24,24 @@
 <p><a th:href="@{/customer/updateCustomer/(customerId='10000065',firstName='Azrin',lastName='Alom')}">Customer Name Updated.</a></p>
 <p><a th:href="@{/billing/chargeCard(customerId='10000060',billId='10000002',amount='20.00')}">Charging customer.</a></p>
 
+
+<h3>ORDER</h3>
+<p><a th:href="@{/order/findAll/(customerId='10000060')}">Find all order Information.</a></p>
+<p><a th:href="@{/order/findAll/activeOrders/(customerId='10000060')}">Find all Active Orders Information.</a></p>
+<p><a th:href="@{/order/addshipOrder/(customerId='10000060',orderId='10000008')}">Order shipping information.</a></p>
+<p><a th:href="@{/order/placeOrder/(customerId='10000061',billId='10000003')}">Place Order (Does not work).</a></p>
+<p><a th:href="@{/order/orderCancel/(orderId='10000008')}">Cancel Order.</a></p>
+
+
 <h3>VENDOR</h3>
 <p><a th:href="@{/vendor/addVendor/(vendorName='iSmartOnlineBoutique',vendor_addr_line1='NewYorkStreet',vendor_addr_line2='1200 South',vendor_city='Aurora',state='IL',vendor_zip_code='60502')}">Add Vendor Information.</a></p>
+<p><a th:href="@{/vendor/settleSelletAccount/(vendorId='10000003',amount='100.00')}">Settle seller account (does not work).</a></p>
+
 
 <h3>REVIEW</h3>
 <p><a th:href="@{/review/add/(reviewDesc='Productisverygood',reviewType='product',custId='10000062',productId='10000069',rating='5.00')}">Add Review Information about product.</a></p>
+<p><a th:href="@{/review/avgReview/product/(productId='10000075')}">Show Review Information about a Product.</a></p>
+<p><a th:href="@{/review/avgReview/vendor/(vendorId='10000002')}">Show Review Information about a Vendor.</a></p>
 
 
 
