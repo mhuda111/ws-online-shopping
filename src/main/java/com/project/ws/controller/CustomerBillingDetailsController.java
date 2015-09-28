@@ -14,14 +14,14 @@ public class CustomerBillingDetailsController {
 	@Autowired
     private CustomerBillingRepository customerBillingsRepository;
 
-	@RequestMapping("/billing")
+	@RequestMapping("/billing/chargeCard")
     public String chargeCard(HttpServletRequest request) {
 		int idcustomerId = Integer.parseInt(request.getParameter("customerId"));
 		int billId = Integer.parseInt(request.getParameter("billId"));
 		Double amount = Double.parseDouble(request.getParameter("amount"));
 		int card = customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
 		if (card>0) {
-			return "Successful";
+			return "Successfully charged " + amount;
 		}
 		else return "Denied";
 		//return customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
