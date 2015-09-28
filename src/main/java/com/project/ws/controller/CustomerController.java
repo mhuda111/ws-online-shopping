@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.database.domain.Customer;
-import com.project.ws.database.repository.customer.CustomerRepository;
+import com.project.ws.domain.Customer;
+import com.project.ws.repository.CustomerRepository;
 
 /**
  * This is customer spring controller which has methods 

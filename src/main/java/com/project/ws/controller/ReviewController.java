@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.database.domain.Review;
-import com.project.ws.database.domain.Vendor;
-import com.project.ws.database.repository.review.ReviewRepository;
-import com.project.ws.database.repository.vendor.VendorRepository;
+import com.project.ws.domain.Review;
+import com.project.ws.domain.Vendor;
+import com.project.ws.repository.ReviewRepository;
+import com.project.ws.repository.VendorRepository;
 
 /**
  * This is customer spring controller which has methods
@@ -36,8 +36,7 @@ public class ReviewController {
 		review.setCustId(custId);
 		review.setProductId(productId);
 		review.setRating(rating);
-		
-		
+	
 		int reviewAdded = reviewRepository.addReview(review);
 		if (reviewAdded > 0) {
 			return "Successfully Added Review" ;

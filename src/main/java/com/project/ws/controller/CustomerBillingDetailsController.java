@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.database.repository.customer.billing.CustomerBillingRepository;
+import com.project.ws.repository.CustomerBillingRepository;
 
 @RestController
 public class CustomerBillingDetailsController {

@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.database.domain.Cart;
-import com.project.ws.database.repository.cart.CartRepository;
+import com.project.ws.domain.Cart;
+import com.project.ws.repository.CartRepository;
 
 @RestController
 public class CartController {

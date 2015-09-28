@@ -53,6 +53,11 @@
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-thymeleaf</artifactId>
     	</dependency>
+    	
+    	<dependency>
+    		<groupId>junit</groupId>
+    		<artifactId>junit</artifactId>
+		</dependency>
     </dependencies>
 
     <properties>
@@ -84,6 +89,8 @@
       			<artifactId>maven-surefire-plugin</artifactId>
       			<configuration>
           			<redirectTestOutputToFile>true</redirectTestOutputToFile>
+        			<reuseForks>false</reuseForks>
+        			<forkCount>1</forkCount>
       			</configuration>
       		</plugin>
         </plugins>
