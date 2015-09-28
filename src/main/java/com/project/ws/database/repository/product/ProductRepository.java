@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.product;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import com.project.ws.database.domain.Product;
 public interface ProductRepository extends CrudRepository<Product, Integer>, ProductCustomRepository {
 	
 	public List<Product> findByProductName(String productName);
+	@Override
 	public List<Product> findAll();
 
 }

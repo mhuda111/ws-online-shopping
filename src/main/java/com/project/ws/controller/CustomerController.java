@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.business.domain.CustomerBO;
 import com.project.ws.database.domain.Customer;
-import com.project.ws.database.repository.custom.CustomerRepository;
+import com.project.ws.database.repository.customer.CustomerRepository;
 
 /**
  * This is customer spring controller which has methods 
@@ -42,5 +41,32 @@ public class CustomerController {
 		String letter = request.getParameter("letter");
     	return customerRepository.getCustomersByNamesFirstLetter(letter);
     }
+	
+	@RequestMapping("/customer/addCustomer/")
+    public String addCustomerWithInfo(HttpServletRequest request) {
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
+		int customerAdded = customerRepository.addCustomer(firstName, lastName, email, password);
+		if (customerAdded > 0) {
+			return "Successfully added the customer " + firstName;
+		}
+		else return "Failed to add";
+    	
+    }
+	
+	@RequestMapping("/customer/updateCustomer/")
+	 public String updateCustomerWithInfo(HttpServletRequest request) {
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		int customerUpdate = customerRepository.updateName(customerId, firstName, lastName);
+		if (customerUpdate > 0) {
+			return "Successfully updated the customer " + firstName;
+		}
+		else return "Failed to Update";
+	}
+	
 
 }

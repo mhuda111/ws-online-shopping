@@ -7,9 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * This is sample business object that contains customer information with address
- * which we may expose to others.
- *
+ * Database entity for order_line_item table.
+ * We used JPA annotations to map it with database table.
  */
 @Entity
 @Table(name="order_line_item")

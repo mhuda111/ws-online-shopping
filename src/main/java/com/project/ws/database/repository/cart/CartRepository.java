@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.cart;
 
 import java.util.List;
 
@@ -9,7 +9,8 @@ import com.project.ws.database.domain.Cart;
 public interface CartRepository extends CrudRepository<Cart, Long>, CartCustomRepository{
 	
 	    public List<Cart> findByCustomerId(Integer customerId);
-	    public List<Cart> findAll();
+	    @Override
+		public List<Cart> findAll();
 
 
 }

@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.customer;
 
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
@@ -13,5 +13,6 @@ import com.project.ws.database.domain.Customer;
 public interface CustomerRepository extends CrudRepository<Customer, Long>, CustomerCustomRepository {
 
     public List<Customer> findByCustFirstname(String custFirstname);
-    public List<Customer> findAll();
+    @Override
+	public List<Customer> findAll();
 }

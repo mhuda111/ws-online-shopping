@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.review;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,14 +27,14 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 	public Integer addReview(Review review) {
 		String SQL = "";
 		
-		if(review.getReviewType() == "product")
-			SQL = "INSERT INTO review (review_desc, review_type, cust_id, product_id, rating) VALUES ('" + 
+		if(review.getReviewType().equals("product"))
+			SQL = "INSERT INTO review (review_desc, review_type, cust_id, product_id,vendor_id, rating) VALUES ('" + 
 				review.getReviewDesc() + "', '" + review.getReviewType() + "', " + review.getCustId() + ", " + 
-				review.getProductId() + ", " + review.getRating() + ")";
-		else if(review.getReviewType() == "vendor")
+				review.getProductId() +", " + review.getVendorId() + ", " + review.getRating() + ")";
+		else if(review.getReviewType().equals("vendor"))
 			SQL = "INSERT INTO review (review_desc, review_type, cust_id, vendor_id, rating) VALUES ('" + 
-					review.getReviewDesc() + "', '" + review.getReviewType() + "', " + review.getCustId() + ", " + 
-					review.getVendorId() + ", " + review.getRating() + ")";
+					review.getReviewDesc() + "', '" + review.getReviewType() + "', " + review.getCustId() 
+					+ ", " + review.getProductId() + ", " + review.getVendorId() + ", " + review.getRating() +")";
 		
 		Query query = em.createNativeQuery(SQL);
 		Integer count = query.executeUpdate();

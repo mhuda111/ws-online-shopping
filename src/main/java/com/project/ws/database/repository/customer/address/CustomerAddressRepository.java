@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.customer.address;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import com.project.ws.database.domain.CustomerAddress;
 public interface CustomerAddressRepository extends CrudRepository<CustomerAddress, Long>, CustomerAddressCustomRepository{
 
 	    public List<CustomerAddress> findByCustomerId(Integer customerId);
-	    public List<CustomerAddress> findAll();
+	    @Override
+		public List<CustomerAddress> findAll();
 	
 }

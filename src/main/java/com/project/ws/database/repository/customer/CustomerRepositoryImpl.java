@@ -1,4 +1,4 @@
-package com.project.ws.database.repository.custom;
+package com.project.ws.database.repository.customer;
 
 import java.util.List;
 
@@ -37,9 +37,9 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 
 	@Override
 	@Transactional
-	public Integer addCustomer(String firstName, String lastName, String email) {
-		String SQL = "INSERT INTO customer (cust_first_name, cust_last_name, cust_email) VALUES(" +
-					firstName + ", " + lastName + ", " + email + ")";
+	public Integer addCustomer(String firstName, String lastName, String email, String password) {
+		String SQL = "INSERT INTO customer (cust_firstname, cust_lastname, cust_email, cust_password) VALUES('"+
+					firstName + "', '" + lastName + "', '" + email +"', '" + password + "')";
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("customer added successfully");

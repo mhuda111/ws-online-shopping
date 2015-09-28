@@ -7,6 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Database entity for customer_billing_details table.
+ * We used JPA annotations to map it with database table.
+ */
+
 @Entity
 @Table(name="customer_billing_details")
 public class CustomerBillingDetails {
