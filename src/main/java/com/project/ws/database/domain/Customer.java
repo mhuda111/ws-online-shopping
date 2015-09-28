@@ -23,16 +23,7 @@ public class Customer {
 	private String custEmail;
 	@Column(name="cust_password")
 	private String custPassword;
-	@Column(name="active_flag")
-	private char activeFlag;
-
-
-	public char getActiveFlag() {
-		return activeFlag;
-	}
-	public void setActiveFlag(char activeFlag) {
-		this.activeFlag = activeFlag;
-	}
+	
 	public Integer getCustId() {
 		return custId;
 	}
@@ -63,6 +54,6 @@ public class Customer {
 	public void setCustPassword(String custPassword) {
 		this.custPassword = custPassword;
 	}
-
-
+	
+	
 }

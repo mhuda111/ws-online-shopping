@@ -17,11 +17,10 @@ import com.project.ws.database.repository.vendor.VendorRepository;
  */
 @RestController
 public class ReviewController {
-
+	
 	@Autowired
 	private ReviewRepository reviewRepository;
-
-	/*
+	
 	@RequestMapping("/review/add")
 	public String addReview(HttpServletRequest request) {
 		String reviewDesc = request.getParameter("reviewDesc");
@@ -29,38 +28,21 @@ public class ReviewController {
 		int custId = Integer.parseInt(request.getParameter("custId"));
 		int productId = Integer.parseInt(request.getParameter("productId"));
 		Double rating = Double.parseDouble(request.getParameter("rating"));
-
+		
 		Review review = new Review();
-
+		
 		review.setReviewDesc(reviewDesc);
 		review.setReviewType(reviewType);
 		review.setCustId(custId);
 		review.setProductId(productId);
 		review.setRating(rating);
-
-
+		
+		
 		int reviewAdded = reviewRepository.addReview(review);
 		if (reviewAdded > 0) {
 			return "Successfully Added Review" ;
 		}
 		return "Failed";
 	}
-	*/
-
-	@RequestMapping("/review/avgReview/product")
-	public double getAvgRatingProduct(HttpServletRequest request) {
-		int productId = Integer.parseInt(request.getParameter("productId"));
-		return  reviewRepository.getAvgRatingProduct(productId);
-    }
-
-
-	@RequestMapping("/review/avgReview/vendor")
-	public double getAvgRatingVendor(HttpServletRequest request) {
-		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
-		return reviewRepository.getAvgRatingVendor(vendorId);
-    }
-
-
-
 
 }

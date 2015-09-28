@@ -11,10 +11,10 @@ import com.project.ws.database.repository.vendor.VendorRepository;
 
 @RestController
 public class VendorController {
-
+		
 	@Autowired
 	private VendorRepository vendorRepository;
-
+	
 	/*
 	 * This expose "/customer/firstLetter/" end point and looks for a URL parameter "letter"
 	 * then gets customer information based on first name's first letter
@@ -42,17 +42,5 @@ public class VendorController {
 		return "Failed";
 	}
 
-
-	@RequestMapping("/vendor/settleSelletAccount/")
-	public String settleAccount(HttpServletRequest request) {
-		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
-		Double amount = Double.parseDouble(request.getParameter("amount"));
-		int vendorSettled = vendorRepository.settleAccount(vendorId,amount);
-		if (vendorSettled > 0) {
-			return "Successfully settle vendor account ";
-		}
-		return "Failed";
-	}
-
-
+	
 }
