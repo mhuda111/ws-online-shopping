@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.project.ws.domain.Customer;
+import com.project.ws.repository.custom.CustomerCustomRepository;
 
 /**
  * This is a customer repository interface that extends spring crud repository 

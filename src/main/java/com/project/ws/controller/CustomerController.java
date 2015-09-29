@@ -68,5 +68,39 @@ public class CustomerController {
 		else return "Failed to Update";
 	}
 	
+	@RequestMapping("/customer/updateCustomerEmail/")
+	 public String updateEmail(HttpServletRequest request) {
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		String email = request.getParameter("email");
+		int customerUpdate = customerRepository.updateEmail(customerId, email);
+		if (customerUpdate > 0) {
+			return "Successfully updated the customer " ;
+		}
+		else return "Failed to Update";
+	}
+	
+	@RequestMapping("/customer/updateCustomerPassword/")
+	 public String updatePassword(HttpServletRequest request) {
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		String password = request.getParameter("password");
+		int customerUpdate = customerRepository.updatePassword(customerId, password);
+		if (customerUpdate > 0) {
+			return "Successfully updated the password" ;
+		}
+		else return "Failed to Update password";
+	}
+	
+	@RequestMapping("/customer/updateCustomerStatus/")
+	 public String changeStatus(HttpServletRequest request) {
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		char flag = request.getParameter("flag").charAt(0);
+		
+		//char flag = request.getParameter("flag");
+		int customerUpdate = customerRepository.changeStatus(customerId, flag);
+		if (customerUpdate > 0) {
+			return "Status updated successfully" ;
+		}
+		else return "Failed to Update Status";
+	}
 
 }

@@ -1,4 +1,4 @@
-package com.project.ws.repository;
+package com.project.ws.repository.custom;
 
 
 import com.project.ws.domain.CustomerBillingDetails;

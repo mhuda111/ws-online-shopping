@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.project.ws.domain.Review;
+import com.project.ws.repository.custom.ReviewCustomRepository;
 
 
 public interface ReviewRepository extends CrudRepository<Review, Integer>, ReviewCustomRepository {

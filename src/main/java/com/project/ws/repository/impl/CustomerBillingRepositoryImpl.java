@@ -1,4 +1,4 @@
-package com.project.ws.repository;
+package com.project.ws.repository.impl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -6,6 +6,7 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.CustomerBillingDetails;
+import com.project.ws.repository.custom.CustomerBillingCustomRepository;
 
 public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepository {
 

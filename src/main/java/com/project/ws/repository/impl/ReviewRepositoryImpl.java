@@ -1,4 +1,4 @@
-package com.project.ws.repository;
+package com.project.ws.repository.impl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -6,6 +6,7 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.Review;
+import com.project.ws.repository.custom.ReviewCustomRepository;
 
 /**
  * This is the implementation class of the customer custom repository interface.
@@ -26,13 +27,6 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 	@Transactional
 	public Integer addReview(Review review) {
 		String SQL = "";
-		System.out.println("in addREview");
-		System.out.println(review.getReviewType());
-		System.out.println(review.getReviewDesc());
-		System.out.println(review.getProductId());
-		System.out.println(review.getVendorId());
-		System.out.println(review.getRating());
-		System.out.println(review.getCustId());
 		
 		if(review.getReviewType().equals("product"))
 			SQL = "INSERT INTO review (review_desc, review_type, cust_id, product_id,vendor_id, rating) VALUES ('" + 
@@ -43,7 +37,6 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 					review.getReviewDesc() + "', '" + review.getReviewType() + "', " + review.getCustId() 
 					+ ", " + review.getProductId() + ", " + review.getVendorId() + ", " + review.getRating() +")";
 		
-		System.out.println(SQL);
 		Query query = em.createNativeQuery(SQL);
 		Integer count = query.executeUpdate();
 		if (count == 1) 

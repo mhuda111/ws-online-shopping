@@ -1,4 +1,4 @@
-package com.project.ws.repository;
+package com.project.ws.repository.impl;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.Product;
+import com.project.ws.repository.custom.ProductCustomRepository;
 
 public class ProductRepositoryImpl implements ProductCustomRepository {
 

@@ -1,4 +1,4 @@
-package com.project.ws.repository;
+package com.project.ws.repository.impl;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
-import javax.persistence.Query;
 
 import com.project.ws.domain.Customer;
+import com.project.ws.repository.custom.CustomerCustomRepository;
 
 /**
  * This is the implementation class of the customer custom repository interface.
@@ -54,9 +54,7 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	public Integer updateName(Integer customerId, String firstName, String lastName) {
 		String SQL = "Update customer set cust_firstname = '" + firstName + "', cust_lastname = '" + lastName +
 				"' where cust_id = " + customerId;
-		System.out.println("SQL is : " + SQL);
-		Query query = em.createNativeQuery(SQL);
-		Integer count = query.executeUpdate();
+		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("name updated successfully");
 		else
@@ -67,7 +65,7 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	@Override
 	@Transactional
 	public Integer updateEmail(Integer customerId, String email) {
-		String SQL = "Update customer set cust_email = '" + email + "' where cust_id = " + customerId + ")";
+		String SQL = "Update customer set cust_email = '" + email + "' where cust_id = " + customerId ;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("email updated successfully");
@@ -79,7 +77,7 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	@Override
 	@Transactional
 	public Integer updatePassword(Integer customerId, String password) {
-		String SQL = "Update customer set cust_password = '" + password + "' where cust_id = " + customerId + ")";
+		String SQL = "Update customer set cust_password = '" + password + "' where cust_id = " + customerId ;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("password updated successfully");
@@ -91,7 +89,7 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	@Override
 	@Transactional
 	public Integer changeStatus(Integer customerId, char flag) {
-		String SQL = "Update customer set active_flag = '" + flag + "' where cust_id = " + customerId + ")";
+		String SQL = "Update customer set active_flag = '" + flag + "' where cust_id = " + customerId ;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("status updated successfully");

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.project.ws.domain.CustomerBillingDetails;
+import com.project.ws.repository.custom.CustomerBillingCustomRepository;
 
 public interface CustomerBillingRepository extends CrudRepository<CustomerBillingDetails, Integer>, CustomerBillingCustomRepository {
 
