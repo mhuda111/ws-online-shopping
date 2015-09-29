@@ -82,12 +82,14 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 					"values(" + orderId + ", " + cart.getProductId() + ", " + cart.getQuantity() + ", " +
 					cart.getPrice() + ")";
 			System.out.println(SQL);
-			count = em.createNativeQuery(SQL).executeUpdate();
+			em.createNativeQuery(SQL).executeUpdate();
 		}
 
 		//delete values from cart table
 		SQL = "delete from cart where cust_id = " + customerId;
-		count = em.createNativeQuery(SQL).executeUpdate();
+		em.createNativeQuery(SQL).executeUpdate();
+		
+		System.out.println("Order placed Successfully");
 		return count;
 	}
 
