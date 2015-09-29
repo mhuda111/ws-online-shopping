@@ -38,8 +38,10 @@ import com.project.ws.repository.VendorRepository;
  * 
  * @author manmeet
  *
- * @description This test class will test adding a customer, a vendor, customer address, customer billing details, 
- * 				product, buying a product, placing an order, settling vendor account
+ * @about This test class will test adding a customer, a vendor, customer address, customer billing details, product. 
+ *		Also :  buying a product
+ *				placing an order, canceling an order, 
+ *				settling vendor account, processing payment
  *   
  */
 
