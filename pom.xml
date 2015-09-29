@@ -54,10 +54,6 @@
     		<artifactId>spring-boot-starter-thymeleaf</artifactId>
     	</dependency>
     	
-    	<dependency>
-    		<groupId>junit</groupId>
-    		<artifactId>junit</artifactId>
-		</dependency>
     </dependencies>
 
     <properties>

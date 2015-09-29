@@ -18,4 +18,5 @@ public interface CustomerRepository extends CrudRepository<Customer, Long>, Cust
     public List<Customer> findByCustFirstname(String custFirstname);
     @Override
 	public List<Customer> findAll();
+    public List<Customer> findByCustEmail(String custEmail);
 }

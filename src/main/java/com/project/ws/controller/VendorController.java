@@ -43,16 +43,16 @@ public class VendorController {
 	}
 
 
-	@RequestMapping("/vendor/settleSelletAccount/")
-	public String settleAccount(HttpServletRequest request) {
-		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
-		Double amount = Double.parseDouble(request.getParameter("amount"));
-		int vendorSettled = vendorRepository.settleAccount(vendorId,amount);
-		if (vendorSettled > 0) {
-			return "Successfully settle vendor account ";
-		}
-		return "Failed";
-	}
+//	@RequestMapping("/vendor/settleSelletAccount/")
+//	public String settleAccount(HttpServletRequest request) {
+//		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
+//		Double amount = Double.parseDouble(request.getParameter("amount"));
+//		int vendorSettled = vendorRepository.settleAccount(vendorId,amount);
+//		if (vendorSettled > 0) {
+//			return "Successfully settle vendor account ";
+//		}
+//		return "Failed";
+//	}
 
 
 }

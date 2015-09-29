@@ -12,6 +12,6 @@ public interface ProductCustomRepository {
 	public Integer deleteProduct(String productName);
 	public Integer updateProductQuantity(Integer productId, Integer quantity, String operation);
 	public Integer updateProductPrice(Integer productId, Double price);
-	public Integer buyProduct(Integer customerId, Integer productId, Double productPrice);
+	public Integer buyProduct(Integer customerId, Product product, Integer quantity);
 
 }

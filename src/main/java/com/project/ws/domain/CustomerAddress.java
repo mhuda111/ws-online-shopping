@@ -40,7 +40,31 @@ public class CustomerAddress {
 	@Column(name = "cust_zip_code")
 	private String custZipCode;
 	@Column(name = "cust_phone")
-	private long custPhone;
+	private String custPhone;
+	
+	
+	//default constructor
+	
+	public CustomerAddress() {
+		this.custAddrLine1 = "";
+		this.custAddrLine2 = "";
+		this.custCity = "";
+		this.custState = "";
+		this.custZipCode = "";
+		this.custPhone = "";
+	}
+	
+	public CustomerAddress(Integer customerId, String addr1, String addr2, String city, String state, String zip, String phone) {
+		this.customerId = customerId;
+		this.custAddrLine1 = addr1;
+		this.custAddrLine2 = addr2;
+		this.custCity = city;
+		this.custState = state;
+		this.custZipCode = zip;
+		this.custPhone = phone;
+	}
+	
+	
 	
 	public Integer getCustAddrId() {
 		return custAddrId;
@@ -99,10 +123,10 @@ public class CustomerAddress {
 	public void setCustZipCode(String custZipCode) {
 		this.custZipCode = custZipCode;
 	}
-	public long getCustPhone() {
+	public String getCustPhone() {
 		return custPhone;
 	}
-	public void setCustPhone(long custPhone) {
+	public void setCustPhone(String custPhone) {
 		this.custPhone = custPhone;
 	}
 }

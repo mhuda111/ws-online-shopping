@@ -28,13 +28,13 @@ public class Order {
 	private Date orderDeliveryDate;
 	
 	@Column(name="total_order_amt")
-	private Float orderAmount;
+	private Double orderAmount;
 	
 	@Column(name="tax_amt")
-	private Float orderTax;
+	private Double orderTax;
 	
 	@Column(name="shipping_charge")
-	private Float shipAmount;
+	private Double shipAmount;
 	
 	@Column(name="shipping_option")
 	private String orderShipMethod;
@@ -71,15 +71,15 @@ public class Order {
 		this.orderShipMethod = shipMethod;
 	}
 	
-	public void setOrderAmount(Float amount) {
+	public void setOrderAmount(Double amount) {
 		this.orderAmount = amount;
 	}
 	
-	public void setOrderTax(Float tax) {
+	public void setOrderTax(Double tax) {
 		this.orderTax = tax;
 	}
 	
-	public void setOrderShipAmount(Float amount) {
+	public void setOrderShipAmount(Double amount) {
 		this.shipAmount = amount;
 	}
 	
@@ -117,15 +117,15 @@ public class Order {
 		return this.orderShipMethod;
 	}
 	
-	public Float getOrderAmount() {
+	public Double getOrderAmount() {
 		return this.orderAmount;
 	}
 	
-	public Float getOrderTax() {
+	public Double getOrderTax() {
 		return this.orderTax;
 	}
 	
-	public Float getOrderShipAmount() {
+	public Double getOrderShipAmount() {
 		return this.shipAmount;
 	}
 	

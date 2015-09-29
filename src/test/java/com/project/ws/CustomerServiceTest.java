@@ -20,37 +20,46 @@ import com.project.ws.repository.CustomerRepository;
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:0")
-public class CustomerRepositoryTest {
+public class CustomerServiceTest {
 	
 	@Autowired
 	CustomerRepository custRepo;
 	
-	Customer manmeet;
+	Customer jaideep;
 	
 	@Value("${local.server.port}")
 	int port;
 	
 	@Before
 	public void setUp() {
-		manmeet = new Customer("Jaideep", "", "manmeet11@gmail.com", "P@ssword");
+		jaideep = new Customer("Jaideep", "", "jaideep@gmail.com", "P@ssword");
 
-		System.out.println("****in setup");
+		System.out.println("****in setup****");
 		
-		custRepo.save(manmeet);
+		custRepo.save(jaideep);
+		//custRepo.addCustomer(jaideep.getCustFirstname(), jaideep.getCustLastName(), jaideep.getCustEmail(), jaideep.getCustPassword());
 		
-		custRepo.addCustomer(manmeet.getCustFirstname(), manmeet.getCustLastName(), manmeet.getCustEmail(), manmeet.getCustPassword());
-		
-		System.out.println("****in setup - After addition");
+		System.out.println("****in setup - After addition****");
 	}
 	
 	@Test
 	public void canSelect() {
 		List<Customer> custList = custRepo.findByCustFirstname("Jaideep");
 
-		System.out.println("fname : " + custList.get(0).getCustFirstname());
-		System.out.println("lname : " + custList.get(0).getCustLastName());
+		System.out.println(custList.get(0).toString());
 
 		assert custList.get(0).getCustFirstname().equals("Jaideep");
+	}
+	
+	@Test
+	public void canSelectAll() {
+		List<Customer> custList = custRepo.findAll();
+		
+		for(Customer customer:custList) {
+			System.out.println(customer.toString());
+		}
+		
+		assert custList.size() > 0;
 	}
 
 	
@@ -63,16 +72,16 @@ public class CustomerRepositoryTest {
 		assert count == 1;
 		
 		custList = custRepo.findByCustFirstname("Jaideep Singh");
-		System.out.println("fname : " + custList.get(0).getCustFirstname());
-		System.out.println("lname : " + custList.get(0).getCustLastName());
-		
+		System.out.println(custList.get(0).toString());
+
 		assert custList.get(0).getCustFirstname().equals("Jaideep Singh");
 		assert custList.get(0).getCustLastName().equals("Mokha");		
 	}
 	
+	
 	@After
 	public void tearDown() {
-		custRepo.delete(manmeet);
+		custRepo.delete(jaideep);
 	}
 		
 }

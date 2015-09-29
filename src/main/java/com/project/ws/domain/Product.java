@@ -38,14 +38,28 @@ public class Product {
 	private Integer vendorId;
 	
 	public Product() {
-		
+		this.productDescription = "";
+		this.productName = "";
+		this.productType = "";
+		this.price = 0.00;
+		this.quantity = 0;
+	}
+
+	public Product(String name, String type, String description, Double price, Integer quantity) {
+		this.productDescription = description;
+		this.productName = name;
+		this.productType = type;
+		this.price = price;
+		this.quantity = quantity;
 	}
 	
-	public Product(Integer id, String name, String desc, String type) {
-		this.productId = id;
+	public Product(String name, String type, String description, Double price, Integer quantity, Integer vendorId) {
+		this.productDescription = description;
 		this.productName = name;
-		this.productDescription = desc;
 		this.productType = type;
+		this.price = price;
+		this.quantity = quantity;
+		this.vendorId = vendorId;
 	}
 	
 	//setters

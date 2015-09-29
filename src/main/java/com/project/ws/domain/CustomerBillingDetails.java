@@ -58,6 +58,36 @@ public class CustomerBillingDetails {
 	@Column(name="amount_charged")
 	private Double amountCharged;
 	
+	//default constructor
+	
+	public CustomerBillingDetails() {
+		this.cardNo = "";
+		this.cardType = "";
+		this.cvv = "";
+		this.cardName = "";
+		this.billAddrLine1 = "";
+		this.billAddrLine2 = "";
+		this.billCity = "";
+		this.billState = "";
+		this.billZipCode = "";
+		this.amountCharged = 0.00;
+	}
+	
+	public CustomerBillingDetails(Integer customerId, String cardType, String cardNo, String cvv, Date expiry, String cardName, String addr1, String addr2, String city, String state, String zip) {
+		this.customerId = customerId;
+		this.cardType = cardType;
+		this.cardNo = cardNo;
+		this.cvv = cvv;
+		this.cardExpiry = expiry;
+		this.cardName = cardName;
+		this.billAddrLine1 = addr1;
+		this.billAddrLine2 = addr2;
+		this.billCity = city;
+		this.billState = state;
+		this.billZipCode = zip;
+		this.amountCharged = 0.00;
+	}
+	
 	//setters
 	
 	public void setCustomerId(Integer customerId) {

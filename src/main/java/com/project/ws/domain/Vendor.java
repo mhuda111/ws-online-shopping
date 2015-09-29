@@ -43,9 +43,35 @@ public class Vendor {
 	@Column(name = "active_flag")
 	private String activeFlag;
 	
+	@Column(name = "amount_paid")
+	private Double amount;
+	
+	
 	public Vendor() {
+		this.vendorName = "";
+		this.vendorAddrLine1 = "";
+		this.vendorAddrLine2 = "";
+		this.vendorCity = "";
+		this.vendorState = "";
+		this.vendorZipCode = "";
+		this.vendorCountry = "";
+		this.activeFlag = "";
+		this.amount = 0.00;
+	}
+	
+	public Vendor(String name, String addr1, String addr2, String city, String state, String country, String zip, String flag) {
+		
+		this.vendorName = name;
+		this.vendorAddrLine1 = addr1;
+		this.vendorAddrLine2 = addr2;
+		this.vendorCity = city;
+		this.vendorState = state;
+		this.vendorZipCode = zip;
+		this.vendorCountry = country;
+		this.activeFlag = flag;
+		this.amount = 0.00;
+	}
 
-	};
 
 	public void setFlag(String flag) {
 		this.activeFlag = flag;
@@ -102,5 +128,12 @@ public class Vendor {
 	}
 	public void setVendorCountry(String vendorCountry) {
 		this.vendorCountry = vendorCountry;
+	}
+	
+	public Double getVendorAmount() {
+		return this.amount;
+	}
+	public void setVendorAmount(Double amount) {
+		this.amount = amount;
 	}
 }

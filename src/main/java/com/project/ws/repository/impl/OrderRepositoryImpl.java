@@ -57,12 +57,10 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 		//charge card
 		custRepo.chargeCard(customerId, billId, orderAmount);
 
-
-
 		List<CustomerAddress> addrList = addrRepo.getAddress(customerId);
-		System.out.println("for customer" + customerId + " address is ");
-
+		
 		addrId = addrList.get(0).getCustAddrId();
+		System.out.println("for customer" + customerId + " address is " + addrId);
 
 		//insert data in order_details
 		String SQL = "INSERT INTO order_details (cust_id, cust_bill_id, cust_addr_id, total_order_amt) VALUES(" +
@@ -73,14 +71,17 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 		System.out.println("inserted in to order: " + count + " record");
 
 		orderId = findActiveOrder(customerId);
-
+		System.out.println("orderId is: " + orderId);
+		
 		//make entries for each product in the order placed in table order_line_item
 		for(Cart cart:list) {
 			//update product quantity
 			prodRepo.updateProductQuantity(cart.getProductId(), cart.getQuantity(), "subtract");
+			System.out.println("adding in order_line_item");
 			SQL = "insert into order_line_item (order_id, product_id, order_line_quantity, order_line_price) " +
 					"values(" + orderId + ", " + cart.getProductId() + ", " + cart.getQuantity() + ", " +
 					cart.getPrice() + ")";
+			System.out.println(SQL);
 			count = em.createNativeQuery(SQL).executeUpdate();
 		}
 
@@ -117,8 +118,8 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 			prodRepo.updateProductQuantity(item.getProductId(), item.getOrderLineQuantity(), "add");
 		}
 
-		SQL = "delete from order_Line_item where order_id = " + orderId;
-		count = em.createNativeQuery(SQL).executeUpdate();
+//		SQL = "delete from order_Line_item where order_id = " + orderId;
+//		count = em.createNativeQuery(SQL).executeUpdate();
 
 		SQL = "select o from Order o where orderId = " + orderId;
 		Order order = em.createQuery(SQL, Order.class).getSingleResult();

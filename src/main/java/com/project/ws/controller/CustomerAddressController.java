@@ -49,7 +49,7 @@ public class CustomerAddressController {
 		String custCity = request.getParameter("custCity");
 		String custState = request.getParameter("custState");
 		String custZipCode = request.getParameter("custZipCode");
-		Long custPhone = Long.parseLong(request.getParameter("custPhone"));
+		String custPhone = request.getParameter("custPhone");
 		
 		CustomerAddress customerAddress = new CustomerAddress();
 		customerAddress.setCustAddrLine1(custAddrLine1);

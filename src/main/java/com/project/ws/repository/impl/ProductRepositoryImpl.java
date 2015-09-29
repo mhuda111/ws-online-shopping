@@ -57,6 +57,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 	@Transactional
 	public Integer updateProductQuantity(Integer productId, Integer quantity, String operation) {
 		String SQL = "select quantity from Product where productId = " + productId;
+		System.out.println(SQL);
 		Query query = em.createQuery(SQL);
 		Integer oldQuantity = (Integer) query.getSingleResult();
 		Integer newQuantity;
@@ -66,6 +67,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 			newQuantity = oldQuantity - quantity;
 
 		SQL = "UPDATE Product SET quantity = " + newQuantity + " where productId = " + productId;
+		System.out.println(SQL);
 		query = em.createQuery(SQL);
 		Integer count = query.executeUpdate();
 		if (count == 1)
@@ -77,8 +79,8 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 
 	@Override
 	@Transactional
-	public Integer buyProduct(Integer customerId, Integer productId, Double productPrice) {
-		String SQL = "INSERT INTO cart (cust_id, product_id, price) VALUES (" + customerId + ", " + productId + ", " + productPrice + ")";
+	public Integer buyProduct(Integer customerId, Product product, Integer quantity) {
+		String SQL = "INSERT INTO cart (cust_id, product_id, price, quantity) VALUES (" + customerId + ", " + product.getId() + ", " + product.getPrice() + "," + quantity + ")";
 		Query query = em.createNativeQuery(SQL);
 		Integer count = query.executeUpdate();
 		if (count == 1)

@@ -40,7 +40,7 @@ public class CustomerAddressRepositoryImpl implements CustomerAddressCustomRepos
 			String SQL = "INSERT INTO customer_address (cust_id, cust_addr_line1, cust_addr_line2, cust_city, cust_state, cust_zip_code, cust_phone) VALUES(" +
 					customerId + ", '" + customerAddress.getCustAddrLine1() + "', '" + customerAddress.getCustAddrLine2() + "', '" + customerAddress.getCustCity() + 
 					"', '" + customerAddress.getCustState() + "', '" + customerAddress.getCustZipCode() + "'," + customerAddress.getCustPhone() + ")";
-
+			
 			Integer count = em.createNativeQuery(SQL).executeUpdate();
 			if (count == 1) 
 				System.out.println("address added successfully");
