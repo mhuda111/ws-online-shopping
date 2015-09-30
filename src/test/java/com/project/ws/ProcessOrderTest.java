@@ -91,23 +91,23 @@ public class ProcessOrderTest {
 		java.sql.Date sqlDate = new java.sql.Date(date.getTime());
 		
 		jaideep = new Customer("Jaideep Singh", "Mokha", "jaideep@gmail.com", "OrderPassword");
-		custRepo.addCustomer(jaideep.getCustFirstname(), jaideep.getCustLastName(), jaideep.getCustEmail(), jaideep.getCustPassword());
+		//custRepo.addCustomer(jaideep.getCustFirstname(), jaideep.getCustLastName(), jaideep.getCustEmail(), jaideep.getCustPassword());
 		custRepo.save(jaideep);
 		
 		alibaba = new Vendor("Ali Baba", "Main Street", "#123", "Xougong", "HK", "China", "12345", "Y");
-		vendorRepo.addVendor(alibaba);
+		//vendorRepo.addVendor(alibaba);
 		vendorRepo.save(alibaba);
 		
 		shampoo = new Product("Head n Shoulders", "Bath&Body", "HeadnShoulders Shampoo", 9.50, 15, alibaba.getVendorId());
-		prodRepo.addProduct(shampoo);
+		//prodRepo.addProduct(shampoo);
 		prodRepo.save(shampoo);
 		
 		jaideepAddr = new CustomerAddress(jaideep.getCustId(), "6000 Road", "apt 111", "Chicago", "IL", "60001", "5555555555");
-		addrRepo.addCustomerAddress(jaideep.getCustId(), jaideepAddr);
+		//addrRepo.addCustomerAddress(jaideep.getCustId(), jaideepAddr);
 		addrRepo.save(jaideepAddr);
 		
 		jaideepBilling = new CustomerBillingDetails(jaideep.getCustId(), "VISA", "1234567890123456", "123", sqlDate, "Jaideep Singh", "6000 Road", "apt 111", "Chicago", "IL", "60001");
-		billRepo.addCardDetails(jaideepBilling);
+		//billRepo.addCardDetails(jaideepBilling);
 		billRepo.save(jaideepBilling);
 		
 	}
