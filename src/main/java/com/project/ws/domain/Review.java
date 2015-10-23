@@ -1,21 +1,27 @@
 package com.project.ws.domain;
 
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This is sample business object that contains customer information with address
  * which we may expose to others.
  *
  */
+@XmlRootElement
 @Entity
 @Table(name="review")
-public class Review {
+public class Review implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue
 	@Column(name="review_id")
@@ -38,6 +44,8 @@ public class Review {
 
 	@Column(name="rating")
 	private Double rating;
+	
+	public Review() {}
 	
 	public Integer getReviewId() {
 		return reviewId;

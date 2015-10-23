@@ -1,18 +1,25 @@
 package com.project.ws.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Database entity for customer table.
  * We used JPA annotations to map it with database table.
  */
+@XmlRootElement
 @Entity
 @Table(name="Customer")
-public class Customer {
+public class Customer implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue
 	@Column(name="cust_id")

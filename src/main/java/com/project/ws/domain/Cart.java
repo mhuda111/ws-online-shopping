@@ -1,20 +1,25 @@
 package com.project.ws.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Database entity for cart table.
  * We used JPA annotations to map it with database table.
  */
-
+@XmlRootElement
 @Entity
 @Table(name="cart")
-public class Cart {
+public class Cart implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue
 	@Column(name="cust_id")
@@ -32,9 +37,8 @@ public class Cart {
 	@Column(name="price")
 	private Double price;
 	
-	public Cart() {
-		
-	}
+	
+	public Cart() {}
 	
 	//setters
 	

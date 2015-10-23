@@ -27,12 +27,12 @@ import com.project.ws.domain.CustomerBillingDetails;
 import com.project.ws.domain.Order;
 import com.project.ws.domain.Product;
 import com.project.ws.domain.Vendor;
-import com.project.ws.repository.CustomerAddressRepository;
-import com.project.ws.repository.CustomerBillingRepository;
-import com.project.ws.repository.CustomerRepository;
-import com.project.ws.repository.OrderRepository;
-import com.project.ws.repository.ProductRepository;
-import com.project.ws.repository.VendorRepository;
+import com.project.ws.workflow.CustomerAddressRepository;
+import com.project.ws.workflow.CustomerBillingRepository;
+import com.project.ws.workflow.CustomerRepository;
+import com.project.ws.workflow.OrderRepository;
+import com.project.ws.workflow.ProductRepository;
+import com.project.ws.workflow.VendorRepository;
 
 /**
  * 
