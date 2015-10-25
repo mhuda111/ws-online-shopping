@@ -1,5 +1,6 @@
 package com.project.ws.workflow.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,6 +9,7 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.Customer;
+import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.workflow.custom.CustomerCustomActivity;
 
 /**
@@ -29,11 +31,19 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 	 * Doing queries from database and mapped the results to the list of customer object.
 	 */
 	@Override
-	public List<Customer> getCustomersByNamesFirstLetter(String letter) {
+	public List<CustomerRepresentation> getCustomersByNamesFirstLetter(String letter) {
 		TypedQuery<Customer> query = em.createQuery("SELECT c FROM Customer c where upper(cust_firstname) LIKE :nameVar", Customer.class);
 		query.setParameter("nameVar", letter + "%");
 		List<Customer> resultList = query.getResultList();
-		return resultList;
+		List<CustomerRepresentation> customerList = new ArrayList<CustomerRepresentation>();
+		for(Customer c:resultList) {
+			CustomerRepresentation customer = new CustomerRepresentation();
+			customer.setCustFirstname(c.getCustFirstname());
+			customer.setCustLastName(c.getCustLastName());
+			customer.setCustEmail(c.getCustEmail());
+			customerList.add(customer);
+		}
+		return customerList;
 	}
 
 	@Override

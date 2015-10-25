@@ -98,7 +98,7 @@ public class ProductActivityImpl implements ProductCustomActivity {
 		} catch(Exception e) {
 			e.getMessage();
 		}
-		SQL = "select c from Cart c where customer_id = " + customerId;
+		SQL = "select c from Cart c where cust_id = " + customerId;
 		TypedQuery<Cart> query = em.createQuery(SQL, Cart.class);
 		List<Cart> resultList = query.getResultList();
 		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();

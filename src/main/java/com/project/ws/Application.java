@@ -1,35 +1,22 @@
 package com.project.ws;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import com.project.ws.domain.Order;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.OrderRepresentation;
 import com.project.ws.representation.OrderRequest;
@@ -44,36 +31,104 @@ public class Application {
 	
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 	
-    private static final String baseUrl = "http://localhost:8080/order";
+    private static final String baseUrl = "http://localhost:8080";
     private static String finalUrl;
 	 
     public static void main(String[] args) {
     	SpringApplication.run(Application.class, args);
     	
     	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<OrderRepresentation[]> orderResponse;
+    	ResponseEntity<CartRepresentation[]> cartResponse;
+    	Map<String, Integer> params;
     	
-		finalUrl = baseUrl + "/findAll/{customerId}";
-		System.out.println("=========" + finalUrl);
-		Map<String, Integer>  params = new HashMap<String, Integer>();
+    	/*
+    	 * Testing Customer Service
+    	 */
+    	finalUrl = baseUrl + "customer/";
+    	
+    	
+    	
+    	/*
+    	 * Processing for GET orders by customerId
+    	 */
+		finalUrl = baseUrl + "order/findAll/{customerId}";
+		params = new HashMap<String, Integer>();
 		params.put("customerId", 10000174);
 		
-        ResponseEntity<OrderRepresentation[]> response = restTemplate.getForEntity(finalUrl, OrderRepresentation[].class, params);
+        orderResponse = restTemplate.getForEntity(finalUrl, OrderRepresentation[].class, params);
         
+        System.out.println("----GET All Orders by CustomerId-------------------------------------------------------------");
+        System.out.println("Response Status " + orderResponse.getStatusCode());
+        System.out.println("Response Headers " + orderResponse.getHeaders());
+        System.out.println("Response Body " + Arrays.asList(orderResponse.getBody()).toString());
+        System.out.println("-----------------------------------------------------------------------------------------");
+
+        /*
+    	 * Processing for GET ACTIVE orders by customerId
+    	 */
+		finalUrl = baseUrl + "order/findAll/activeOrders/{customerId}";
+		params = new HashMap<String, Integer>();
+		params.put("customerId", 10000174);
+		
+        orderResponse = restTemplate.getForEntity(finalUrl, OrderRepresentation[].class, params);
+        
+        System.out.println("----GET Active Orders by CustomerId-----------------------------------------------------------------");
+        System.out.println("Response Status " + orderResponse.getStatusCode());
+        System.out.println("Response Headers " + orderResponse.getHeaders());
+        System.out.println("Response Body " + Arrays.asList(orderResponse.getBody()).toString());
+        System.out.println("-----------------------------------------------------------------------------------------");
+
+        /*
+    	 * Processing for GET Request for Order Status by orderId
+    	 */
+		finalUrl = baseUrl + "order/checkOrderStatus/{orderId}";
+		params = new HashMap<String, Integer>();
+		params.put("orderId", 10000032);
+		
+        ResponseEntity<Order> response = restTemplate.getForEntity(finalUrl, Order.class, params);
+        
+        System.out.println("----GET Order Status by OrderId-----------------------------------------------------------------");
         System.out.println("Response Status " + response.getStatusCode());
         System.out.println("Response Headers " + response.getHeaders());
-        System.out.println("Response Body " + Arrays.asList(response.getBody()).toString());
+        System.out.println("Response Body " + response.getBody());
+        System.out.println("-----------------------------------------------------------------------------------------");
 
-//REST Template not passing the orderRequest object to the server method		
-//		finalUrl = baseUrl + "/createOrder";
-//		CartRepresentation[] cartRepresentation;
-//		OrderRequest orderRequest = new OrderRequest();
-//		orderRequest.setCustomerId(10000196);
-//		orderRequest.setPrice(1.00);
-//		orderRequest.setProductId(10000086);
-//		orderRequest.setQuantity(10);
-//		System.out.println("==============" + finalUrl);
-//		System.out.println("==============" + orderRequest.toString());
-//		cartRepresentation = restTemplate.postForObject(finalUrl, orderRequest, CartRepresentation[].class);
-//		System.out.println("after post " + cartRepresentation);
+        
+        /*
+         * POST for creating an Order using OrderRequest - populating a cart		
+         */
+		finalUrl = baseUrl + "order/createOrder";
+		
+		OrderRequest orderRequest = new OrderRequest();
+		orderRequest.setCustomerId(10000196);
+		orderRequest.setPrice(1.00);
+		orderRequest.setProductId(10000086);
+		orderRequest.setQuantity(10);
+		cartResponse = restTemplate.postForEntity(finalUrl, orderRequest, CartRepresentation[].class);
+		
+		System.out.println("----Create an Order - Populate Cart -----------------------------------------------------------");
+        System.out.println("Response Status " + cartResponse.getStatusCode());
+        System.out.println("Response Headers " + cartResponse.getHeaders());
+        System.out.println("Response Body " + Arrays.asList(cartResponse.getBody()).toString());
+        System.out.println("-------------------------------------------------------------------------------------------");
+
+		
+        /*
+         * POST for placing an Order using OrderRequest - actually placing an order		
+         */
+		finalUrl = baseUrl + "order/placeOrder";
+		orderRequest.setCustomerId(10000196);
+		orderRequest.setPrice(1.00);
+		orderRequest.setProductId(10000086);
+		orderRequest.setQuantity(10);
+		ResponseEntity<OrderRepresentation> newOrderResponse = restTemplate.postForEntity(finalUrl, orderRequest, OrderRepresentation.class);
+		
+        System.out.println("----Place Order using OrderRequest -------------------------------------------------------------");
+        System.out.println("Response Status " + newOrderResponse.getStatusCode());
+        System.out.println("Response Headers " + newOrderResponse.getHeaders());
+        System.out.println("Response Body " + newOrderResponse.getBody());
+        System.out.println("-----------------------------------------------------------------------------------------");
+
     }
 }

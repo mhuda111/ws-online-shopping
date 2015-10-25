@@ -19,4 +19,5 @@ public interface CustomerActivity extends CrudRepository<Customer, Long>, Custom
     @Override
 	public List<Customer> findAll();
     public List<Customer> findByCustEmail(String custEmail);
+    public List<Customer> findById(Integer customerId);
 }

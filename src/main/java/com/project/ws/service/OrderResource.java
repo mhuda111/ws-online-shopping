@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,10 +27,10 @@ public class OrderResource implements OrderService {
 	@Autowired
 	private ProductActivity productActivity;
 
-	@RequestMapping(value="/order/findAll/{customerId}", method=RequestMethod.GET, produces={"application/json","application/xml"})
+	@RequestMapping(value="/order/findAll/{customerId}", method=RequestMethod.GET, produces={"text/html", "application/json","application/xml"})
 	public @ResponseBody List<OrderRepresentation> findAllOrders(@PathVariable("customerId") Integer customerId) {
-		System.out.println("I am here to get order details for customer " + customerId);
-		return orderActivity.findAllOrders(customerId);
+		List<OrderRepresentation> orderRepr = orderActivity.findAllOrders(customerId);
+		return orderRepr;
     }
 
 	@RequestMapping(value="/order/findAll/activeOrders/{customerId}", method=RequestMethod.GET, produces={"application/json", "application/xml"})
@@ -38,13 +39,12 @@ public class OrderResource implements OrderService {
     }
 	
 	@RequestMapping(value="/order/createOrder", method=RequestMethod.POST, produces={"application/json", "application/xml"})
-	public @ResponseBody List<CartRepresentation> createOrder(OrderRequest orderRequest) {
-		System.out.println("***********" + orderRequest.toString());
+	public @ResponseBody List<CartRepresentation> createOrder(@RequestBody OrderRequest orderRequest) {
 		return productActivity.buyProduct(orderRequest.getCustomerId(), orderRequest.getProductId(), orderRequest.getPrice(), orderRequest.getQuantity());
 	}
 
 	@RequestMapping(value="/order/placeOrder", method=RequestMethod.POST, produces={"application/json", "application/xml"})
-	 public @ResponseBody OrderRepresentation placeOrder(OrderRequest orderRequest) {
+	 public @ResponseBody OrderRepresentation placeOrder(@RequestBody OrderRequest orderRequest) {
 		return orderActivity.placeOrder(orderRequest.getCustomerId());
 	}
 	
