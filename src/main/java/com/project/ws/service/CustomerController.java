@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Customer;
+import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.workflow.CustomerActivity;
 
 /**
@@ -27,7 +28,7 @@ public class CustomerController {
 	 * of the customer
 	 */
 	@RequestMapping("/customer/firstLetter/")
-    public List<Customer> getCustomersFromFirstLetterOfName(HttpServletRequest request) {
+    public List<CustomerRepresentation> getCustomersFromFirstLetterOfName(HttpServletRequest request) {
 		String letter = request.getParameter("letter");
     	return customerActivity.getCustomersByNamesFirstLetter(letter);
     }
