@@ -1,5 +1,6 @@
 package com.project.ws.workflow.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,10 +9,13 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
+import com.project.ws.domain.Cart;
 import com.project.ws.domain.Product;
-import com.project.ws.workflow.custom.ProductCustomRepository;
+import com.project.ws.representation.CartRepresentation;
+import com.project.ws.representation.OrderRepresentation;
+import com.project.ws.workflow.custom.ProductCustomActivity;
 
-public class ProductRepositoryImpl implements ProductCustomRepository {
+public class ProductActivityImpl implements ProductCustomActivity {
 
 	/**
 	 * This EntityManager attribute is used to create the database queries
@@ -34,11 +38,16 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 
 
 	@Override
-	public List<Product> getProductsWithQuantityLessThan(Integer quantity) {
-		String SQL = "SELECT p FROM Product p WHERE product_quantity <= " + quantity;
+	public Boolean getProductAvailability(Integer productId, Integer quantity) {
+		System.out.println("-------" + productId);
+		String SQL = "SELECT p FROM Product p WHERE product_id = " + productId;
 		TypedQuery<Product> query = em.createQuery(SQL, Product.class);
-		List<Product> resultList = query.getResultList();
-		return resultList;
+		Product productInfo = query.getSingleResult();
+		System.out.println("-------" + productInfo.toString());
+		if(productInfo.getQuantity() >= quantity)
+			return true;
+		else
+			return false;
 	}
 
 	@Override
@@ -57,7 +66,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 	@Transactional
 	public Integer updateProductQuantity(Integer productId, Integer quantity, String operation) {
 		String SQL = "select quantity from Product where productId = " + productId;
-		System.out.println(SQL);
+//		System.out.println(SQL);
 		Query query = em.createQuery(SQL);
 		Integer oldQuantity = (Integer) query.getSingleResult();
 		Integer newQuantity;
@@ -79,17 +88,34 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 
 	@Override
 	@Transactional
-	public Integer buyProduct(Integer customerId, Product product, Integer quantity) {
-		String SQL = "INSERT INTO cart (cust_id, product_id, price, quantity) VALUES (" + customerId + ", " + product.getId() + ", " + product.getPrice() + "," + quantity + ")";
-		Query query = em.createNativeQuery(SQL);
-		Integer count = query.executeUpdate();
-		if (count == 1)
-			System.out.println("cart inserted successfully");
-		else
-			System.out.println("ERROR!!! Check logs/database");
-		return count;
+	public List<CartRepresentation> buyProduct(Integer customerId, Integer productId, Double price, Integer quantity) {
+		Boolean check = this.getProductAvailability(productId, quantity);
+		if(check == false) return null;
+		String SQL = "INSERT INTO cart (cust_id, product_id, price, quantity) VALUES (" + customerId + ", " + productId + ", " + price + "," + quantity + ")";
+		try {
+			Query query = em.createNativeQuery(SQL);
+			Integer count = query.executeUpdate();
+		} catch(Exception e) {
+			e.getMessage();
+		}
+		SQL = "select c from Cart c where customer_id = " + customerId;
+		TypedQuery<Cart> query = em.createQuery(SQL, Cart.class);
+		List<Cart> resultList = query.getResultList();
+		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();
+		for(Cart c: resultList) {
+			CartRepresentation cart = new CartRepresentation();
+			cart.setProductId(c.getProductId());
+			cart.setPrice(c.getPrice());
+			cart.setQuantity(c.getQuantity());
+			
+			cartRepresentation.add(cart);
+		}
+		
+		return cartRepresentation;
 	}
 
+	
+	
 	@Override
 	@Transactional
 	public Integer addProduct(Product product) {

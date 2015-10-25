@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.project.ws.domain.CustomerBillingDetails;
-import com.project.ws.workflow.custom.CustomerBillingCustomRepository;
+import com.project.ws.workflow.custom.CustomerBillingCustomActivity;
 
-public interface CustomerBillingRepository extends CrudRepository<CustomerBillingDetails, Integer>, CustomerBillingCustomRepository {
+public interface CustomerBillingActivity extends CrudRepository<CustomerBillingDetails, Integer>, CustomerBillingCustomActivity {
 
 	@Override
 	public List<CustomerBillingDetails> findAll();

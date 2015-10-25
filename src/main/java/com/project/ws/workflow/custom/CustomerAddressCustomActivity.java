@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.project.ws.domain.CustomerAddress;
 
-public interface CustomerAddressCustomRepository {
+public interface CustomerAddressCustomActivity {
 		
 	public List<CustomerAddress> getAddress(Integer customerId);
 	public Integer addCustomerAddress(Integer customerId, CustomerAddress customerAddress);

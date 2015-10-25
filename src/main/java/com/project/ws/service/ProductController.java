@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Product;
-import com.project.ws.workflow.ProductRepository;
+import com.project.ws.workflow.ProductActivity;
 
 /**
  * This is customer spring controller which has methods
@@ -19,7 +19,7 @@ import com.project.ws.workflow.ProductRepository;
 public class ProductController {
 
 	@Autowired
-    private ProductRepository productRepository;
+    private ProductActivity productRepository;
 	
 	@RequestMapping("/product/")
     public List<Product> readByProductName(HttpServletRequest request) {

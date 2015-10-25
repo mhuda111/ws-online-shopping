@@ -2,12 +2,13 @@ package com.project.ws.workflow.impl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.CustomerBillingDetails;
-import com.project.ws.workflow.custom.CustomerBillingCustomRepository;
+import com.project.ws.workflow.custom.CustomerBillingCustomActivity;
 
-public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepository {
+public class CustomerBillingActivityImpl implements CustomerBillingCustomActivity {
 
 	private Integer count;
 	private String SQL;
@@ -17,6 +18,14 @@ public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepos
 	
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
+	}
+	
+	@Override
+	public Integer getBillId(Integer customerId) {
+		String SQL = "select custBillId from CustomerBillingDetails where customerId = " + customerId;
+		Query query = em.createQuery(SQL);
+		Integer billId = (Integer) query.getSingleResult();
+		return billId;
 	}
 	
 	@Override

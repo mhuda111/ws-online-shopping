@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Vendor;
-import com.project.ws.workflow.VendorRepository;
+import com.project.ws.workflow.VendorActivity;
 
 @RestController
 public class VendorController {
 
 	@Autowired
-	private VendorRepository vendorRepository;
+	private VendorActivity vendorRepository;
 
 	/*
 	 * This expose "/customer/firstLetter/" end point and looks for a URL parameter "letter"

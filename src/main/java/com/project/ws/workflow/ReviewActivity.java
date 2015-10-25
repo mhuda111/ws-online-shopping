@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.project.ws.domain.Review;
-import com.project.ws.workflow.custom.ReviewCustomRepository;
+import com.project.ws.workflow.custom.ReviewCustomActivity;
 
 
-public interface ReviewRepository extends CrudRepository<Review, Integer>, ReviewCustomRepository {
+public interface ReviewActivity extends CrudRepository<Review, Integer>, ReviewCustomActivity {
 
 	public List<Review> findByReviewId(Integer reviewId);
 	public List<Review> findByVendorId(Integer vendorId);

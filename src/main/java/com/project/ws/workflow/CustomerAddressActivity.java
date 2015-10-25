@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.project.ws.domain.CustomerAddress;
-import com.project.ws.workflow.custom.CustomerAddressCustomRepository;
+import com.project.ws.workflow.custom.CustomerAddressCustomActivity;
 
-public interface CustomerAddressRepository extends CrudRepository<CustomerAddress, Long>, CustomerAddressCustomRepository{
+public interface CustomerAddressActivity extends CrudRepository<CustomerAddress, Long>, CustomerAddressCustomActivity{
 
 	    public List<CustomerAddress> findByCustomerId(Integer customerId);
 	    @Override

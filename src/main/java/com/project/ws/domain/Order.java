@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Database entity for order table.
  * We used JPA annotations to map it with database table.
@@ -17,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @Entity
 @Table(name="order_details")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Order implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

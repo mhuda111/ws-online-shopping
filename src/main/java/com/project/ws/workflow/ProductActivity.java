@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.project.ws.domain.Product;
-import com.project.ws.workflow.custom.ProductCustomRepository;
+import com.project.ws.workflow.custom.ProductCustomActivity;
 
 /** 
  * 
@@ -15,7 +15,7 @@ import com.project.ws.workflow.custom.ProductCustomRepository;
  * 
  */
 
-public interface ProductRepository extends CrudRepository<Product, Integer>, ProductCustomRepository {
+public interface ProductActivity extends CrudRepository<Product, Integer>, ProductCustomActivity {
 	
 	public List<Product> findByProductName(String productName);
 	@Override

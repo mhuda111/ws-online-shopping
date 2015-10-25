@@ -9,7 +9,7 @@ import com.project.ws.domain.Customer;
  * In this custom repository, we specified custom methods to fetch customer information 
  * based on custom queries.
  */
-public interface CustomerCustomRepository {
+public interface CustomerCustomActivity {
 	
 	public List<Customer> getCustomersByNamesFirstLetter(String letter);
 	public Integer addCustomer(String firstName, String lastName, String email, String password);

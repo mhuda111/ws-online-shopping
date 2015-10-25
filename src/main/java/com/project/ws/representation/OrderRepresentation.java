@@ -1,14 +1,21 @@
 package com.project.ws.representation;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.project.ws.domain.OrderLineItem;
+
 @XmlRootElement(name = "Order")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderRepresentation {
 
 	private Integer orderId;
@@ -17,7 +24,7 @@ public class OrderRepresentation {
 	private Double orderAmount;
 	private String orderShipMethod;
 	private String orderStatus;
-	private Integer productId;
+	private Map<String, Object> products = new HashMap<String, Object>();
 	private Integer orderLineQuantity;
 	private Double orderLinePrice;
 
@@ -25,12 +32,14 @@ public class OrderRepresentation {
 		this.orderId = orderId;
 	}
 
-	public Integer getProductId() {
-		return productId;
+	public Map<String, Object> getProducts() {
+		return products;
 	}
 
-	public void setProductId(Integer productId) {
-		this.productId = productId;
+	public void setProducts(OrderLineItem lineItem) {
+		products.put("id", lineItem.getProductId());
+		products.put("quantity", lineItem.getOrderLineQuantity());
+		products.put("price", lineItem.getOrderLinePrice());
 	}
 
 	public Integer getOrderLineQuantity() {
@@ -101,5 +110,9 @@ public class OrderRepresentation {
 	public String getOrderStatus() {
 		return this.orderStatus;
 	}
-
+	
+	@Override
+	public String toString() {
+		return this.orderId + "=" + this.orderShipMethod + "-" + this.orderStatus + "-" + this.orderAmount;
+	}
 }

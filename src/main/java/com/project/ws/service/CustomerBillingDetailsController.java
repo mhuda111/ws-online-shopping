@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.workflow.CustomerBillingRepository;
+import com.project.ws.workflow.CustomerBillingActivity;
 
 @RestController
 public class CustomerBillingDetailsController {
 
 	@Autowired
-    private CustomerBillingRepository customerBillingsRepository;
+    private CustomerBillingActivity customerBillingsRepository;
 
 	@RequestMapping("/billing/chargeCard")
     public String chargeCard(HttpServletRequest request) {

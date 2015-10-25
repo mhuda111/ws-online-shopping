@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Customer;
-import com.project.ws.workflow.CustomerRepository;
+import com.project.ws.workflow.CustomerActivity;
 
 /**
  * This is customer spring controller which has methods 
@@ -19,17 +19,7 @@ import com.project.ws.workflow.CustomerRepository;
 public class CustomerController {
 	
 	@Autowired
-    private CustomerRepository customerRepository;
-
-	/*
-	 * This expose "/customer/" end point and looks for a URL parameter "id"
-	 * then gets customer information with address.  
-	 */
-//	@RequestMapping("/customer")
-//    public List<CustomerBO> getCustomers(HttpServletRequest request) {
-//		String id = request.getParameter("id");
-//    	return customerRepository.getCustomerWithAddressById(Long.parseLong(id));
-//    }
+    private CustomerActivity customerActivity;
 	
 	/*
 	 * This expose "/customer/firstLetter/" end point and looks for a URL parameter "letter"
@@ -39,7 +29,7 @@ public class CustomerController {
 	@RequestMapping("/customer/firstLetter/")
     public List<Customer> getCustomersFromFirstLetterOfName(HttpServletRequest request) {
 		String letter = request.getParameter("letter");
-    	return customerRepository.getCustomersByNamesFirstLetter(letter);
+    	return customerActivity.getCustomersByNamesFirstLetter(letter);
     }
 	
 	@RequestMapping("/customer/addCustomer/")
@@ -48,7 +38,7 @@ public class CustomerController {
 		String lastName = request.getParameter("lastName");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		int customerAdded = customerRepository.addCustomer(firstName, lastName, email, password);
+		int customerAdded = customerActivity.addCustomer(firstName, lastName, email, password);
 		if (customerAdded > 0) {
 			return "Successfully added the customer " + firstName;
 		}
@@ -61,7 +51,7 @@ public class CustomerController {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
-		int customerUpdate = customerRepository.updateName(customerId, firstName, lastName);
+		int customerUpdate = customerActivity.updateName(customerId, firstName, lastName);
 		if (customerUpdate > 0) {
 			return "Successfully updated the customer " + firstName;
 		}
@@ -72,7 +62,7 @@ public class CustomerController {
 	 public String updateEmail(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String email = request.getParameter("email");
-		int customerUpdate = customerRepository.updateEmail(customerId, email);
+		int customerUpdate = customerActivity.updateEmail(customerId, email);
 		if (customerUpdate > 0) {
 			return "Successfully updated the customer " ;
 		}
@@ -83,7 +73,7 @@ public class CustomerController {
 	 public String updatePassword(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String password = request.getParameter("password");
-		int customerUpdate = customerRepository.updatePassword(customerId, password);
+		int customerUpdate = customerActivity.updatePassword(customerId, password);
 		if (customerUpdate > 0) {
 			return "Successfully updated the password" ;
 		}
@@ -96,7 +86,7 @@ public class CustomerController {
 		char flag = request.getParameter("flag").charAt(0);
 		
 		//char flag = request.getParameter("flag");
-		int customerUpdate = customerRepository.changeStatus(customerId, flag);
+		int customerUpdate = customerActivity.changeStatus(customerId, flag);
 		if (customerUpdate > 0) {
 			return "Status updated successfully" ;
 		}

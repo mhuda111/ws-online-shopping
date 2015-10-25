@@ -2,7 +2,7 @@ package com.project.ws.workflow.custom;
 
 import com.project.ws.domain.Vendor;
 
-public interface VendorCustomRepository {
+public interface VendorCustomActivity {
 	
 	public Integer addVendor(Vendor vendor);
 	public Integer changeStatus(Integer vendorId, String flag);

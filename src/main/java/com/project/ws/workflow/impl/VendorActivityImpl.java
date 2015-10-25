@@ -8,9 +8,9 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.Vendor;
-import com.project.ws.workflow.custom.VendorCustomRepository;
+import com.project.ws.workflow.custom.VendorCustomActivity;
 
-public class VendorRepositoryImpl implements VendorCustomRepository {
+public class VendorActivityImpl implements VendorCustomActivity {
 
 		/**
 		 * This EntityManager attribute is used to create the database queries

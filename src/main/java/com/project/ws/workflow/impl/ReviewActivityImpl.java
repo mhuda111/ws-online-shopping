@@ -6,12 +6,12 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.Review;
-import com.project.ws.workflow.custom.ReviewCustomRepository;
+import com.project.ws.workflow.custom.ReviewCustomActivity;
 
 /**
  * This is the implementation class of the customer custom repository interface.
  */
-public class ReviewRepositoryImpl implements ReviewCustomRepository {
+public class ReviewActivityImpl implements ReviewCustomActivity {
 
 	/**
 	 * This EntityManager attribute is used to create the database queries

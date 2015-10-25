@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.workflow.ReviewRepository;
+import com.project.ws.workflow.ReviewActivity;
 
 /**
  * This is customer spring controller which has methods
@@ -16,7 +16,7 @@ import com.project.ws.workflow.ReviewRepository;
 public class ReviewController {
 
 	@Autowired
-	private ReviewRepository reviewRepository;
+	private ReviewActivity reviewRepository;
 
 	/*
 	@RequestMapping("/review/add")

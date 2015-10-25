@@ -8,12 +8,12 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.Customer;
-import com.project.ws.workflow.custom.CustomerCustomRepository;
+import com.project.ws.workflow.custom.CustomerCustomActivity;
 
 /**
  * This is the implementation class of the customer custom repository interface.
  */
-public class CustomerRepositoryImpl implements CustomerCustomRepository {
+public class CustomerActivityImpl implements CustomerCustomActivity {
 	
 	/**
 	 * This EntityManager attribute is used to create the database queries 

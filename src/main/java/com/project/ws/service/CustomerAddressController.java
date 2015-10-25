@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.CustomerAddress;
-import com.project.ws.workflow.CustomerAddressRepository;
+import com.project.ws.workflow.CustomerAddressActivity;
 
 
 @RestController
 public class CustomerAddressController {
 
 	@Autowired
-    private CustomerAddressRepository customerAddressRepository;
+    private CustomerAddressActivity customerAddressRepository;
 
 	/*
 	 * This expose "/customer/" end point and looks for a URL parameter "id"
