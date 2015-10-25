@@ -37,11 +37,7 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 		List<Customer> resultList = query.getResultList();
 		List<CustomerRepresentation> customerList = new ArrayList<CustomerRepresentation>();
 		for(Customer c:resultList) {
-			CustomerRepresentation customer = new CustomerRepresentation();
-			customer.setCustFirstname(c.getCustFirstname());
-			customer.setCustLastName(c.getCustLastName());
-			customer.setCustEmail(c.getCustEmail());
-			customerList.add(customer);
+			customerList.add(this.mapRepresentation(c));
 		}
 		return customerList;
 	}
@@ -111,6 +107,15 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 	@Override
 	public void notifyCustomer(Integer customerId) {
 
+	}
+	
+	@Override
+	public CustomerRepresentation mapRepresentation(Customer customer) {
+		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+		customerRepresentation.setCustFirstname(customer.getCustFirstname());
+		customerRepresentation.setCustLastName(customer.getCustLastName());
+		customerRepresentation.setCustEmail(customer.getCustEmail());
+		return customerRepresentation;
 	}
 
 }

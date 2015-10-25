@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.project.ws.domain.Order;
 import com.project.ws.representation.CartRepresentation;
+import com.project.ws.representation.CustomerRepresentation;
+import com.project.ws.representation.CustomerRequest;
 import com.project.ws.representation.OrderRepresentation;
 import com.project.ws.representation.OrderRequest;
 
@@ -40,21 +42,49 @@ public class Application {
     	RestTemplate restTemplate = new RestTemplate();
     	ResponseEntity<OrderRepresentation[]> orderResponse;
     	ResponseEntity<CartRepresentation[]> cartResponse;
-    	Map<String, Integer> params;
+    	ResponseEntity<CustomerRepresentation[]> customerResponse;
+    	Map<String, Object> params;
     	
     	/*
     	 * Testing Customer Service
     	 */
-    	finalUrl = baseUrl + "customer/";
+
+    	/*
+    	 * POST for Customer to add new customer
+    	 */
+    	finalUrl = baseUrl + "/customer/addCustomer";
+    	CustomerRequest customerRequest = new CustomerRequest();
+    	customerRequest.setFirstName("Bradley");
+    	customerRequest.setLastName("Cooper");
+    	customerRequest.setEmail("bradley.cooper@email.com");
     	
+    	ResponseEntity<String> stringResponse = restTemplate.postForEntity(finalUrl, customerRequest, String.class);
+        System.out.println("----POST to add new Customer -------------------------------------------------------------");
+        System.out.println("Response Status " + stringResponse.getStatusCode());
+        System.out.println("Response Headers " + stringResponse.getHeaders());
+        System.out.println("Response Body " + stringResponse.getBody());
+        System.out.println("-----------------------------------------------------------------------------------------");
     	
+    	/*
+    	 * GET for Customer by First Letter of First Name
+    	 */
+    	finalUrl = baseUrl + "/customer/firstLetter";
+    	params = new HashMap<String, Object>();
+    	params.put("letter", (String) "G");
     	
+    	customerResponse = restTemplate.getForEntity(finalUrl, CustomerRepresentation[].class, params);
+        System.out.println("----GET All Customers by first letter of first name --------------------------------------");
+        System.out.println("Response Status " + customerResponse.getStatusCode());
+        System.out.println("Response Headers " + customerResponse.getHeaders());
+        System.out.println("Response Body " + Arrays.asList(customerResponse.getBody()).toString());
+        System.out.println("-----------------------------------------------------------------------------------------");
+        
     	/*
     	 * Processing for GET orders by customerId
     	 */
 		finalUrl = baseUrl + "order/findAll/{customerId}";
-		params = new HashMap<String, Integer>();
-		params.put("customerId", 10000174);
+		params = new HashMap<String, Object>();
+		params.put("customerId", (Integer) 10000174);
 		
         orderResponse = restTemplate.getForEntity(finalUrl, OrderRepresentation[].class, params);
         
@@ -68,8 +98,8 @@ public class Application {
     	 * Processing for GET ACTIVE orders by customerId
     	 */
 		finalUrl = baseUrl + "order/findAll/activeOrders/{customerId}";
-		params = new HashMap<String, Integer>();
-		params.put("customerId", 10000174);
+		params = new HashMap<String, Object>();
+		params.put("customerId", (Integer) 10000174);
 		
         orderResponse = restTemplate.getForEntity(finalUrl, OrderRepresentation[].class, params);
         
@@ -83,8 +113,8 @@ public class Application {
     	 * Processing for GET Request for Order Status by orderId
     	 */
 		finalUrl = baseUrl + "order/checkOrderStatus/{orderId}";
-		params = new HashMap<String, Integer>();
-		params.put("orderId", 10000032);
+		params = new HashMap<String, Object>();
+		params.put("orderId", (Integer) 10000032);
 		
         ResponseEntity<Order> response = restTemplate.getForEntity(finalUrl, Order.class, params);
         

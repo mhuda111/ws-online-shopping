@@ -19,5 +19,7 @@ public interface CustomerCustomActivity {
 	public Integer updatePassword(Integer customerId, String password);
 	public void notifyCustomer(Integer customerId);
 	public Integer changeStatus(Integer customerId, char flag);
+	
+	public CustomerRepresentation mapRepresentation(Customer customer);
 
 }
