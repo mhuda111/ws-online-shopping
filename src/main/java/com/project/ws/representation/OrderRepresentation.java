@@ -113,6 +113,6 @@ public class OrderRepresentation {
 	
 	@Override
 	public String toString() {
-		return this.orderId + "=" + this.orderShipMethod + "-" + this.orderStatus + "-" + this.orderAmount;
+		return this.orderId + "-" + this.orderShipMethod + "-" + this.orderStatus + "-" + this.orderAmount;
 	}
 }

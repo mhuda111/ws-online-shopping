@@ -57,28 +57,11 @@ public class Application {
 		Map<String, Integer>  params = new HashMap<String, Integer>();
 		params.put("customerId", 10000174);
 		
-		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
-		messageConverters.add(new FormHttpMessageConverter());
-		messageConverters.add(new StringHttpMessageConverter());
-		messageConverters.add(new MappingJackson2HttpMessageConverter());
-		restTemplate.setMessageConverters(messageConverters);
-		
-		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
-		acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
-		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
-		acceptableMediaTypes.add(MediaType.TEXT_PLAIN);
-		
-		HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(acceptableMediaTypes);
-        HttpEntity <String> userEntity = new HttpEntity<String>(headers);
+        ResponseEntity<OrderRepresentation[]> response = restTemplate.getForEntity(finalUrl, OrderRepresentation[].class, params);
         
-//        ResponseEntity<OrderRepresentation[]> response = restTemplate.exchange(finalUrl, HttpMethod.GET, userEntity, OrderRepresentation[].class, "10000174");
-//        OrderRepresentation[] orderRepresentation = response.getBody();
-        
-        OrderRepresentation[] orderRepresentation = restTemplate.getForObject(finalUrl, OrderRepresentation[].class, params);
-		for(OrderRepresentation o: Arrays.asList(orderRepresentation)) {
-			System.out.println(o);
-		}
+        System.out.println("Response Status " + response.getStatusCode());
+        System.out.println("Response Headers " + response.getHeaders());
+        System.out.println("Response Body " + Arrays.asList(response.getBody()).toString());
 
 //REST Template not passing the orderRequest object to the server method		
 //		finalUrl = baseUrl + "/createOrder";
