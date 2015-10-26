@@ -115,6 +115,7 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 		customerRepresentation.setCustFirstname(customer.getCustFirstname());
 		customerRepresentation.setCustLastName(customer.getCustLastName());
 		customerRepresentation.setCustEmail(customer.getCustEmail());
+		customerRepresentation.setCustId(customer.getCustId());
 		return customerRepresentation;
 	}
 

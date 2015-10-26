@@ -25,7 +25,7 @@ public class Customer implements Serializable{
 	@Column(name="cust_id")
 	private Integer custId;
 	@Column(name="cust_firstname")
-	private String custFirstname;
+	private String custFirstName;
 	@Column(name="cust_lastname")
 	private String custLastName;
 	@Column(name="cust_email")
@@ -34,14 +34,14 @@ public class Customer implements Serializable{
 	private String custPassword;
 	
 	public Customer() {
-		this.custFirstname = "";
+		this.custFirstName = "";
 		this.custLastName = "";
 		this.custEmail = "";
 		this.custPassword = "";
 	}
 	
 	public Customer(String firstName, String lastName, String email, String password) {
-		this.custFirstname = firstName;
+		this.custFirstName = firstName;
 		this.custLastName = lastName;
 		this.custEmail = email;
 		this.custPassword = password;
@@ -54,10 +54,10 @@ public class Customer implements Serializable{
 		this.custId = custId;
 	}
 	public String getCustFirstname() {
-		return custFirstname;
+		return custFirstName;
 	}
 	public void setCustFirstname(String custFirstname) {
-		this.custFirstname = custFirstname;
+		this.custFirstName = custFirstname;
 	}
 	public String getCustLastName() {
 		return custLastName;

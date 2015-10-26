@@ -15,7 +15,7 @@ import com.project.ws.workflow.custom.CustomerCustomActivity;
  */
 public interface CustomerActivity extends CrudRepository<Customer, Long>, CustomerCustomActivity {
 
-    public List<Customer> findByCustFirstname(String custFirstname);
+    public List<Customer> findByCustFirstName(String custFirstname);
     @Override
 	public List<Customer> findAll();
     public List<Customer> findByCustEmail(String custEmail);

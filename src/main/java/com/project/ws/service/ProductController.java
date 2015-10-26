@@ -1,5 +1,6 @@
 package com.project.ws.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Product;
+import com.project.ws.representation.ProductRepresentation;
 import com.project.ws.workflow.ProductActivity;
 
 /**
@@ -19,12 +21,23 @@ import com.project.ws.workflow.ProductActivity;
 public class ProductController {
 
 	@Autowired
-    private ProductActivity productRepository;
+    private ProductActivity productActivity;
+
+	@RequestMapping("/product")
+    public List<ProductRepresentation> getAllProducts(HttpServletRequest request) {
+    	List<Product> products = productActivity.findAll();
+    	List<ProductRepresentation> productRepresentations = new ArrayList<ProductRepresentation>();
+    	for(Product p: products) {
+    		productRepresentations.add(productActivity.mapProductRepresentation(p));
+    	}
+    	return productRepresentations;
+    }
 	
-	@RequestMapping("/product/")
-    public List<Product> readByProductName(HttpServletRequest request) {
-		String productName = request.getParameter("productName");
-    	return productRepository.readByProductName(productName);
+	@RequestMapping("/product/productName/")
+    public List<ProductRepresentation> readByProductName(HttpServletRequest request) {
+		String productName = request.getParameter("name");
+		System.out.println("name received is  " + productName);
+    	return productActivity.readByProductName(productName);
     }
 	
 
@@ -44,20 +57,14 @@ public class ProductController {
 		product.setQuantity(quantity);
 		product.setPrice(price);
 		product.setVendorId(vendorId);
-
-		int productAdded = productRepository.addProduct(product);
-		if (productAdded>0) {
-			return "Successfully added product";
-		}
-		else return "Denied adding product";
-		//return customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
+		return productActivity.addProduct(product);
     }
 
 	@RequestMapping("/product/delete")
     public String deleteProduct(HttpServletRequest request) {
 		String productName = request.getParameter("productName");
 
-		int productDeleted = productRepository.deleteProduct(productName);
+		int productDeleted = productActivity.deleteProduct(productName);
 		if (productDeleted>0) {
 			return "Successful delete product";
 		}
@@ -71,7 +78,7 @@ public class ProductController {
 		int quantity = Integer.parseInt(request.getParameter("quantity"));
 		String operation = request.getParameter("operation");
 
-		int productQuantityUpdate = productRepository.updateProductQuantity(productId,quantity,operation);
+		int productQuantityUpdate = productActivity.updateProductQuantity(productId,quantity,operation);
 		if (productQuantityUpdate>0) {
 			return "Successful updated product" + productId;
 		}

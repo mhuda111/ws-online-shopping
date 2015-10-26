@@ -18,7 +18,7 @@ import com.project.ws.workflow.custom.ProductCustomActivity;
 public interface ProductActivity extends CrudRepository<Product, Integer>, ProductCustomActivity {
 	
 	public List<Product> findByProductName(String productName);
-	@Override
+	public List<Product> findByProductId(Integer productId);
 	public List<Product> findAll();
 
 }

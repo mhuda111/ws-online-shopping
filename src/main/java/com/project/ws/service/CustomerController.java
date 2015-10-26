@@ -1,5 +1,6 @@
 package com.project.ws.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,16 +34,36 @@ public class CustomerController {
 	 * of the customer
 	 */
 	@RequestMapping("/customer/firstLetter")
-    public List<CustomerRepresentation> getCustomersFromFirstLetterOfName(HttpServletRequest request) {
+    public @ResponseBody List<CustomerRepresentation> getCustomersFromFirstLetterOfName(HttpServletRequest request) {
 		String letter = request.getParameter("letter");
     	return customerActivity.getCustomersByNamesFirstLetter(letter);
     }
-
-//	@RequestMapping("/customer/{customerId}")
-//    public CustomerRepresentation getCustomerById(HttpServletRequest request) {
-//    	Customer customer =  customerActivity.findByCustId(Integer.parseInt(request.getParameter("customerId")));
-//    	return customerActivity.mapRepresentation(customer);
+	
+//	@RequestMapping(value="/customer/firstName/{fname}",method = RequestMethod.GET, consumes={"application/xml", "text/*", "application/xhtml+xml", "application/json", "application/html", "application/*+json"}, produces = {"text/html","application/json", "application/xml"})
+//    public @ResponseBody List<CustomerRepresentation> getCustomersByFirstName(@PathVariable("fname") String name) {
+//    	List<Customer> customer = customerActivity.findByCustFirstName(name);
+//    	List<CustomerRepresentation> customerRepresentation = new ArrayList<CustomerRepresentation>();
+//    	for(Customer c:customer) {
+//    		customerRepresentation.add(customerActivity.mapRepresentation(c));
+//    	}
+//    	return customerRepresentation;
 //    }
+	
+	@RequestMapping("/customer/firstName/")
+    public CustomerRepresentation getCustomersByFirstName(HttpServletRequest request) {
+//		System.out.println(request.getContentType());
+//		System.out.println(request.getHeader("Accept"));
+		String name = request.getParameter("fname");
+    	List<Customer> customer = customerActivity.findByCustFirstName(name);
+    	CustomerRepresentation customerRepresentation = customerActivity.mapRepresentation(customer.get(0));
+    	return customerRepresentation;
+    }
+
+	@RequestMapping("/customer/")
+    public CustomerRepresentation getCustomerById(HttpServletRequest request) {
+    	Customer customer =  customerActivity.findByCustId(Integer.parseInt(request.getParameter("customerId")));
+    	return customerActivity.mapRepresentation(customer);
+    }
 	
 	@RequestMapping(value = "/customer/addCustomer", method = RequestMethod.POST, produces = {"application/json"})
     public @ResponseBody String addCustomerWithInfo(@RequestBody CustomerRequest customerRequest) {

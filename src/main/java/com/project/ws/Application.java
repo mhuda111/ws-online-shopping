@@ -22,6 +22,7 @@ import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
 import com.project.ws.representation.OrderRepresentation;
 import com.project.ws.representation.OrderRequest;
+import com.project.ws.representation.ProductRepresentation;
 
 
 @EnableAutoConfiguration
@@ -38,47 +39,93 @@ public class Application {
 	 
     public static void main(String[] args) {
     	SpringApplication.run(Application.class, args);
-    	
-    	RestTemplate restTemplate = new RestTemplate();
-    	ResponseEntity<OrderRepresentation[]> orderResponse;
-    	ResponseEntity<CartRepresentation[]> cartResponse;
-    	ResponseEntity<CustomerRepresentation[]> customerResponse;
-    	Map<String, Object> params;
-    	
+//    	testCustomerService();
+//    	testOrderService();
+    	testProductService();
+//    	testVendorService();
+    }
+    
+    public static void testCustomerService() {
     	/*
-    	 * Testing Customer Service
+    	 * Declare Variables
     	 */
+    	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<CustomerRepresentation> customerResponse;
+    	ResponseEntity<String> stringResponse;
+    	Map<String, Object> params;
 
     	/*
     	 * POST for Customer to add new customer
     	 */
     	finalUrl = baseUrl + "/customer/addCustomer";
-    	CustomerRequest customerRequest = new CustomerRequest();
-    	customerRequest.setFirstName("Bradley");
-    	customerRequest.setLastName("Cooper");
-    	customerRequest.setEmail("bradley.cooper@email.com");
+    	CustomerRequest customerRequest = new CustomerRequest("Bradley", "Cooper", "bradley.cooper@email.com");
     	
-    	ResponseEntity<String> stringResponse = restTemplate.postForEntity(finalUrl, customerRequest, String.class);
-        System.out.println("----POST to add new Customer -------------------------------------------------------------");
-        System.out.println("Response Status " + stringResponse.getStatusCode());
-        System.out.println("Response Headers " + stringResponse.getHeaders());
-        System.out.println("Response Body " + stringResponse.getBody());
-        System.out.println("-----------------------------------------------------------------------------------------");
-    	
+    	stringResponse = restTemplate.postForEntity(finalUrl, customerRequest, String.class);
+        displayStats(stringResponse, "POST to add a new Customer");
     	/*
     	 * GET for Customer by First Letter of First Name
     	 */
-    	finalUrl = baseUrl + "/customer/firstLetter";
+        //finalUrl = baseUrl + "/customer/firstName/{fname}";
+        finalUrl = baseUrl + "/customer/firstName/?fname={fname}";
     	params = new HashMap<String, Object>();
-    	params.put("letter", (String) "G");
+    	params.put("fname", (String) "Bradley");
     	
-    	customerResponse = restTemplate.getForEntity(finalUrl, CustomerRepresentation[].class, params);
-        System.out.println("----GET All Customers by first letter of first name --------------------------------------");
-        System.out.println("Response Status " + customerResponse.getStatusCode());
-        System.out.println("Response Headers " + customerResponse.getHeaders());
-        System.out.println("Response Body " + Arrays.asList(customerResponse.getBody()).toString());
-        System.out.println("-----------------------------------------------------------------------------------------");
+    	customerResponse = restTemplate.getForEntity(finalUrl, CustomerRepresentation.class, params);
+        displayStats(customerResponse, "GET all customers using first name");
         
+        Integer id = customerResponse.getBody().getCustId();
+        System.out.println("**********" + id);
+        /*
+    	 * GET for Customer by CustomerId
+    	 */
+    	finalUrl = baseUrl + "/customer/?customerId={customerId}";
+    	params = new HashMap<String, Object>();
+    	params.put("customerId", (Integer) id);
+    	
+    	customerResponse = restTemplate.getForEntity(finalUrl, CustomerRepresentation.class, params);
+        displayStats(customerResponse, "GET all customers using first name");
+        
+    }
+    
+    public static void testProductService() {
+    	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<ProductRepresentation[]> productResponse;
+    	Map<String, Object> params;
+    	
+    	/*
+    	 * GET all the products
+    	 */
+    	finalUrl = baseUrl + "/product";
+    	
+    	productResponse = restTemplate.getForEntity(finalUrl, ProductRepresentation[].class);
+        displayStats(productResponse, "GET all products");
+    	/*
+    	 * GET products by name
+    	 */
+        finalUrl = baseUrl + "/product/productName/?name={name}";
+    	params = new HashMap<String, Object>();
+    	params.put("name", (String) "Shampoo");
+    	productResponse = restTemplate.getForEntity(finalUrl, ProductRepresentation[].class, params);
+        displayStats(productResponse, "GET all products matching param");
+    	/*
+    	 * GET product by id
+    	 */
+    	/*
+    	 * POST to add a product
+    	 */
+    	/*
+    	 * DELETE to delete a product
+    	 */
+    }
+    
+    public static void testOrderService() {
+    	/*
+    	 * Declare variables
+    	 */
+    	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<OrderRepresentation[]> orderResponse;
+    	ResponseEntity<CartRepresentation[]> cartResponse;
+    	Map<String, Object> params;
     	/*
     	 * Processing for GET orders by customerId
     	 */
@@ -87,13 +134,7 @@ public class Application {
 		params.put("customerId", (Integer) 10000174);
 		
         orderResponse = restTemplate.getForEntity(finalUrl, OrderRepresentation[].class, params);
-        
-        System.out.println("----GET All Orders by CustomerId-------------------------------------------------------------");
-        System.out.println("Response Status " + orderResponse.getStatusCode());
-        System.out.println("Response Headers " + orderResponse.getHeaders());
-        System.out.println("Response Body " + Arrays.asList(orderResponse.getBody()).toString());
-        System.out.println("-----------------------------------------------------------------------------------------");
-
+        displayStats(orderResponse, "GET orders by customerId");
         /*
     	 * Processing for GET ACTIVE orders by customerId
     	 */
@@ -102,13 +143,7 @@ public class Application {
 		params.put("customerId", (Integer) 10000174);
 		
         orderResponse = restTemplate.getForEntity(finalUrl, OrderRepresentation[].class, params);
-        
-        System.out.println("----GET Active Orders by CustomerId-----------------------------------------------------------------");
-        System.out.println("Response Status " + orderResponse.getStatusCode());
-        System.out.println("Response Headers " + orderResponse.getHeaders());
-        System.out.println("Response Body " + Arrays.asList(orderResponse.getBody()).toString());
-        System.out.println("-----------------------------------------------------------------------------------------");
-
+        displayStats(orderResponse, "GET active orders by customerId");
         /*
     	 * Processing for GET Request for Order Status by orderId
     	 */
@@ -117,13 +152,7 @@ public class Application {
 		params.put("orderId", (Integer) 10000032);
 		
         ResponseEntity<Order> response = restTemplate.getForEntity(finalUrl, Order.class, params);
-        
-        System.out.println("----GET Order Status by OrderId-----------------------------------------------------------------");
-        System.out.println("Response Status " + response.getStatusCode());
-        System.out.println("Response Headers " + response.getHeaders());
-        System.out.println("Response Body " + response.getBody());
-        System.out.println("-----------------------------------------------------------------------------------------");
-
+        displayStats(response, "GET order status using orderId");
         
         /*
          * POST for creating an Order using OrderRequest - populating a cart		
@@ -136,28 +165,24 @@ public class Application {
 		orderRequest.setProductId(10000086);
 		orderRequest.setQuantity(10);
 		cartResponse = restTemplate.postForEntity(finalUrl, orderRequest, CartRepresentation[].class);
-		
-		System.out.println("----Create an Order - Populate Cart -----------------------------------------------------------");
-        System.out.println("Response Status " + cartResponse.getStatusCode());
-        System.out.println("Response Headers " + cartResponse.getHeaders());
-        System.out.println("Response Body " + Arrays.asList(cartResponse.getBody()).toString());
-        System.out.println("-------------------------------------------------------------------------------------------");
-
+        displayStats(cartResponse, "POST populate cart using Order Request");
 		
         /*
          * POST for placing an Order using OrderRequest - actually placing an order		
          */
 		finalUrl = baseUrl + "order/placeOrder";
-		orderRequest.setCustomerId(10000196);
-		orderRequest.setPrice(1.00);
-		orderRequest.setProductId(10000086);
-		orderRequest.setQuantity(10);
 		ResponseEntity<OrderRepresentation> newOrderResponse = restTemplate.postForEntity(finalUrl, orderRequest, OrderRepresentation.class);
-		
-        System.out.println("----Place Order using OrderRequest -------------------------------------------------------------");
-        System.out.println("Response Status " + newOrderResponse.getStatusCode());
-        System.out.println("Response Headers " + newOrderResponse.getHeaders());
-        System.out.println("Response Body " + newOrderResponse.getBody());
+        displayStats(newOrderResponse, "POST Place Order using OrderRequest");
+
+    }
+    
+    public static void testVendorService() {}
+    
+    public static void displayStats(ResponseEntity<?> response, String message) {
+        System.out.println("----" + message + "-------------------------------------------------------------");
+        System.out.println("Response Status " + response.getStatusCode());
+        System.out.println("Response Headers " + response.getHeaders());
+        System.out.println("Response Body " + Arrays.asList(response.getBody()));
         System.out.println("-----------------------------------------------------------------------------------------");
 
     }

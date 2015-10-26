@@ -13,6 +13,7 @@ import com.project.ws.domain.Cart;
 import com.project.ws.domain.Product;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.OrderRepresentation;
+import com.project.ws.representation.ProductRepresentation;
 import com.project.ws.workflow.custom.ProductCustomActivity;
 
 public class ProductActivityImpl implements ProductCustomActivity {
@@ -28,12 +29,16 @@ public class ProductActivityImpl implements ProductCustomActivity {
 	}
 
 	@Override
-	public List<Product> readByProductName(String productName) {
+	public List<ProductRepresentation> readByProductName(String productName) {
 		String SQL = "SELECT p FROM Product p WHERE product_name LIKE '%" + productName + "%'";
 		TypedQuery<Product> query = em.createQuery(SQL, Product.class);
 		//query.setParameter("searchString", "%" + productName + "%");
 		List<Product> resultList = query.getResultList();
-		return resultList;
+		List<ProductRepresentation> products = new ArrayList<ProductRepresentation>();
+		for(Product p:resultList) {
+			products.add(this.mapProductRepresentation(p));
+		}
+		return products;
 	}
 
 
@@ -118,17 +123,23 @@ public class ProductActivityImpl implements ProductCustomActivity {
 	
 	@Override
 	@Transactional
-	public Integer addProduct(Product product) {
+	public String addProduct(Product product) {
+		Integer count = 0;
+		String message = "";
 		String SQL = "INSERT INTO product (product_name, product_description, product_type, product_quantity, product_price,vendor_id) VALUES ('" +
 				product.getName() + "', '" + product.getDescription() + "', '" + product.getType() + "', " +
 				product.getQuantity() + ", " + product.getPrice() + ", " + product.getVendor()+ ")";
-		Query query = em.createNativeQuery(SQL);
-		Integer count = query.executeUpdate();
+		try {
+			Query query = em.createNativeQuery(SQL);
+			count = query.executeUpdate();
+		} catch(Exception e) {
+			message = e.getMessage();
+		}
+		
 		if (count == 1)
-			System.out.println("product inserted successfully");
+			return "Product Added Successfully";
 		else
-			System.out.println("ERROR!!! Check logs/database");
-		return count;
+			return message;
 	}
 
 	@Override
@@ -144,4 +155,14 @@ public class ProductActivityImpl implements ProductCustomActivity {
 		return count;
 	}
 
+	@Override
+	public ProductRepresentation mapProductRepresentation(Product product) {
+		ProductRepresentation productRepresentation = new ProductRepresentation();
+		productRepresentation.setName(product.getName());
+		productRepresentation.setPrice(product.getPrice());
+		productRepresentation.setQuantity(product.getQuantity());
+		productRepresentation.setType(product.getType());
+		return productRepresentation;
+	}
+	
 }
