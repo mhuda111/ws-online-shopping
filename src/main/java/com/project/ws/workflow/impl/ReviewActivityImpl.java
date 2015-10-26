@@ -64,4 +64,16 @@ public class ReviewActivityImpl implements ReviewCustomActivity {
 		return avgRating;
 	}
 
+	@Override
+	@Transactional
+	public Integer deleteReview(Integer reviewId) {
+		String SQL = "DELETE from review where review_id = " + reviewId ;
+		Integer count = em.createNativeQuery(SQL).executeUpdate();
+		if (count == 1) 
+			System.out.println("DELETE successfully");
+		else
+			System.out.println("ERROR!!! Check logs/database");
+		return count;
+	}
+
 }

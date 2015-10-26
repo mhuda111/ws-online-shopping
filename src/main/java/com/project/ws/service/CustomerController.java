@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,6 +55,20 @@ public class CustomerController {
 			return "Successfully added the customer " + firstName;
 		}
 		else return "Failed to add";
+    }
+	
+	@RequestMapping(value = "/customer/deleteCustomer/{id}", method = RequestMethod.DELETE)
+    public @ResponseBody String deleteCustomer(@PathVariable String id) {
+		int customerId = Integer.parseInt(id);
+		try {
+			int noOfDeletedRow = customerActivity.deleteCustomer(customerId);
+			if (noOfDeletedRow > 0) {
+				return "Deleted Successfully";
+			}
+		} catch (Exception ex) {
+			return "ERROR!";
+		}
+		return "No rows found to delete";
     }
 	
 	@RequestMapping("/customer/updateCustomer")

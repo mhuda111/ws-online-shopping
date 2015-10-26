@@ -8,6 +8,7 @@ public interface ReviewCustomActivity {
 	public Integer addReview(Review review);
 	public Double getAvgRatingProduct(Integer productId);
 	public Double getAvgRatingVendor(Integer vendorId);
+	public Integer deleteReview(Integer reviewId);
 
 }
 
