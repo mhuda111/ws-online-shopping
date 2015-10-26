@@ -118,4 +118,19 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 		return customerRepresentation;
 	}
 
+	@Override
+	@Transactional
+	public Integer deleteCustomer(Integer customerId) {
+		String SQL = "DELETE from customer where cust_id = " + customerId ;
+		Integer count = em.createNativeQuery(SQL).executeUpdate();
+		if (count == 1) 
+			System.out.println("DELETE successfully");
+		else
+			System.out.println("ERROR!!! Check logs/database");
+		return count;
+	}
+	
+
+	
+
 }
