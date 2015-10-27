@@ -100,9 +100,17 @@ public class VendorActivityImpl implements VendorCustomActivity {
 			return "notified";
 		}
 
-
-
-
+		@Override
+		@Transactional 
+		public Integer deleteVendor(Integer vendorId) {
+			String SQL = "DELETE from vendor where vendor_id = " + vendorId ;
+			Integer count = em.createNativeQuery(SQL).executeUpdate();
+			if (count == 1) 
+				System.out.println("DELETE successfully");
+			else
+				System.out.println("ERROR!!! Check logs/database");
+			return count;
+		}
 
 
 }

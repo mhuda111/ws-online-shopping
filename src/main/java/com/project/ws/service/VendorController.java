@@ -3,7 +3,10 @@ package com.project.ws.service;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Vendor;
@@ -41,6 +44,21 @@ public class VendorController {
 		}
 		return "Failed";
 	}
+	
+	
+	@RequestMapping(value = "/vendor/deleteVendor/{id}", method = RequestMethod.DELETE)
+    public @ResponseBody String deleteCustomer(@PathVariable String id) {
+		int vendorId = Integer.parseInt(id);
+		try {
+			int noOfDeletedRow = vendorRepository.deleteVendor(vendorId);  
+			if (noOfDeletedRow > 0) {
+				return "Deleted Successfully";
+			}
+		} catch (Exception ex) {
+			return "ERROR!";
+		}
+		return "No rows found to delete";
+    }
 
 
 //	@RequestMapping("/vendor/settleSelletAccount/")

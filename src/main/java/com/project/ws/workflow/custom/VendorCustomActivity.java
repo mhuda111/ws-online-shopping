@@ -9,5 +9,6 @@ public interface VendorCustomActivity {
 	public Integer updateAddress(Vendor vendor);
 	public Integer settleAccount(Integer vendorId, Double amount, String paymentType);
 	public String notifyVendor(Integer vendorId);
+	public Integer deleteVendor(Integer vendorId);
 
 }
