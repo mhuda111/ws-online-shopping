@@ -44,13 +44,13 @@ public class VendorController {
 		}
 		return "Failed";
 	}
-	
-	
+
+
 	@RequestMapping(value = "/vendor/deleteVendor/{id}", method = RequestMethod.DELETE)
     public @ResponseBody String deleteCustomer(@PathVariable String id) {
 		int vendorId = Integer.parseInt(id);
 		try {
-			int noOfDeletedRow = vendorRepository.deleteVendor(vendorId);  
+			int noOfDeletedRow = vendorRepository.deleteVendor(vendorId);
 			if (noOfDeletedRow > 0) {
 				return "Deleted Successfully";
 			}
@@ -73,19 +73,46 @@ public class VendorController {
 		else return "Failed to Update Status";
 	}
 
+	@RequestMapping("/vendor/updateAddress")
+    public String updateAddress(HttpServletRequest request) {
+		String vendor_addr_line1 = request.getParameter("vendor_addr_line1");
+		String vendor_addr_line2 = request.getParameter("vendor_addr_line2");
+		String vendor_city = request.getParameter("vendor_city");
+		String vendorState = request.getParameter("state");
+		String vendor_zip_code = request.getParameter("vendor_zip_code");
+		String vendor_country = request.getParameter("vendorCountry");
+		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
+
+		Vendor vendor = new Vendor();
+		vendor.setVendorAddrLine1(vendor_addr_line1);
+		vendor.setVendorAddrLine2(vendor_addr_line2);
+		vendor.setVendorCity(vendor_city);
+		vendor.setVendorState(vendorState);
+		vendor.setVendorZipCode(vendor_zip_code);
+		vendor.setVendorCountry(vendor_country);
+		vendor.setVendorId(vendorId);
+
+		int updateVendorAddress = vendorRepository.updateAddress(vendor);
+		if (updateVendorAddress>0) {
+			return "Successful update vendor address";
+		}
+		else return "Denied";
+		//return customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
+    }
 
 
 
-//	@RequestMapping("/vendor/settleSelletAccount/")
-//	public String settleAccount(HttpServletRequest request) {
-//		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
-//		Double amount = Double.parseDouble(request.getParameter("amount"));
-//		int vendorSettled = vendorRepository.settleAccount(vendorId,amount);
-//		if (vendorSettled > 0) {
-//			return "Successfully settle vendor account ";
-//		}
-//		return "Failed";
-//	}
+	@RequestMapping("/vendor/settleAccount/")
+	public String settleAccount(HttpServletRequest request) {
+		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
+		Double amount = Double.parseDouble(request.getParameter("amount"));
+		String paymentType = request.getParameter("paymentType");
+		int vendorSettled = vendorRepository.settleAccount(vendorId,amount, paymentType);
+		if (vendorSettled > 0) {
+			return "Successfully settle vendor account ";
+		}
+		return "Failed";
+	}
 
 
 

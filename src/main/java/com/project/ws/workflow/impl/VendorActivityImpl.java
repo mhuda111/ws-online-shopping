@@ -73,15 +73,15 @@ public class VendorActivityImpl implements VendorCustomActivity {
 		public Integer settleAccount(Integer vendorId, Double amount, String paymentType) {
 			String SQL = "select v from Vendor v where vendor_id = " + vendorId;
 			TypedQuery<Vendor> query = em.createQuery(SQL, Vendor.class);
-			Vendor vendor = query.getSingleResult(); 
-			
+			Vendor vendor = query.getSingleResult();
+
 			Double oldAmount = vendor.getVendorAmount();
 			Double newAmount = 0.00;
 			if(paymentType.equals("credit"))
 				newAmount = oldAmount + amount;
 			else if(paymentType.equals("debit"))
 				newAmount = oldAmount - amount;
-			
+
 			SQL = "update vendor set amount_paid = " + newAmount + " where vendor_id = " + vendorId;
 			Query nativeQuery = em.createNativeQuery(SQL);
 
@@ -101,16 +101,18 @@ public class VendorActivityImpl implements VendorCustomActivity {
 		}
 
 		@Override
-		@Transactional 
+		@Transactional
 		public Integer deleteVendor(Integer vendorId) {
 			String SQL = "DELETE from vendor where vendor_id = " + vendorId ;
 			Integer count = em.createNativeQuery(SQL).executeUpdate();
-			if (count == 1) 
+			if (count == 1)
 				System.out.println("DELETE successfully");
 			else
 				System.out.println("ERROR!!! Check logs/database");
 			return count;
 		}
+
+
 
 
 }
