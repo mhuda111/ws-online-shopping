@@ -60,6 +60,21 @@ public class VendorController {
 		return "No rows found to delete";
     }
 
+	@RequestMapping("/vendor/updateVendorStatus/")
+	 public String changeStatus(HttpServletRequest request) {
+		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
+		String flag = request.getParameter("flag");
+
+		//char flag = request.getParameter("flag");
+		int vendorrUpdate = vendorRepository.changeStatus(vendorId, flag);
+		if (vendorrUpdate > 0) {
+			return "Status updated successfully" ;
+		}
+		else return "Failed to Update Status";
+	}
+
+
+
 
 //	@RequestMapping("/vendor/settleSelletAccount/")
 //	public String settleAccount(HttpServletRequest request) {
@@ -71,6 +86,7 @@ public class VendorController {
 //		}
 //		return "Failed";
 //	}
+
 
 
 }
