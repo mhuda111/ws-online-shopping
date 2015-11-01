@@ -13,36 +13,43 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.ws.domain.Order;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.CustomerRepresentation;
+import com.project.ws.representation.CustAddrRepresentation;
 import com.project.ws.representation.CustomerRequest;
+import com.project.ws.representation.AddressRequest;
 import com.project.ws.representation.OrderRepresentation;
 import com.project.ws.representation.OrderRequest;
 import com.project.ws.representation.ProductRepresentation;
+import com.project.ws.representation.VendorRepresentation;
+import com.project.ws.representation.VendorRequest;
 
 
 @EnableAutoConfiguration
 @Configuration
-@ComponentScan
-@PropertySource("classpath:application.properties")
 @SpringBootApplication
+@PropertySource("classpath:application.properties")
 public class Application {
 	
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 	
-    private static final String baseUrl = "http://localhost:8080";
+    private static final String baseUrl = "http://localhost:8080/";
     private static String finalUrl;
 	 
     public static void main(String[] args) {
     	SpringApplication.run(Application.class, args);
 //    	testCustomerService();
 //    	testOrderService();
-    	testProductService();
+//    	testProductService();
 //    	testVendorService();
+    	testCustomerAddressService();
     }
     
     public static void testCustomerService() {
@@ -59,13 +66,12 @@ public class Application {
     	 */
     	finalUrl = baseUrl + "/customer/addCustomer";
     	CustomerRequest customerRequest = new CustomerRequest("Bradley", "Cooper", "bradley.cooper@email.com");
+    	customerResponse = restTemplate.postForEntity(finalUrl, customerRequest, CustomerRepresentation.class);
+        displayStats(customerResponse, "POST to add a new Customer");
     	
-    	stringResponse = restTemplate.postForEntity(finalUrl, customerRequest, String.class);
-        displayStats(stringResponse, "POST to add a new Customer");
-    	/*
-    	 * GET for Customer by First Letter of First Name
+        /*
+    	 * GET for Customer by First Name
     	 */
-        //finalUrl = baseUrl + "/customer/firstName/{fname}";
         finalUrl = baseUrl + "/customer/firstName/?fname={fname}";
     	params = new HashMap<String, Object>();
     	params.put("fname", (String) "Bradley");
@@ -84,6 +90,11 @@ public class Application {
     	
     	customerResponse = restTemplate.getForEntity(finalUrl, CustomerRepresentation.class, params);
         displayStats(customerResponse, "GET all customers using first name");
+        
+        params = new HashMap<String, Object>();
+        params.put("customerId", (Integer) id);
+        
+        //restTemplate.delete(finalUrl, params); 
         
     }
     
@@ -176,7 +187,111 @@ public class Application {
 
     }
     
-    public static void testVendorService() {}
+    public static void testVendorService() {
+       	/*
+    	 * Declare variables
+    	 */
+    	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<VendorRepresentation> vendorResponse;
+    	VendorRequest vendorRequest = new VendorRequest();
+    	Map<String, Object> params;
+    	/*
+    	 * Processing for GET vendor by Id
+    	 */
+		finalUrl = baseUrl + "vendor/?vendorId={vendorId}";
+		params = new HashMap<String, Object>();
+		params.put("vendorId", (Integer) 10000025);
+		log.info("url is" + finalUrl);
+        vendorResponse = restTemplate.getForEntity(finalUrl, VendorRepresentation.class, params);
+        displayStats(vendorResponse, "GET vendors by Id");
+        
+    	/*
+    	 * Processing for GET vendor by name
+    	 */
+		finalUrl = baseUrl + "vendor/?vendorName={vendorName}";
+		params = new HashMap<String, Object>();
+		params.put("vendorName", (String) "SELF");
+		
+        vendorResponse = restTemplate.getForEntity(finalUrl, VendorRepresentation.class, params);
+        displayStats(vendorResponse, "GET vendor by name");
+    	
+        /*
+    	 * Processing for POST vendor to add new
+    	 */
+		finalUrl = baseUrl + "vendor/addVendor/";
+		vendorRequest.setVendorName("NEW Test Vendor");
+		vendorRequest.setVendorAddrLine1("111 E Pearson St");
+		vendorRequest.setVendorCity("Chicago");
+		vendorRequest.setVendorCountry("USA");
+		vendorRequest.setVendorState("IL");
+		vendorRequest.setVendorZipCode("60601");
+		
+        vendorResponse = restTemplate.postForEntity(finalUrl, vendorRequest, VendorRepresentation.class);
+        displayStats(vendorResponse, "GET vendors by name");
+        
+    	/*
+    	 * Processing for PUT to update vendor Name
+    	 */
+		finalUrl = baseUrl + "vendor/?vendorId={vendorId}&vendorName={vendorName}";
+		params = new HashMap<String, Object>();
+		params.put("vendorId", (Integer)10000025);
+		params.put("vendorName", "Self Vendor");
+		vendorResponse = restTemplate.exchange(finalUrl, HttpMethod.PUT, null, VendorRepresentation.class, params);
+        displayStats(vendorResponse, "PUT update vendor name");
+        
+    }
+    
+    public static void testCustomerAddressService() {
+       	/*
+    	 * Declare variables
+    	 */
+    	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<CustAddrRepresentation> addrResponse;
+    	ResponseEntity<String> stringResponse;
+    	ResponseEntity<CustAddrRepresentation[]> addrListResponse;
+    	AddressRequest addrRequest = new AddressRequest();
+    	Map<String, Object> params;
+    	
+    	/*
+    	 * Processing for GET vendor by Id
+    	 */
+		finalUrl = baseUrl + "customeraddress/?customerId={customerId}";
+		params = new HashMap<String, Object>();
+		params.put("customerId", (Integer) 10000174);
+		addrListResponse = restTemplate.getForEntity(finalUrl, CustAddrRepresentation[].class, params);
+        displayStats(addrListResponse, "GET customer address by customer Id");
+
+    	/*
+    	 * Processing for POST to add customerAddress
+    	 */
+		finalUrl = baseUrl + "customeraddress/add/";
+		addrRequest.setCustomerId(10000174);
+		addrRequest.setAddrLine1("My new address");
+		addrRequest.setCity("imagine");
+		addrRequest.setState("GS");
+		addrRequest.setZipCode("99999");
+		
+		stringResponse = restTemplate.postForEntity(finalUrl, addrRequest, String.class);
+        displayStats(stringResponse, "POST to add new customer address");
+        
+    	/*
+    	 * Processing for PUT to update customerAddress
+    	 */
+        
+		finalUrl = baseUrl + "customeraddress/update/";
+		
+		addrRequest.setCustomerId(10000174);
+		addrRequest.setAddrId(10000022);
+		addrRequest.setAddrLine1("My new address");
+		addrRequest.setAddrLine2("IS FAKE");
+		addrRequest.setCity("imagine");
+		addrRequest.setState("GS");
+		addrRequest.setZipCode("99999");
+		
+		HttpEntity<AddressRequest> addrEntity = new HttpEntity<AddressRequest>(addrRequest);
+		addrResponse = restTemplate.exchange(finalUrl, HttpMethod.PUT, addrEntity, CustAddrRepresentation.class);
+        displayStats(addrResponse, "PUT to update existing customer address");
+    }
     
     public static void displayStats(ResponseEntity<?> response, String message) {
         System.out.println("----" + message + "-------------------------------------------------------------");

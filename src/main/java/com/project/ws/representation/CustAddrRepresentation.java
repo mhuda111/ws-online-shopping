@@ -5,19 +5,26 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @XmlRootElement(name = "CustomerAddress")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
+@Component
 public class CustAddrRepresentation {
 	
 	private Integer customerId;
+	@JsonIgnore
+	private Integer addrId;
 	private String custAddrLine1;	
 	private String custAddrLine2;
 	private String custCity;
 	private String custState;
 	private String custZipCode;
-	private String custPhone;
+	private String message;
 	
 	//default constructor
 	
@@ -27,19 +34,16 @@ public class CustAddrRepresentation {
 		this.custCity = "";
 		this.custState = "";
 		this.custZipCode = "";
-		this.custPhone = "";
+		this.message = "Operation Successful";
+	}	
+
+	public void setAddrId(Integer addrId) {
+		this.addrId = addrId;
 	}
 	
-	public CustAddrRepresentation(Integer customerId, String addr1, String addr2, String city, String state, String zip, String phone) {
-		this.customerId = customerId;
-		this.custAddrLine1 = addr1;
-		this.custAddrLine2 = addr2;
-		this.custCity = city;
-		this.custState = state;
-		this.custZipCode = zip;
-		this.custPhone = phone;
+	public Integer getAddrId() {
+		return this.addrId;
 	}
-	
 	
 	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
@@ -79,11 +83,12 @@ public class CustAddrRepresentation {
 	public void setCustZipCode(String custZipCode) {
 		this.custZipCode = custZipCode;
 	}
-	public String getCustPhone() {
-		return custPhone;
+	public void setMessage(String message) {
+		this.message = message;
 	}
-	public void setCustPhone(String custPhone) {
-		this.custPhone = custPhone;
+	public String getMessage() {
+		return this.message;
 	}
+
 }
 

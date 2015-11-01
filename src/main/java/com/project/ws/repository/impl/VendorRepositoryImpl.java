@@ -1,5 +1,5 @@
 
-package com.project.ws.workflow.impl;
+package com.project.ws.repository.impl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -8,9 +8,9 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.Vendor;
-import com.project.ws.workflow.custom.VendorCustomActivity;
+import com.project.ws.repository.custom.VendorCustomRepository;
 
-public class VendorActivityImpl implements VendorCustomActivity {
+public class VendorRepositoryImpl implements VendorCustomRepository {
 
 		/**
 		 * This EntityManager attribute is used to create the database queries
@@ -29,7 +29,7 @@ public class VendorActivityImpl implements VendorCustomActivity {
 		@Transactional
 		public Integer addVendor(Vendor vendor) {
 			//insert data in order_details
-			String SQL = "INSERT INTO vendor (vendor_name, vendor_addrline1, vendor_addrline2, vendor_city, vendor_state, vendor_zip_code, vendor_country) VALUES('" +
+			String SQL = "INSERT INTO vendor (vendor_name, vendor_addr_line1, vendor_addr_line2, vendor_city, vendor_state, vendor_zip_code, vendor_country) VALUES('" +
 						vendor.getVendorName() + "', '" + vendor.getVendorAddrLine1() + "', '" + vendor.getVendorAddrLine2() + "', '" +
 						vendor.getVendorCity() + "', '" + vendor.getVendorState() + "', '" + vendor.getVendorZipCode() + "', '" + vendor.getVendorCountry() + "')";
 
@@ -43,11 +43,23 @@ public class VendorActivityImpl implements VendorCustomActivity {
 
 		@Override
 		@Transactional
-		public Integer changeStatus(Integer vendorId, String flag) {
+		public Integer updateStatus(Integer vendorId, String flag) {
 			String SQL = "update vendor set active_flag = '" + flag + "' where vendor_id = " + vendorId;
 			Integer count = em.createNativeQuery(SQL).executeUpdate();
 			if (count == 1)
-				System.out.println("order shipped successfully");
+				System.out.println("Vendor made inactive");
+			else
+				System.out.println("ERROR!!! Check logs/database");
+			return count;
+		}
+		
+		@Override
+		@Transactional
+		public Integer updatePayment(Integer vendorId, Double amount) {
+			String SQL = "update vendor set amount_paid = '" + amount + "' where vendor_id = " + vendorId;
+			Integer count = em.createNativeQuery(SQL).executeUpdate();
+			if (count == 1)
+				System.out.println("Amount Settled");
 			else
 				System.out.println("ERROR!!! Check logs/database");
 			return count;
@@ -70,39 +82,21 @@ public class VendorActivityImpl implements VendorCustomActivity {
 
 		@Override
 		@Transactional
-		public Integer settleAccount(Integer vendorId, Double amount, String paymentType) {
-			String SQL = "select v from Vendor v where vendor_id = " + vendorId;
-			TypedQuery<Vendor> query = em.createQuery(SQL, Vendor.class);
-			Vendor vendor = query.getSingleResult(); 
-			
-			Double oldAmount = vendor.getVendorAmount();
-			Double newAmount = 0.00;
-			if(paymentType.equals("credit"))
-				newAmount = oldAmount + amount;
-			else if(paymentType.equals("debit"))
-				newAmount = oldAmount - amount;
-			
-			SQL = "update vendor set amount_paid = " + newAmount + " where vendor_id = " + vendorId;
-			Query nativeQuery = em.createNativeQuery(SQL);
-
-			Integer count = nativeQuery.executeUpdate();
+		public Vendor updateVendorName(Integer vendorId, String name) {
+			String SQL = "update vendor set vendor_name = '" + name + "' where vendor_id = " + vendorId;
+			Integer count = em.createNativeQuery(SQL).executeUpdate();
 			if (count == 1)
-				System.out.println("vendor amount settled successfully");
+				System.out.println("Vendor Name updated successfully");
 			else
 				System.out.println("ERROR!!! Check logs/database");
-			return count;
+			return em.find(Vendor.class, vendorId);
 		}
-
+		
 		@Override
-		@Transactional
-		public String notifyVendor(Integer vendorId) {
-			System.out.println("There is an order for product.Please check");
-			return "notified";
+		public void deleteVendor(Integer vendorId) {
+			Vendor vendor = em.find(Vendor.class, vendorId);
+			em.remove(vendor);
 		}
-
-
-
-
 
 
 }

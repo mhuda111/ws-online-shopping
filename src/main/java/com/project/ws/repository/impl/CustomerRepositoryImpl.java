@@ -1,4 +1,4 @@
-package com.project.ws.workflow.impl;
+package com.project.ws.repository.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +9,13 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.Customer;
+import com.project.ws.repository.custom.CustomerCustomRepository;
 import com.project.ws.representation.CustomerRepresentation;
-import com.project.ws.workflow.custom.CustomerCustomActivity;
 
 /**
  * This is the implementation class of the customer custom repository interface.
  */
-public class CustomerActivityImpl implements CustomerCustomActivity {
+public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	
 	/**
 	 * This EntityManager attribute is used to create the database queries 
@@ -31,15 +31,11 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 	 * Doing queries from database and mapped the results to the list of customer object.
 	 */
 	@Override
-	public List<CustomerRepresentation> getCustomersByNamesFirstLetter(String letter) {
+	public List<Customer> getCustomersByNamesFirstLetter(String letter) {
 		TypedQuery<Customer> query = em.createQuery("SELECT c FROM Customer c where upper(cust_firstname) LIKE :nameVar", Customer.class);
 		query.setParameter("nameVar", letter + "%");
 		List<Customer> resultList = query.getResultList();
-		List<CustomerRepresentation> customerList = new ArrayList<CustomerRepresentation>();
-		for(Customer c:resultList) {
-			customerList.add(this.mapRepresentation(c));
-		}
-		return customerList;
+		return resultList;
 	}
 
 	@Override
@@ -54,6 +50,15 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 			System.out.println("ERROR!!! Check logs/database");
 		return count;
 	}
+	
+//	@Override
+//	@Transactional
+//	public Customer addCustomer(Customer customer) {
+//		em.persist(customer);
+//		Customer newCustomer = em.find(Customer.class, customer.getCustId());
+//		return newCustomer;
+//	}
+
 	
 	@Override
 	@Transactional
@@ -104,20 +109,6 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 		return count;
 	}
 	
-	@Override
-	public void notifyCustomer(Integer customerId) {
-
-	}
-	
-	@Override
-	public CustomerRepresentation mapRepresentation(Customer customer) {
-		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
-		customerRepresentation.setCustFirstname(customer.getCustFirstname());
-		customerRepresentation.setCustLastName(customer.getCustLastName());
-		customerRepresentation.setCustEmail(customer.getCustEmail());
-		customerRepresentation.setCustId(customer.getCustId());
-		return customerRepresentation;
-	}
 
 	@Override
 	@Transactional
@@ -130,8 +121,5 @@ public class CustomerActivityImpl implements CustomerCustomActivity {
 			System.out.println("ERROR!!! Check logs/database");
 		return count;
 	}
-	
-
-	
 
 }

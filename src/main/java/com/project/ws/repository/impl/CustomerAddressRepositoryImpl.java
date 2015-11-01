@@ -1,4 +1,4 @@
-package com.project.ws.workflow.impl;
+package com.project.ws.repository.impl;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.CustomerAddress;
-import com.project.ws.workflow.custom.CustomerAddressCustomActivity;
+import com.project.ws.repository.custom.CustomerAddressCustomRepository;
 
-public class CustomerAddressActivityImpl implements CustomerAddressCustomActivity {
+public class CustomerAddressRepositoryImpl implements CustomerAddressCustomRepository {
 	
 		
 		/**
@@ -36,27 +36,30 @@ public class CustomerAddressActivityImpl implements CustomerAddressCustomActivit
 		
 		@Override
 		@Transactional
-		public Integer addCustomerAddress(Integer customerId, CustomerAddress customerAddress) {
-			String SQL = "INSERT INTO customer_address (cust_id, cust_addr_line1, cust_addr_line2, cust_city, cust_state, cust_zip_code, cust_phone) VALUES(" +
-					customerId + ", '" + customerAddress.getCustAddrLine1() + "', '" + customerAddress.getCustAddrLine2() + "', '" + customerAddress.getCustCity() + 
-					"', '" + customerAddress.getCustState() + "', '" + customerAddress.getCustZipCode() + "'," + customerAddress.getCustPhone() + ")";
-			
-			Integer count = em.createNativeQuery(SQL).executeUpdate();
+		public Integer addCustomerAddress(CustomerAddress customerAddress) {
+			Integer count = 0;
+			String SQL = "INSERT INTO customer_address (cust_id, cust_addr_line1, cust_addr_line2, cust_city, cust_state, cust_zip_code) VALUES(" +
+					customerAddress.getCustomerId() + ", '" + customerAddress.getCustAddrLine1() + "', '" + customerAddress.getCustAddrLine2() + "', '" + customerAddress.getCustCity() + 
+					"', '" + customerAddress.getCustState() + "', '" + customerAddress.getCustZipCode() + "')";
+			try {
+				count = em.createNativeQuery(SQL).executeUpdate();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
 			if (count == 1) 
 				System.out.println("address added successfully");
 			else
 				System.out.println("ERROR!!! Check logs/database");
 			return count;
-
 		}
 		
 		@Override
 		@Transactional
-		public Integer updateCustomerAddress(Integer customerId, CustomerAddress customerAddress) {
+		public Integer updateCustomerAddress(CustomerAddress customerAddress) {
 			String SQL="update customer_address set cust_addr_line1 = '" + customerAddress.getCustAddrLine1() + "', cust_addr_line2 = '" +
 					customerAddress.getCustAddrLine2() + "', cust_city = '" + customerAddress.getCustCity() + "', cust_state = '" +
-					customerAddress.getCustState() + "', cust_zip_code = '" + customerAddress.getCustZipCode() + "' where cust_id = " + 
-					customerId;
+					customerAddress.getCustState() + "', cust_zip_code = '" + customerAddress.getCustZipCode() + "' where cust_addr_id = " + 
+					customerAddress.getCustAddrId();
 			Integer count = em.createNativeQuery(SQL).executeUpdate();
 			if (count == 1) 
 				System.out.println("address updated successfully");
@@ -76,5 +79,4 @@ public class CustomerAddressActivityImpl implements CustomerAddressCustomActivit
 				System.out.println("ERROR!!! Check logs/database");
 			return count;
 		}
-		
 }

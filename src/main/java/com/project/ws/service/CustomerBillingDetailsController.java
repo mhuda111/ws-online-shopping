@@ -1,47 +1,55 @@
 package com.project.ws.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.ws.repository.CustomerBillingRepository;
+import com.project.ws.representation.BillingRequest;
+import com.project.ws.representation.CustBillingRepresentation;
 import com.project.ws.workflow.CustomerBillingActivity;
 
 @RestController
 public class CustomerBillingDetailsController {
 
 	@Autowired
-    private CustomerBillingActivity customerBillingsRepository;
+    private CustomerBillingActivity billActivity;
+	
+	@Autowired
+	CustBillingRepresentation billRepresentation;
+	
+	@Autowired
+	BillingRequest billRequest;
 
-	@RequestMapping("/billing/chargeCard")
-    public String chargeCard(HttpServletRequest request) {
-		int idcustomerId = Integer.parseInt(request.getParameter("customerId"));
-		int billId = Integer.parseInt(request.getParameter("billId"));
+	@RequestMapping(value="/billing/processPayment", method=RequestMethod.PUT)
+    public CustBillingRepresentation processPayment(HttpServletRequest request) {
+		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		Integer billId = Integer.parseInt(request.getParameter("billId"));
 		Double amount = Double.parseDouble(request.getParameter("amount"));
-		int card = customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
-		if (card>0) {
-			return "Successfully charged " + amount;
-		}
-		else return "Denied";
-		//return customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
+		String type = request.getParameter("type");
+		billRepresentation = billActivity.processPayment(customerId, billId, amount, type);
+		return billRepresentation;
     }
 
-	@RequestMapping("/billing/updateAddress")
-    public String updateBillingAddress(HttpServletRequest request) {
-		int customerId = Integer.parseInt(request.getParameter("customerId"));
-		String addrLine1 = request.getParameter("addrLine1");
-		String addrLine2 = request.getParameter("addrLine2");
-		String city = request.getParameter("city");
-		String state = request.getParameter("state");
-		String zip = request.getParameter("zip");
-
-		int updateBill = customerBillingsRepository.updateBillingAddress(customerId, addrLine1, addrLine2,city,state,zip);
-		if (updateBill>0) {
-			return "Successful update billing address";
-		}
-		else return "Denied";
-		//return customerBillingsRepository.chargeCard(idcustomerId, billId, amount);
+	@RequestMapping(value="/billing/", method=RequestMethod.GET)
+    public List<CustBillingRepresentation> getBillingInfo(HttpServletRequest request) {
+		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		List<CustBillingRepresentation> billList = new ArrayList<CustBillingRepresentation>();
+		billList = billActivity.getBillingDetails(customerId);
+		return billList;
+    }
+	
+	@RequestMapping(value="/billing/", method=RequestMethod.POST)
+    public CustBillingRepresentation getBillingInfo(@RequestBody BillingRequest request) {
+		billRepresentation = billActivity.addBillingDetails(request);
+		return billRepresentation;
     }
 
 }

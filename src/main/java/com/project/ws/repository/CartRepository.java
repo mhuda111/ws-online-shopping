@@ -1,11 +1,11 @@
-package com.project.ws.workflow;
+package com.project.ws.repository;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
 import com.project.ws.domain.Cart;
-import com.project.ws.workflow.custom.CartCustomRepository;
+import com.project.ws.repository.custom.CartCustomRepository;
 
 public interface CartRepository extends CrudRepository<Cart, Long>, CartCustomRepository{
 	

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Product;
+import com.project.ws.repository.ProductRepository;
 import com.project.ws.representation.ProductRepresentation;
-import com.project.ws.workflow.ProductActivity;
 
 /**
  * This is customer spring controller which has methods
@@ -21,7 +21,7 @@ import com.project.ws.workflow.ProductActivity;
 public class ProductController {
 
 	@Autowired
-    private ProductActivity productActivity;
+    private ProductRepository productActivity;
 
 	@RequestMapping("/product")
     public List<ProductRepresentation> getAllProducts(HttpServletRequest request) {

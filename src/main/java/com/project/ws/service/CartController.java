@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Cart;
-import com.project.ws.workflow.CartRepository;
+import com.project.ws.repository.CartRepository;
 
 @RestController
 public class CartController {

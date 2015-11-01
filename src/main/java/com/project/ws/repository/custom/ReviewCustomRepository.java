@@ -1,9 +1,9 @@
 
-package com.project.ws.workflow.custom;
+package com.project.ws.repository.custom;
 
 import com.project.ws.domain.Review;
 
-public interface ReviewCustomActivity {
+public interface ReviewCustomRepository {
 
 	public Integer addReview(Review review);
 	public Double getAvgRatingProduct(Integer productId);

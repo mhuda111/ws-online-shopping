@@ -5,9 +5,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.springframework.stereotype.Component;
+
 @XmlRootElement(name = "Vendor")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
+@Component
 public class VendorRepresentation {
 	
 	private String vendorName;

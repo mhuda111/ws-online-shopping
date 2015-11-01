@@ -1,99 +1,34 @@
-package com.project.ws.domain;
+package com.project.ws.representation;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.stereotype.Component;
 
-/**
- * Database entity for customer_billing_details table.
- * We used JPA annotations to map it with database table.
- */
-@XmlRootElement
-@Entity
-@Table(name="customer_billing_details")
 @Component
-public class CustomerBillingDetails implements Serializable {
+public class BillingRequest {
 	
-	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@GeneratedValue
-	@Column(name="cust_bill_id")
 	private Integer custBillId;
-	
-	@Column(name="cust_id")
 	private Integer customerId;
-	
-	@Column(name="card_no")
 	private String cardNo;
-	
-	@Column(name="card_type")
 	private String cardType;
-	
-	@Column(name="cvv")
 	private String cvv;
-	
-	@Column(name="card_name")
 	private String cardName;
-	
-	@Column(name="card_expiry")
 	private Date cardExpiry;
-	
-	@Column(name="bill_addr_line1")
 	private String billAddrLine1;
-	
-	@Column(name="bill_addr_line2")
 	private String billAddrLine2;
-	
-	@Column(name="bill_city")
 	private String billCity;
-	
-	@Column(name="bill_state")
 	private String billState;
-	
-	@Column(name="bill_zip_code")
 	private String billZipCode;
-	
-	@Column(name="amount_charged")
-	private Double amountCharged;
 	
 	//default constructor
 	
-	public CustomerBillingDetails() {
-		this.cardNo = "";
-		this.cardType = "";
-		this.cvv = "";
-		this.cardName = "";
-		this.billAddrLine1 = "";
-		this.billAddrLine2 = "";
-		this.billCity = "";
-		this.billState = "";
-		this.billZipCode = "";
-		this.amountCharged = 0.00;
+	public BillingRequest() {
 	}
 	
-	public CustomerBillingDetails(Integer customerId, String cardType, String cardNo, String cvv, Date expiry, String cardName, String addr1, String addr2, String city, String state, String zip) {
-		this.customerId = customerId;
-		this.cardType = cardType;
-		this.cardNo = cardNo;
-		this.cvv = cvv;
-		this.cardExpiry = expiry;
-		this.cardName = cardName;
-		this.billAddrLine1 = addr1;
-		this.billAddrLine2 = addr2;
-		this.billCity = city;
-		this.billState = state;
-		this.billZipCode = zip;
-		this.amountCharged = 0.00;
-	}
 	
 	//setters
 	
@@ -145,9 +80,6 @@ public class CustomerBillingDetails implements Serializable {
 		this.billZipCode = billZipCode;
 	}
 	
-	public void setAmountCharged(Double amountCharged) {
-		this.amountCharged = amountCharged;
-	}
 	
 	//getters
 	public Integer getCustomerId() {
@@ -196,9 +128,5 @@ public class CustomerBillingDetails implements Serializable {
 
 	public String getBillZipCode() {
 		return this.billZipCode;
-	}
-	
-	public Double getAmountCharged() {
-		return this.amountCharged;
 	}
 }

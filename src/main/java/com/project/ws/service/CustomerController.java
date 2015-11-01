@@ -1,19 +1,19 @@
 package com.project.ws.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.ClassUtils;
 
-import com.project.ws.domain.Customer;
 import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
 import com.project.ws.workflow.CustomerActivity;
@@ -26,117 +26,96 @@ import com.project.ws.workflow.CustomerActivity;
 public class CustomerController {
 	
 	@Autowired
-    private CustomerActivity customerActivity;
-	
-	/*
-	 * This expose "/customer/firstLetter/" end point and looks for a URL parameter "letter"
-	 * then gets customer information based on first name's first letter
-	 * of the customer
-	 */
-	@RequestMapping("/customer/firstLetter")
-    public @ResponseBody List<CustomerRepresentation> getCustomersFromFirstLetterOfName(HttpServletRequest request) {
-		String letter = request.getParameter("letter");
-    	return customerActivity.getCustomersByNamesFirstLetter(letter);
-    }
-	
-//	@RequestMapping(value="/customer/firstName/{fname}",method = RequestMethod.GET, consumes={"application/xml", "text/*", "application/xhtml+xml", "application/json", "application/html", "application/*+json"}, produces = {"text/html","application/json", "application/xml"})
-//    public @ResponseBody List<CustomerRepresentation> getCustomersByFirstName(@PathVariable("fname") String name) {
-//    	List<Customer> customer = customerActivity.findByCustFirstName(name);
-//    	List<CustomerRepresentation> customerRepresentation = new ArrayList<CustomerRepresentation>();
-//    	for(Customer c:customer) {
-//    		customerRepresentation.add(customerActivity.mapRepresentation(c));
-//    	}
-//    	return customerRepresentation;
-//    }
-	
+	CustomerActivity customerActivity;
+			
 	@RequestMapping("/customer/firstName/")
     public CustomerRepresentation getCustomersByFirstName(HttpServletRequest request) {
-//		System.out.println(request.getContentType());
-//		System.out.println(request.getHeader("Accept"));
 		String name = request.getParameter("fname");
-    	List<Customer> customer = customerActivity.findByCustFirstName(name);
-    	CustomerRepresentation customerRepresentation = customerActivity.mapRepresentation(customer.get(0));
+    	CustomerRepresentation customerRepresentation = customerActivity.getCustomersByFirstName(name);
+    	if(customerRepresentation == null) throw new ResourceNotFoundException();
     	return customerRepresentation;
     }
 
-	@RequestMapping("/customer/")
+	@RequestMapping(value="/customer/", method=RequestMethod.GET)
     public CustomerRepresentation getCustomerById(HttpServletRequest request) {
-    	Customer customer =  customerActivity.findByCustId(Integer.parseInt(request.getParameter("customerId")));
-    	return customerActivity.mapRepresentation(customer);
+    	CustomerRepresentation customerRepresentation =  customerActivity.getCustomerById(Integer.parseInt(request.getParameter("customerId")));
+    	return customerRepresentation;
     }
 	
-	@RequestMapping(value = "/customer/addCustomer", method = RequestMethod.POST, produces = {"application/json"})
-    public @ResponseBody String addCustomerWithInfo(@RequestBody CustomerRequest customerRequest) {
-		String firstName = customerRequest.getFirstName();
-		String lastName = customerRequest.getLastName();
-		String email = customerRequest.getEmail();
-		String password = customerRequest.getPassword();
-		int customerAdded = customerActivity.addCustomer(firstName, lastName, email, password);
-		if (customerAdded > 0) {
-			return "Successfully added the customer " + firstName;
-		}
-		else return "Failed to add";
-    }
-	
-	@RequestMapping(value = "/customer/deleteCustomer/{id}", method = RequestMethod.DELETE)
-    public @ResponseBody String deleteCustomer(@PathVariable String id) {
-		int customerId = Integer.parseInt(id);
+	@RequestMapping(value = "/customer/addCustomer", method=RequestMethod.POST)
+    public @ResponseBody CustomerRepresentation addCustomerWithInfo(@RequestBody CustomerRequest customerRequest) {
+		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
 		try {
-			int noOfDeletedRow = customerActivity.deleteCustomer(customerId);
-			if (noOfDeletedRow > 0) {
-				return "Deleted Successfully";
-			}
-		} catch (Exception ex) {
-			return "ERROR!";
+			 customerRepresentation = customerActivity.addCustomer(customerRequest);
+		} catch(RuntimeException e) {
+			System.out.println("error message " + e.getMessage());
+			throw new MethodNotAllowedException();
 		}
-		return "No rows found to delete";
+		return customerRepresentation;
     }
 	
-	@RequestMapping("/customer/updateCustomer")
-	 public String updateCustomerWithInfo(HttpServletRequest request) {
+	@RequestMapping(value="/customer/", method=RequestMethod.DELETE)
+    public @ResponseBody String deleteCustomer(HttpServletRequest request) {
+		String message;
+		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		try {
+			message = customerActivity.deleteCustomer(customerId);
+		} catch (RuntimeException e) {
+			System.out.println(e.getMessage());
+			message = "ERROR!";
+			throw new MethodNotAllowedException();
+		}
+		return message;
+    }
+	
+	@RequestMapping("/customer/updateName")
+	 public CustomerRepresentation updateCustomerWithInfo(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
-		int customerUpdate = customerActivity.updateName(customerId, firstName, lastName);
-		if (customerUpdate > 0) {
-			return "Successfully updated the customer " + firstName;
-		}
-		else return "Failed to Update";
+		CustomerRepresentation customerRepresentation = customerActivity.updateName(customerId, firstName, lastName);
+		return customerRepresentation;
 	}
 	
-	@RequestMapping("/customer/updateCustomerEmail/")
-	 public String updateEmail(HttpServletRequest request) {
+	@RequestMapping("/customer/updateEmail/")
+	 public CustomerRepresentation updateEmail(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String email = request.getParameter("email");
-		int customerUpdate = customerActivity.updateEmail(customerId, email);
-		if (customerUpdate > 0) {
-			return "Successfully updated the customer " ;
-		}
-		else return "Failed to Update";
-	}
-	
-	@RequestMapping("/customer/updateCustomerPassword/")
-	 public String updatePassword(HttpServletRequest request) {
-		int customerId = Integer.parseInt(request.getParameter("customerId"));
-		String password = request.getParameter("password");
-		int customerUpdate = customerActivity.updatePassword(customerId, password);
-		if (customerUpdate > 0) {
-			return "Successfully updated the password" ;
-		}
-		else return "Failed to Update password";
-	}
-	
-	@RequestMapping("/customer/updateCustomerStatus/")
-	 public String changeStatus(HttpServletRequest request) {
-		int customerId = Integer.parseInt(request.getParameter("customerId"));
-		char flag = request.getParameter("flag").charAt(0);
-		
-		//char flag = request.getParameter("flag");
-		int customerUpdate = customerActivity.changeStatus(customerId, flag);
-		if (customerUpdate > 0) {
-			return "Status updated successfully" ;
-		}
-		else return "Failed to Update Status";
+		CustomerRepresentation customerRepresentation = customerActivity.updateEmail(customerId, email);
+		return customerRepresentation;
 	}
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleResourceNotFoundException() {
+        return "Resource you are trying to access does not exist. Please check your link again";
+    }
+
+}
+
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+class ServerErrorException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
+
+	public ServerErrorException() {
+		super("Server is Not Responding Currently. Please try again later");
+	}
+}
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class PageNotFoundException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
+
+	public PageNotFoundException() {
+		super("The link you are trying to access does not exist. Please check it again");
+	}
+}
+
+@ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+class MethodNotAllowedException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
+
+	public MethodNotAllowedException() {
+		super("The method mapped via the url is not allowed. Please contact the System Administrator");
+	}
 }

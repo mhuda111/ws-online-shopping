@@ -56,6 +56,8 @@ public class Order implements Serializable {
 	@Column(name="cust_bill_id")
 	private Integer billId;
 
+	@Column(name="cust_addr_id")
+	private Integer addrId;
 	
 	public Order() {
 		
@@ -151,6 +153,14 @@ public class Order implements Serializable {
 	
 	public Integer getBillId() {
 		return this.billId;
+	}
+
+	public Integer getAddrId() {
+		return this.addrId;
+	}
+	
+	public void setAddrId(Integer addrId) {
+		this.addrId = addrId;
 	}
 	
 	@Override

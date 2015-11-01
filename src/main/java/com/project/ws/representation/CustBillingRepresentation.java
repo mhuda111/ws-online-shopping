@@ -6,50 +6,28 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.springframework.stereotype.Component;
+
 @XmlRootElement(name = "CustomerBillingDetails")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
+@Component
 public class CustBillingRepresentation {
 	
 	private Integer custBillId;
 	private Integer customerId;
 	private String cardNo;
 	private String cardType;
-	private String cardName;
-	private Date cardExpiry;
 	private String billAddrLine1;
 	private String billAddrLine2;
 	private String billCity;
 	private String billState;
 	private String billZipCode;
-	//default constructor
 	
 	public CustBillingRepresentation() {
-		this.cardNo = "";
-		this.cardType = "";
-		this.cardName = "";
-		this.billAddrLine1 = "";
-		this.billAddrLine2 = "";
-		this.billCity = "";
-		this.billState = "";
-		this.billZipCode = "";
-	}
-	
-	public CustBillingRepresentation(Integer customerId, String cardType, String cardNo, String cvv, Date expiry, String cardName, String addr1, String addr2, String city, String state, String zip) {
-		this.customerId = customerId;
-		this.cardType = cardType;
-		this.cardNo = cardNo;
-		this.cardExpiry = expiry;
-		this.cardName = cardName;
-		this.billAddrLine1 = addr1;
-		this.billAddrLine2 = addr2;
-		this.billCity = city;
-		this.billState = state;
-		this.billZipCode = zip;
 	}
 	
 	//setters
-	
 	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
 	}
@@ -66,13 +44,6 @@ public class CustBillingRepresentation {
 		this.cardType = cardType;
 	}
 	
-	public void setCardName(String cardName) {
-		this.cardName = cardName;
-	}
-	
-	public void setCardExpiry(Date cardExpiry) {
-		this.cardExpiry = cardExpiry;
-	}
 	
 	public void setBillAddrLine1(String billAddrLine1) {
 		this.billAddrLine1 = billAddrLine1;
@@ -103,20 +74,12 @@ public class CustBillingRepresentation {
 		return this.custBillId;
 	}
 	
-	public Date getCardExpiry() {
-		return this.cardExpiry;
-	}
-	
 	public String getCardNo() {
 		return this.cardNo;
 	}
 
 	public String getCardType() {
 		return this.cardType;
-	}
-	
-	public String getCardName() {
-		return this.cardName;
 	}
 	
 	public String getBillAddrLine1() {

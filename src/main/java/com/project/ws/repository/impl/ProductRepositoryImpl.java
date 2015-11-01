@@ -1,4 +1,4 @@
-package com.project.ws.workflow.impl;
+package com.project.ws.repository.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +11,12 @@ import javax.transaction.Transactional;
 
 import com.project.ws.domain.Cart;
 import com.project.ws.domain.Product;
+import com.project.ws.repository.custom.ProductCustomRepository;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.OrderRepresentation;
 import com.project.ws.representation.ProductRepresentation;
-import com.project.ws.workflow.custom.ProductCustomActivity;
 
-public class ProductActivityImpl implements ProductCustomActivity {
+public class ProductRepositoryImpl implements ProductCustomRepository {
 
 	/**
 	 * This EntityManager attribute is used to create the database queries

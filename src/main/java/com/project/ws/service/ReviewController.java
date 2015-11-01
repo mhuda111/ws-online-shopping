@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.workflow.ReviewActivity;
+import com.project.ws.repository.ReviewRepository;
 
 /**
  * This is customer spring controller which has methods
@@ -19,7 +19,7 @@ import com.project.ws.workflow.ReviewActivity;
 public class ReviewController {
 
 	@Autowired
-	private ReviewActivity reviewRepository;
+	private ReviewRepository reviewRepository;
 
 	/*
 	@RequestMapping("/review/add")

@@ -1,4 +1,4 @@
-package com.project.ws.workflow.impl;
+package com.project.ws.repository.impl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -6,9 +6,9 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import com.project.ws.domain.CustomerBillingDetails;
-import com.project.ws.workflow.custom.CustomerBillingCustomActivity;
+import com.project.ws.repository.custom.CustomerBillingCustomRepository;
 
-public class CustomerBillingActivityImpl implements CustomerBillingCustomActivity {
+public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepository {
 
 	private Integer count;
 	private String SQL;
@@ -21,8 +21,9 @@ public class CustomerBillingActivityImpl implements CustomerBillingCustomActivit
 	}
 	
 	@Override
-	public Integer getBillId(Integer customerId) {
-		String SQL = "select custBillId from CustomerBillingDetails where customerId = " + customerId;
+	public Integer getBillId(Integer customerId, String cardType) {
+		String SQL = "select custBillId from CustomerBillingDetails where customerId = " + customerId +
+				" and lower(cardType) = '" + cardType.toLowerCase() + "'"; 
 		Query query = em.createQuery(SQL);
 		Integer billId = (Integer) query.getSingleResult();
 		return billId;
@@ -46,10 +47,11 @@ public class CustomerBillingActivityImpl implements CustomerBillingCustomActivit
 	
 	@Override
 	@Transactional
-	public Integer chargeCard(Integer customerId, Integer billId, Double amount) {
-		String SQL="update customer_billing_details set amount_charged = " + amount + 
-				" where cust_id = " + customerId + " and cust_bill_id = " + billId ;
-		count = em.createNativeQuery(SQL).executeUpdate();
+	public Integer updateBillingAddress(Integer customerId, String addrLine1, String addrLine2, String city, String state, String zip) {
+		String SQL="update customer_billing_details set bill_addr_line1 = '" + addrLine1 + "', bill_addr_line2 = '" +
+				addrLine2 + "', bill_city = '" + city + "', bill_state = '" + state + "', bill_zip_code = '" + zip + "' where cust_id = " + 
+				customerId;
+		Integer count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("billing address updated successfully");
 		else
@@ -59,11 +61,21 @@ public class CustomerBillingActivityImpl implements CustomerBillingCustomActivit
 	
 	@Override
 	@Transactional
-	public Integer updateBillingAddress(Integer customerId, String addrLine1, String addrLine2, String city, String state, String zip) {
-		String SQL="update customer_billing_details set bill_addr_line1 = '" + addrLine1 + "', bill_addr_line2 = '" +
-				addrLine2 + "', bill_city = '" + city + "', bill_state = '" + state + "', bill_zip_code = '" + zip + "' where cust_id = " + 
-				customerId;
-		Integer count = em.createNativeQuery(SQL).executeUpdate();
+	public Integer updateAmount(Integer customerId, Integer billId, Double amount, String type) {
+		Double currAmount = 0.00;
+		Double newAmount = 0.00;
+		CustomerBillingDetails billDetail = new CustomerBillingDetails();
+		billDetail = em.find(CustomerBillingDetails.class, billId);
+		currAmount = billDetail.getAmountCharged();
+		if(type.equals("Debit"))
+			newAmount = currAmount + amount;
+		else if(type.equals("Credit"))
+			newAmount = currAmount - amount;
+		else
+			return null;
+		String SQL="update customer_billing_details set amount_charged = " + newAmount + 
+				" where cust_id = " + customerId + " and cust_bill_id = " + billId ;
+		count = em.createNativeQuery(SQL).executeUpdate();
 		if (count == 1) 
 			System.out.println("billing address updated successfully");
 		else

@@ -9,11 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Database entity for customer table.
  * We used JPA annotations to map it with database table.
  */
-@XmlRootElement
+
+@Component
 @Entity
 @Table(name="Customer")
 public class Customer implements Serializable{
@@ -78,5 +81,9 @@ public class Customer implements Serializable{
 		this.custPassword = custPassword;
 	}
 	
+	@Override
+	public String toString() {
+		return this.custFirstName + "-" + this.custLastName + "-" + this.custEmail + "-" + this.custPassword;
+	}
 	
 }

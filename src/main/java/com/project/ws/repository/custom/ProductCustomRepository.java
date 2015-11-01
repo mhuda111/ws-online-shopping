@@ -1,4 +1,4 @@
-package com.project.ws.workflow.custom;
+package com.project.ws.repository.custom;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import com.project.ws.domain.Product;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.ProductRepresentation;
 
-public interface ProductCustomActivity {
+public interface ProductCustomRepository {
 
 	public List<ProductRepresentation> readByProductName(String productName);
 	public Boolean getProductAvailability(Integer productId, Integer quantity);

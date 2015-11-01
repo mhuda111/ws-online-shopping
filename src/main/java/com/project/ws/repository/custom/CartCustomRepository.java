@@ -1,4 +1,4 @@
-package com.project.ws.workflow.custom;
+package com.project.ws.repository.custom;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.project.ws.workflow.impl;
+package com.project.ws.repository.impl;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.project.ws.domain.Cart;
-import com.project.ws.workflow.custom.CartCustomRepository;
+import com.project.ws.repository.custom.CartCustomRepository;
 
 public class CartRepositoryImpl implements CartCustomRepository{
 	
