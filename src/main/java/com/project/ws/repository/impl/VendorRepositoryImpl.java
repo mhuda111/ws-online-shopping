@@ -85,17 +85,19 @@ public class VendorRepositoryImpl implements VendorCustomRepository {
 		public Vendor updateVendorName(Integer vendorId, String name) {
 			String SQL = "update vendor set vendor_name = '" + name + "' where vendor_id = " + vendorId;
 			Integer count = em.createNativeQuery(SQL).executeUpdate();
-			if (count == 1)
-				System.out.println("Vendor Name updated successfully");
-			else
-				System.out.println("ERROR!!! Check logs/database");
 			return em.find(Vendor.class, vendorId);
 		}
-		
+
 		@Override
-		public void deleteVendor(Integer vendorId) {
-			Vendor vendor = em.find(Vendor.class, vendorId);
-			em.remove(vendor);
+		@Transactional
+		public Integer deleteVendor(Integer vendorId) {
+			String SQL = "DELETE from vendor where vendor_id = " + vendorId ;
+			Integer count = em.createNativeQuery(SQL).executeUpdate();
+			if (count == 1)
+				System.out.println("DELETE successfully");
+			else
+				System.out.println("ERROR!!! Check logs/database");
+			return count;
 		}
 
 

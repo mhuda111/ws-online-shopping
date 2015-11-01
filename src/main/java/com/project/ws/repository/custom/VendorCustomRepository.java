@@ -8,7 +8,7 @@ public interface VendorCustomRepository {
 	public Integer updateStatus(Integer vendorId, String flag);
 	public Integer updateAddress(Vendor vendor);
 	public Vendor updateVendorName(Integer vendorId, String name);
-	public void deleteVendor(Integer vendorId);
+	public Integer deleteVendor(Integer vendorId);
 	public Integer updatePayment(Integer vendorId, Double amount);
 
 }

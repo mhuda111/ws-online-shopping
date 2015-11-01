@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.project.ws.repository.ReviewRepository;
+import com.project.ws.domain.Review;
+import com.project.ws.workflow.ReviewActivity;
+
 
 /**
  * This is customer spring controller which has methods
@@ -21,7 +25,7 @@ public class ReviewController {
 	@Autowired
 	private ReviewRepository reviewRepository;
 
-	/*
+	
 	@RequestMapping("/review/add")
 	public String addReview(HttpServletRequest request) {
 		String reviewDesc = request.getParameter("reviewDesc");
@@ -45,7 +49,7 @@ public class ReviewController {
 		}
 		return "Failed";
 	}
-	*/
+	
 
 	@RequestMapping("/review/avgReview/product")
 	public double getAvgRatingProduct(HttpServletRequest request) {

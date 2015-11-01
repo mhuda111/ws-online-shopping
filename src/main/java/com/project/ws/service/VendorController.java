@@ -3,6 +3,7 @@ package com.project.ws.service;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.ws.domain.Vendor;
-import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.VendorRepresentation;
 import com.project.ws.representation.VendorRequest;
 import com.project.ws.workflow.VendorActivity;
@@ -47,6 +46,7 @@ public class VendorController {
 		vendorRepresentation =  vendorActivity.addVendor(request);
 		return vendorRepresentation;
 	}
+
 
 	@RequestMapping(value="/vendor/", method=RequestMethod.PUT, params={"vendorId", "vendorName"})
 	public @ResponseBody VendorRepresentation updateVendorName(HttpServletRequest request) {
