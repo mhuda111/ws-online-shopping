@@ -1,9 +1,12 @@
 package com.project.ws.service;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,15 +18,38 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.ImmutableMap;
 import com.project.ws.representation.VendorRepresentation;
 import com.project.ws.representation.VendorRequest;
 import com.project.ws.workflow.VendorActivity;
 
 @RestController
-public class VendorController {
+public class VendorController implements ErrorController {
+
+	private static final String ERRORPATH = "/error";
+	private static final String errorString = "You have received this page in ERROR. ";
+	
+	private static final Map<Object, String> errorMessages = ImmutableMap.<Object, String>builder()
+			.put(HttpServletResponse.SC_NOT_FOUND, "The requested resource does not exist")
+			.put(HttpServletResponse.SC_BAD_REQUEST, "The URI entered is incorrect. Please rectify and submit again")
+			.put(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Server Error. Please try later")
+			.put(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Please contact the System Administrator")
+			.put(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This method is not allowed to access the resource. Please rectify your request")
+			.put("Default", "Please contact the System Administrator")
+			.build();
 
 	@Autowired
 	VendorActivity vendorActivity;
+	
+    @Override
+    public String getErrorPath() {
+        return ERRORPATH;
+    }
+    
+	@RequestMapping(ERRORPATH)
+	public @ResponseBody String error(HttpServletRequest request, HttpServletResponse response) {
+		return errorString + errorMessages.get(response.getStatus());
+    }
 
 	@RequestMapping(value="/vendor/", method=RequestMethod.GET, params="vendorId")
 	public @ResponseBody VendorRepresentation getVendorById(HttpServletRequest request) {
