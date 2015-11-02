@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ws.domain.Product;
@@ -19,20 +20,19 @@ public class ProductController {
 	@Autowired
     private ProductActivity productActivity;
 
-	@RequestMapping("/product")
+	@RequestMapping(value="/product", method=RequestMethod.GET)
     public List<ProductRepresentation> getAllProducts(HttpServletRequest request) {
 		List<ProductRepresentation> productRepresentations = productActivity.allProducts();
     	return productRepresentations;
     }
 	
-	@RequestMapping("/product/productName/")
+	@RequestMapping(value="/product", method=RequestMethod.GET, params="name")
     public List<ProductRepresentation> readByProductName(HttpServletRequest request) {
 		String productName = request.getParameter("name");
-		System.out.println("name received is  " + productName);
     	return productActivity.searchProduct(productName);
     }
 	
-	@RequestMapping("/product/add")
+	@RequestMapping(value="/product/add", method=RequestMethod.POST)
     public ProductRepresentation addProduct(HttpServletRequest request) {
 		String productName =  request.getParameter("productName");
 		String productDescription =  request.getParameter("productDescription");
@@ -51,7 +51,7 @@ public class ProductController {
 		return productActivity.addProduct(product);
     }
 
-	@RequestMapping("/product/delete")
+	@RequestMapping(value="/product", method=RequestMethod.DELETE, params="productId")
     public String deleteProduct(HttpServletRequest request) {
 		Integer productId = Integer.parseInt(request.getParameter("productId"));
 

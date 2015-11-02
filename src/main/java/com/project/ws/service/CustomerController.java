@@ -68,7 +68,7 @@ public class CustomerController {
 		return message;
     }
 	
-	@RequestMapping("/customer/updateName")
+	@RequestMapping(value="/customer/updateName", method=RequestMethod.PUT)
 	 public CustomerRepresentation updateCustomerWithInfo(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String firstName = request.getParameter("firstName");
@@ -77,7 +77,7 @@ public class CustomerController {
 		return customerRepresentation;
 	}
 	
-	@RequestMapping("/customer/updateEmail/")
+	@RequestMapping(value="/customer/updateEmail", method=RequestMethod.PUT)
 	 public CustomerRepresentation updateEmail(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String email = request.getParameter("email");

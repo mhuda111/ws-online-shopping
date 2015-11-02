@@ -89,12 +89,12 @@ public class CustomerActivity {
 		return customerRepresentation;
 	}
 	
-	public CustomerRepresentation mapRepresentation(Customer customer, CustomerAddress custAddr) {
-		customerRepresentation = new CustomerRepresentation();
-		customerRepresentation.setCustFirstname(customer.getCustFirstname());
-		customerRepresentation.setCustLastName(customer.getCustLastName());
-		customerRepresentation.setCustEmail(customer.getCustEmail());
-		customerRepresentation.setCustId(customer.getCustId());
-		return customerRepresentation;
-	}
+//	public CustomerRepresentation mapRepresentation(Customer customer, CustomerAddress custAddr) {
+//		customerRepresentation = new CustomerRepresentation();
+//		customerRepresentation.setCustFirstname(customer.getCustFirstname());
+//		customerRepresentation.setCustLastName(customer.getCustLastName());
+//		customerRepresentation.setCustEmail(customer.getCustEmail());
+//		customerRepresentation.setCustId(customer.getCustId());
+//		return customerRepresentation;
+//	}
 }

@@ -28,8 +28,6 @@ public class OrderRepresentation {
 	private String orderShipMethod;
 	private String orderStatus;
 	private Map<String, Object> products = new HashMap<String, Object>();
-	private Integer orderLineQuantity;
-	private Double orderLinePrice;
 
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
@@ -43,22 +41,6 @@ public class OrderRepresentation {
 		products.put("id", lineItem.getProductId());
 		products.put("quantity", lineItem.getOrderLineQuantity());
 		products.put("price", lineItem.getOrderLinePrice());
-	}
-
-	public Integer getOrderLineQuantity() {
-		return orderLineQuantity;
-	}
-
-	public void setOrderLineQuantity(Integer orderLineQuantity) {
-		this.orderLineQuantity = orderLineQuantity;
-	}
-
-	public Double getOrderLinePrice() {
-		return orderLinePrice;
-	}
-
-	public void setOrderLinePrice(Double orderLinePrice) {
-		this.orderLinePrice = orderLinePrice;
 	}
 	
 	public OrderRepresentation() {

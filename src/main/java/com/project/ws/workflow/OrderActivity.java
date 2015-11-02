@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.ws.domain.Cart;
 import com.project.ws.domain.CustomerAddress;
@@ -19,6 +22,9 @@ import com.project.ws.repository.ProductRepository;
 import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.OrderRepresentation;
 
+@Transactional
+@Service
+@Component
 public class OrderActivity {
 
 	Integer orderId, addrId;
@@ -108,8 +114,12 @@ public class OrderActivity {
 		return mapRepresentation(order);
 	}
 	
-	public List<OrderRepresentation> allOrders(Integer customerId) {
-		List<Order> orderList = orderRepo.findAllOrders(customerId);
+	public List<OrderRepresentation> allOrders(Integer customerId, String subset) {
+		List<Order> orderList = new ArrayList<Order>();
+		if(subset.equals("all"))
+			orderList = orderRepo.findAllOrders(customerId);
+		else if(subset.equals("active"))
+			orderList = orderRepo.findAllActiveOrders(customerId);
 		List<OrderRepresentation> resultList = new ArrayList<OrderRepresentation>();
 		for(Order o:orderList) {
 			resultList.add(mapRepresentation(o));
@@ -120,7 +130,7 @@ public class OrderActivity {
 	public OrderRepresentation checkOrderStatus(Integer orderId) {
 		Order order = new Order();
 		order = orderRepo.findOne(orderId);
-		return orderRepresentation;
+		return mapRepresentation(order);
 	}
 	
 	public OrderRepresentation mapRepresentation(Order order) {

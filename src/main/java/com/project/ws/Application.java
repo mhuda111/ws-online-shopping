@@ -49,7 +49,7 @@ public class Application {
 //    	testOrderService();
 //    	testProductService();
 //    	testVendorService();
-    	testCustomerAddressService();
+//    	testCustomerAddressService();
     }
     
     public static void testCustomerService() {

@@ -12,7 +12,7 @@ import com.project.ws.repository.custom.CustomerBillingCustomRepository;
 public interface CustomerBillingRepository extends CrudRepository<CustomerBillingDetails, Integer>, CustomerBillingCustomRepository {
 
 	public List<CustomerBillingDetails> findAll();
-	public CustomerBillingDetails findOne();
+	public CustomerBillingDetails findOne(Integer billId);
 	
 	public List<CustomerBillingDetails> findByCustomerId(Integer customerId);
 	public List<CustomerBillingDetails> findByCardType(Integer customerId);

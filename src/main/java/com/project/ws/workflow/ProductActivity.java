@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.ws.domain.Cart;
 import com.project.ws.domain.Product;
@@ -14,6 +17,9 @@ import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.ProductRepresentation;
 
+@Transactional
+@Service
+@Component
 public class ProductActivity {
 
 	private final ProductRepository prodRepo;
@@ -65,7 +71,7 @@ public class ProductActivity {
 	}
 	
 	public List<ProductRepresentation> searchProduct(String name) {
-		List<Product> productList = prodRepo.findByProductName(name);
+		List<Product> productList = prodRepo.readByProductName(name);
 		List<ProductRepresentation> resultList = new ArrayList<ProductRepresentation>();
 		Vendor vendor;
 		String vendorName;
@@ -88,6 +94,7 @@ public class ProductActivity {
 	}
 	
 	public ProductRepresentation mapProductRepresentation(Product product, String vendorName) {
+		prodRepresentation = new ProductRepresentation();
 		prodRepresentation.setName(product.getName());
 		prodRepresentation.setPrice(product.getPrice());
 		prodRepresentation.setQuantity(product.getQuantity());
