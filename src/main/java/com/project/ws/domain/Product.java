@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Database entity for product table.
  * We used JPA annotations to map it with database table.
@@ -16,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @Entity
 @Table(name="product")
+@Component
 public class Product implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

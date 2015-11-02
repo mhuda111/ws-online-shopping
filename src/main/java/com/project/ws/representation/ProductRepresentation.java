@@ -15,6 +15,7 @@ public class ProductRepresentation {
 	private String productType;
 	private Integer quantity;
 	private Double price;
+	private String vendorName;
 
 	public ProductRepresentation() {
 		this.productName = "";
@@ -34,6 +35,10 @@ public class ProductRepresentation {
 	public void setName(String name) {
 		this.productName = name;
 	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
 	
 	public void setType(String type) {
 		this.productType = type;
@@ -52,6 +57,10 @@ public class ProductRepresentation {
 	
 	public String getName() {
 		return this.productName;
+	}
+	
+	public String getVendorName() {
+		return this.vendorName;
 	}
 	
 	public String getType() {

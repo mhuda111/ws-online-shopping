@@ -29,16 +29,12 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 	}
 
 	@Override
-	public List<ProductRepresentation> readByProductName(String productName) {
-		String SQL = "SELECT p FROM Product p WHERE product_name LIKE '%" + productName + "%'";
+	public List<Product> readByProductName(String productName) {
+		String SQL = "SELECT p FROM Product p WHERE lower(product_name) LIKE '%" + productName.toLowerCase() + "%'";
 		TypedQuery<Product> query = em.createQuery(SQL, Product.class);
 		//query.setParameter("searchString", "%" + productName + "%");
 		List<Product> resultList = query.getResultList();
-		List<ProductRepresentation> products = new ArrayList<ProductRepresentation>();
-		for(Product p:resultList) {
-			products.add(this.mapProductRepresentation(p));
-		}
-		return products;
+		return resultList;
 	}
 
 
@@ -57,8 +53,8 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 
 	@Override
 	@Transactional
-	public Integer deleteProduct(String productName) {
-		String SQL = "DELETE from Product p where product_name like '%" + productName + "%'";
+	public Integer deleteProduct(Integer productId) {
+		String SQL = "DELETE from Product p where product_id =" + productId;
 		Integer count = em.createQuery(SQL).executeUpdate();
 		if (count == 1)
 			System.out.println("product deleted successfully");
@@ -91,35 +87,6 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 		return count;
 	}
 
-	@Override
-	@Transactional
-	public List<CartRepresentation> buyProduct(Integer customerId, Integer productId, Double price, Integer quantity) {
-		Boolean check = this.getProductAvailability(productId, quantity);
-		if(check == false) return null;
-		String SQL = "INSERT INTO cart (cust_id, product_id, price, quantity) VALUES (" + customerId + ", " + productId + ", " + price + "," + quantity + ")";
-		try {
-			Query query = em.createNativeQuery(SQL);
-			Integer count = query.executeUpdate();
-		} catch(Exception e) {
-			e.getMessage();
-		}
-		SQL = "select c from Cart c where cust_id = " + customerId;
-		TypedQuery<Cart> query = em.createQuery(SQL, Cart.class);
-		List<Cart> resultList = query.getResultList();
-		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();
-		for(Cart c: resultList) {
-			CartRepresentation cart = new CartRepresentation();
-			cart.setProductId(c.getProductId());
-			cart.setPrice(c.getPrice());
-			cart.setQuantity(c.getQuantity());
-			
-			cartRepresentation.add(cart);
-		}
-		
-		return cartRepresentation;
-	}
-
-	
 	
 	@Override
 	@Transactional
@@ -155,14 +122,5 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 		return count;
 	}
 
-	@Override
-	public ProductRepresentation mapProductRepresentation(Product product) {
-		ProductRepresentation productRepresentation = new ProductRepresentation();
-		productRepresentation.setName(product.getName());
-		productRepresentation.setPrice(product.getPrice());
-		productRepresentation.setQuantity(product.getQuantity());
-		productRepresentation.setType(product.getType());
-		return productRepresentation;
-	}
 	
 }

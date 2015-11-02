@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.springframework.stereotype.Component;
+
 /**
  * This is sample business object that contains customer information with address
  * which we may expose to others.
@@ -18,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @Entity
 @Table(name="review")
+@Component
 public class Review implements Serializable {
 
 	private static final long serialVersionUID = 1L;

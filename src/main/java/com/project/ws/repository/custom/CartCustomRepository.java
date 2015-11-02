@@ -6,7 +6,8 @@ import com.project.ws.domain.Cart;
 
 public interface CartCustomRepository {
 		
-		public List<Cart> getCartByCustomerId(Integer id);
-
+		public List<Cart> getCartByCustomerId(Integer customerId);
+		public Integer addCart(Cart cart);
+		public Integer deleteCart(Integer customerId); 
 	
 }

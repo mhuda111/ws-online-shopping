@@ -1,7 +1,5 @@
 package com.project.ws.workflow;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -17,8 +15,6 @@ import com.project.ws.representation.VendorRequest;
 @Service
 public class VendorActivity {
 	
-
-
 	private final VendorRepository vendorRepo;
 	
 	@Autowired

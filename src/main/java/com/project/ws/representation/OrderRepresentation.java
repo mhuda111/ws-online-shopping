@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.ws.domain.OrderLineItem;
 
@@ -16,6 +18,7 @@ import com.project.ws.domain.OrderLineItem;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Component
 public class OrderRepresentation {
 
 	private Integer orderId;

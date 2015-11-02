@@ -99,4 +99,5 @@ public class VendorRepositoryImpl implements VendorCustomRepository {
 			return count;
 		}
 
+
 }

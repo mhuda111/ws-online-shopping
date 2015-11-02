@@ -8,13 +8,11 @@ import com.project.ws.representation.ProductRepresentation;
 
 public interface ProductCustomRepository {
 
-	public List<ProductRepresentation> readByProductName(String productName);
+	public List<Product> readByProductName(String productName);
 	public Boolean getProductAvailability(Integer productId, Integer quantity);
 	public String addProduct(Product product);
-	public Integer deleteProduct(String productName);
+	public Integer deleteProduct(Integer productId);
 	public Integer updateProductQuantity(Integer productId, Integer quantity, String operation);
 	public Integer updateProductPrice(Integer productId, Double price);
-	public List<CartRepresentation> buyProduct(Integer customerId, Integer productId, Double price, Integer quantity);
-	public ProductRepresentation mapProductRepresentation(Product product);
 
 }

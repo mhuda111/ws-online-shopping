@@ -56,7 +56,7 @@ public class OrderActivity {
 	
 	public OrderRepresentation placeOrder(Integer customerId) {
 		
-		List<Cart> cartList = cartRepo.findByCustomerId(customerId);
+		List<Cart> cartList = cartRepo.getCartByCustomerId(customerId);
 		
 		for(Cart cart: cartList) {
 			orderAmount = orderAmount + cart.getPrice() * cart.getQuantity();
@@ -106,6 +106,21 @@ public class OrderActivity {
 		orderRepo.updateOrderStatus(orderId, "SHP");
 		Order order = orderRepo.findOne(orderId);
 		return mapRepresentation(order);
+	}
+	
+	public List<OrderRepresentation> allOrders(Integer customerId) {
+		List<Order> orderList = orderRepo.findAllOrders(customerId);
+		List<OrderRepresentation> resultList = new ArrayList<OrderRepresentation>();
+		for(Order o:orderList) {
+			resultList.add(mapRepresentation(o));
+		}
+		return resultList;
+	}
+	
+	public OrderRepresentation checkOrderStatus(Integer orderId) {
+		Order order = new Order();
+		order = orderRepo.findOne(orderId);
+		return orderRepresentation;
 	}
 	
 	public OrderRepresentation mapRepresentation(Order order) {

@@ -36,7 +36,7 @@ public class OrderLineItemRepositoryImpl {
 	
 	public void addOrderLine(Integer customerId, Integer orderId) {
 
-		List<Cart> list = cartRepo.findByCustomerId(customerId);
+		List<Cart> list = cartRepo.getCartByCustomerId(customerId);
 		String SQL = "";
 		
 		for(Cart cart:list) {
