@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Component
 public class VendorRepresentation {
 	
-	@JsonIgnore
 	private Integer vendorId;
 	private String vendorName;
 	private String vendorCity;

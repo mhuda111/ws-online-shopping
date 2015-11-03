@@ -13,7 +13,7 @@ public interface OrderCustomRepository {
 	public List<Order> findAllActiveOrders(Integer customerId);
 	public Order findOrder(Integer orderId);
 	
-	public Order addOrder(Order order);
-	public Integer findActiveOrder(Integer customerId);
+	public Integer addOrder(Order order);
+	public Integer findLatestOrder(Integer customerId);
 	public Integer updateOrderStatus(Integer orderId, String status);
 }

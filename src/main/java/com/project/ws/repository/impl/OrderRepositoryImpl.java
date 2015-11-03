@@ -18,7 +18,6 @@ import com.project.ws.repository.custom.OrderCustomRepository;
 public class OrderRepositoryImpl implements OrderCustomRepository {
 
 	private Double orderAmount = 0.00;
-	private Integer addrId;	
 
 	@PersistenceContext
 	private EntityManager em;
@@ -29,17 +28,17 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
 	@Override
 	@Transactional
-	public Order addOrder(Order order) {
+	public Integer addOrder(Order order) {
 		Integer count = 0;
 		String SQL = "INSERT INTO order_details (cust_id, cust_bill_id, cust_addr_id, total_order_amt) VALUES(" +
-				order.getCustomerId() + ", " + order.getBillId() + ", " + addrId + ", " + orderAmount + ")";
+				order.getCustomerId() + ", " + order.getBillId() + ", " + order.getAddrId() + ", " + order.getOrderAmount() + ")";
 		try {
 			count = em.createNativeQuery(SQL).executeUpdate();
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
-		
-		return order;
+		System.out.println(SQL);
+		return count;
 	}
 	
 
@@ -52,7 +51,7 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 	}
 
 	@Override
-	public Integer findActiveOrder(Integer customerId) {
+	public Integer findLatestOrder(Integer customerId) {
 		//select the order just created
 		String SQL = "select max(o.orderId) from Order o where status_cd = 'ACT' and cust_id = " + customerId;
 		Integer orderId = em.createQuery(SQL, Integer.class).getSingleResult();

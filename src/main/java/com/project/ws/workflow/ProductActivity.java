@@ -17,6 +17,7 @@ import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.CartRequest;
 import com.project.ws.representation.ProductRepresentation;
+import com.project.ws.representation.ProductRequest;
 
 @Transactional
 @Service
@@ -44,14 +45,17 @@ public class ProductActivity {
 	}
 	
 	public List<CartRepresentation> buyProduct(CartRequest cartRequest) {
+		System.out.println("in buy");
 		Boolean check = false;
 		Cart cart = new Cart();
+		System.out.println(cartRequest.getCustomerId());
 		check = prodRepo.getProductAvailability(cartRequest.getProductId(), cartRequest.getQuantity());
+		System.out.println("after prod availability");
 		if(check == false)
 			return null;
 		cart.setPrice(prodRepo.findOne(cartRequest.getProductId()).getPrice());
 		cart.setProductId(cartRequest.getProductId());
-		cart.setCustomerId(cartRequest.getProductId());
+		cart.setCustomerId(cartRequest.getCustomerId());
 		cart.setQuantity(cartRequest.getQuantity());
 		cartRepo.addCart(cart);
 		List<Cart> cartList = new ArrayList<Cart>();
@@ -89,13 +93,13 @@ public class ProductActivity {
 		return resultList;
 	}
 	
-	public ProductRepresentation addProduct(Product product) {
-		System.out.println("in activity");
+	public ProductRepresentation addProduct(ProductRequest productRequest) {
+		mapRequest(productRequest);
 		Integer count = prodRepo.addProduct(product);
 		Vendor vendor = new Vendor();
 		String vendorName = "";
 		if(count == 1) {
-			vendor = vendorRepo.findOne(product.getVendorId());
+			vendor = vendorRepo.findOne(productRequest.getVendorId());
 			vendorName = vendor.getVendorName();
 		}
 		return mapProductRepresentation(product, vendorName);
@@ -113,6 +117,17 @@ public class ProductActivity {
 			return true;
 	}
 	
+	public Product mapRequest(ProductRequest request) {
+		product = new Product();
+		product.setName(request.getName());
+		product.setPrice(request.getPrice());
+		product.setQuantity(request.getQuantity());
+		product.setVendorId(request.getVendorId());
+		product.setType(request.getType());
+		product.setDescription(request.getDescription());
+		return product;
+	}
+	
 	public ProductRepresentation mapProductRepresentation(Product product, String vendorName) {
 		prodRepresentation = new ProductRepresentation();
 		prodRepresentation.setName(product.getName());
@@ -120,6 +135,7 @@ public class ProductActivity {
 		prodRepresentation.setQuantity(product.getQuantity());
 		prodRepresentation.setVendorName(vendorName);
 		prodRepresentation.setType(product.getType());
+		prodRepresentation.setProductId(product.getProductId());
 		return prodRepresentation;
 	}
 	

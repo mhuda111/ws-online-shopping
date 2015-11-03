@@ -89,9 +89,8 @@ public class VendorController {
 		return vendorRepresentation;
 	}
 	
-	@RequestMapping(value="/vendor/delete", method=RequestMethod.DELETE)
+	@RequestMapping(value="/vendor", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteVendor(HttpServletRequest request) {
-		VendorRepresentation vendorRepresentation = new VendorRepresentation();
 		Integer count = 0;
 		try {
 			Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));

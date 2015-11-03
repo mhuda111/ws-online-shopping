@@ -17,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class CustAddrRepresentation {
 	
 	private Integer customerId;
-	@JsonIgnore
 	private Integer addrId;
 	private String custAddrLine1;	
 	private String custAddrLine2;

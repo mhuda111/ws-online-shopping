@@ -30,8 +30,7 @@ public class CartRepositoryImpl implements CartCustomRepository{
 		 */
 		@Override
 		public List<Cart> getCartByCustomerId(Integer id) {
-			TypedQuery<Cart> query = em.createQuery("SELECT c FROM Cart c where cust_id = :idVar", Cart.class);
-			query.setParameter("idVar", id);
+			TypedQuery<Cart> query = em.createQuery("SELECT c FROM Cart c where cust_id = " + id, Cart.class);
 			List<Cart> resultList = query.getResultList();
 			return resultList;
 		}

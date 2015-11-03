@@ -82,6 +82,7 @@ public class OrderController {
 	public @ResponseBody List<CartRepresentation> createOrder(@RequestBody CartRequest cartRequest) {
 		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();
 		try {
+			System.out.println("+++++" + cartRequest.getCustomerId());
 			if(customerActivity.validateCustomer(cartRequest.getCustomerId()) == false)
 				throw new CustomerNotFoundException(cartRequest.getCustomerId());
 			cartRepresentation = productActivity.buyProduct(cartRequest);
@@ -98,7 +99,7 @@ public class OrderController {
 			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
 			if(customerActivity.validateCustomer(customerId) == false)
 				throw new CustomerNotFoundException(customerId);
-			orderActivity.placeOrder(customerId);
+			orderRepresentation = orderActivity.placeOrder(customerId);
 		} catch(RuntimeException e) {
 			throw new RuntimeException();
 		}
@@ -110,9 +111,10 @@ public class OrderController {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
 		try {
 			Integer orderId = Integer.parseInt(request.getParameter("orderId"));
-			if(customerActivity.validateCustomer(orderId) == false)
+			System.out.println("in controller " + orderId);
+			if(orderActivity.validateOrder(orderId) == false)
 				throw new OrderNotFoundException(orderId);
-			orderActivity.shipOrder(orderId);
+			orderRepresentation = orderActivity.shipOrder(orderId);
 		} catch(RuntimeException e) {
 			throw new RuntimeException();
 		}

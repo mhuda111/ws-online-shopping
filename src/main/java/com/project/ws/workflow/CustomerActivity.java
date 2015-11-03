@@ -53,9 +53,9 @@ public class CustomerActivity {
 	}
 
 	public String deleteCustomer(Integer customerId) {
-		custRepo.deleteCustomer(customerId);
+		Integer count = custRepo.deleteCustomer(customerId);
 		newCustomer = custRepo.findOne(customerId);
-		if(newCustomer != null)
+		if(count == 0)
 			return "Error deleting Customer";
 		else
 			return "Customer deleted Successfully";

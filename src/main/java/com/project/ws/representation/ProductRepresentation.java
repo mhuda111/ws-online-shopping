@@ -16,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Component
 public class ProductRepresentation {
 	
-	@JsonIgnore
 	private Integer productId;
 	private String productName;
 	private String productType;

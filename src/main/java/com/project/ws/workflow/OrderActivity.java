@@ -62,32 +62,36 @@ public class OrderActivity {
 	}
 	
 	public OrderRepresentation placeOrder(Integer customerId) {
-		
-		List<Cart> cartList = cartRepo.getCartByCustomerId(customerId);
-		
-		for(Cart cart: cartList) {
-			orderAmount = orderAmount + cart.getPrice() * cart.getQuantity();
+		Order newOrder = new Order();
+		try {
+			List<Cart> cartList = cartRepo.getCartByCustomerId(customerId);
+			for(Cart cart: cartList) {
+				orderAmount = orderAmount + cart.getPrice() * cart.getQuantity();
+			}
+			
+			Integer billId = billRepo.getBillId(customerId, "VISA");
+	
+			billRepo.updateAmount(customerId, billId, orderAmount, "Debit");
+	
+			List<CustomerAddress> addrList = addrRepo.getAddress(customerId);
+			
+			Integer addrId = addrList.get(0).getCustAddrId();
+			
+			Order order = new Order();
+			order.setBillId(billId);
+			order.setCustomerId(customerId);
+			order.setOrderAmount(orderAmount);
+			order.setOrderStatus("ACT");
+			order.setAddrId(addrId);
+			Integer count = orderRepo.addOrder(order);
+			System.out.println("Order inserted : " + count);
+			
+			newOrder = orderRepo.findOne(orderRepo.findLatestOrder(customerId));
+			orderLineRepo.addOrderLine(customerId, newOrder.getOrderId());
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		Integer billId = billRepo.getBillId(customerId, "VISA");
-
-		billRepo.updateAmount(customerId, billId, orderAmount, "Debit");
-
-		List<CustomerAddress> addrList = addrRepo.getAddress(customerId);
-		
-		Integer addrId = addrList.get(0).getCustAddrId();
-		System.out.println("for customer" + customerId + " address is " + addrId);
-		
-		Order order = new Order();
-		order.setBillId(billId);
-		order.setCustomerId(customerId);
-		order.setOrderAmount(orderAmount);
-		order.setOrderStatus("ACT");
-		order.setAddrId(addrId);
-		
-		Order newOrder = orderRepo.addOrder(order);		
-		orderLineRepo.addOrderLine(customerId, newOrder.getOrderId());
-
-		return mapRepresentation(order);
+		return mapRepresentation(newOrder);
 	}
 
 	public OrderRepresentation cancelOrder(Integer orderId) {
@@ -102,16 +106,21 @@ public class OrderActivity {
 	}
 	
 	public OrderRepresentation shipOrder(Integer orderId) {
-		Integer vendorId;
-		VendorActivity vendorActivity = new VendorActivity(vendorRepo);
-		List<OrderLineItem> orderList = orderLineRepo.findByOrderId(orderId);
-		for(OrderLineItem item:orderList) {
-			vendorId = prodRepo.findByProductId(item.getProductId()).getVendorId();
-			vendorActivity.settleAccount(vendorId, item.getOrderLinePrice(), "credit");
-		}
+		Order order = new Order();
+		try {
+			Integer vendorId;
+			VendorActivity vendorActivity = new VendorActivity(vendorRepo);
+			List<OrderLineItem> orderList = orderLineRepo.findByOrderId(orderId);
+			for(OrderLineItem item:orderList) {
+				vendorId = prodRepo.findByProductId(item.getProductId()).getVendorId();
+				vendorActivity.settleAccount(vendorId, item.getOrderLinePrice(), "credit");
+			}
 		
-		orderRepo.updateOrderStatus(orderId, "SHP");
-		Order order = orderRepo.findOne(orderId);
+			orderRepo.updateOrderStatus(orderId, "SHP");
+			order = orderRepo.findOne(orderId);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		return mapRepresentation(order);
 	}
 	

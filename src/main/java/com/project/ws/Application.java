@@ -38,6 +38,7 @@ import com.project.ws.representation.BillingRequest;
 import com.project.ws.representation.OrderRepresentation;
 import com.project.ws.representation.CartRequest;
 import com.project.ws.representation.ProductRepresentation;
+import com.project.ws.representation.ProductRequest;
 import com.project.ws.representation.VendorRepresentation;
 import com.project.ws.representation.VendorRequest;
 
@@ -91,6 +92,7 @@ public class Application {
     	AddressRequest addrRequest = new AddressRequest();
     	BillingRequest billRequest = new BillingRequest();
     	VendorRequest vendorRequest = new VendorRequest();
+    	ProductRequest productRequest = new ProductRequest();
     	
     	/*
     	 * Add a Customer
@@ -134,7 +136,7 @@ public class Application {
     	 */
 		finalUrl = baseUrl + "customeraddress/?customerId={customerId}";
 		params = new HashMap<String, Object>();
-		params.put("customerId", (Integer) 10000174);
+		params.put("customerId", customerId);
 		addrListResponse = restTemplate.getForEntity(finalUrl, CustAddrRepresentation[].class, params);
         displayStats(addrListResponse, "GET customer address by customer Id");
         
@@ -205,16 +207,15 @@ public class Application {
     	 * Add a Product
     	 * Processing for POST to add customerAddress
     	 */
-        finalUrl = baseUrl + "product/add?productName={productName}&productDescription={productDescription}&productType={productType}&quantity={quantity}&price={price}&vendorID={vendorId}";
-        params = new HashMap<String, Object>();
-        params.put("productName", "Philips CFL Lamp");
-        params.put("productDescription", "CFL 13 Watt DayLight Lamp");
-        params.put("productType", "Home Improvement");
-        params.put("quantity", 20);
-        params.put("price", 8.50);
-        params.put("vendorId", vendorId);
+        finalUrl = baseUrl + "product/add";
+        productRequest.setName("Philips CFL Lamp");
+        productRequest.setDescription("CFL 13 Watt DayLight Lamp");
+        productRequest.setType("Home Improvement");
+        productRequest.setQuantity(20);
+        productRequest.setPrice(8.50);
+        productRequest.setVendorId(vendorId);
         
-        productResponse = restTemplate.postForEntity(finalUrl, null, ProductRepresentation.class, params);
+        productResponse = restTemplate.postForEntity(finalUrl, productRequest, ProductRepresentation.class);
         displayStats(productResponse, "POST to add a new product");
        
         /*
@@ -222,13 +223,13 @@ public class Application {
          * Processing for GET to find the product
          * 
          */
-        finalUrl = baseUrl + "/product/productName/?name={name}";
+        finalUrl = baseUrl + "/product/?name={name}";
     	params = new HashMap<String, Object>();
     	params.put("name", (String) "Philips CFL Lamp");
     	prodListResponse = restTemplate.getForEntity(finalUrl, ProductRepresentation[].class, params);
         displayStats(productResponse, "GET all products matching param");
         Assert.assertEquals("Philips CFL Lamp", prodListResponse.getBody()[0].getName());
-        Assert.assertEquals("CFL 13 Watt DayLight Lamp", prodListResponse.getBody()[0].getType());
+        Assert.assertEquals((Double) 8.50, prodListResponse.getBody()[0].getPrice());
         Assert.assertTrue(1 == prodListResponse.getBody().length);
         productId = prodListResponse.getBody()[0].getProductId();
         
@@ -239,7 +240,7 @@ public class Application {
     	 * Declare variables
     	 */
     	RestTemplate restTemplate = new RestTemplate();
-    	ResponseEntity<OrderRepresentation[]> orderResponse;
+    	ResponseEntity<OrderRepresentation> orderResponse;
     	ResponseEntity<CartRepresentation[]> cartResponse;
     	Map<String, Object> params;
     	
@@ -247,24 +248,24 @@ public class Application {
          * POST for creating an Order using OrderRequest - populating a cart		
          */
 		finalUrl = baseUrl + "order/createOrder";
-		
+		System.out.println("customer is " + customerId);
 		CartRequest cartRequest = new CartRequest();
 		cartRequest.setCustomerId(customerId);
 		cartRequest.setProductId(productId);
 		cartRequest.setQuantity(2);
 		cartResponse = restTemplate.postForEntity(finalUrl, cartRequest, CartRepresentation[].class);
         displayStats(cartResponse, "POST populate cart using Cart Request");
-        
+                
         /*
          * POST for placing an Order using OrderRequest - actually placing an order		
          */
 		finalUrl = baseUrl + "order/placeOrder?customerId={customerId}";
 		params = new HashMap<String, Object>();
 		params.put("customerId", customerId);
-		ResponseEntity<OrderRepresentation> newOrderResponse = restTemplate.postForEntity(finalUrl, null, OrderRepresentation.class, params);
-        displayStats(newOrderResponse, "POST Place Order");
+		orderResponse = restTemplate.exchange(finalUrl, HttpMethod.PUT, null, OrderRepresentation.class, params);
+        displayStats(orderResponse, "PUT to Place Order");
         
-        orderId = newOrderResponse.getBody().getOrderId();
+        orderId = orderResponse.getBody().getOrderId();
         
     	/*
     	 * Processing for PUT to ship order and settle vendor account
@@ -272,8 +273,8 @@ public class Application {
 		finalUrl = baseUrl + "order/ship?orderId={orderId}";
 		params = new HashMap<String, Object>();
 		params.put("orderId", orderId);
-		newOrderResponse = restTemplate.exchange(finalUrl, HttpMethod.PUT, null, OrderRepresentation.class, params);
-        displayStats(newOrderResponse, "PUT for ship order and settle vendor account");
+		orderResponse = restTemplate.exchange(finalUrl, HttpMethod.PUT, null, OrderRepresentation.class, params);
+        displayStats(orderResponse, "PUT for ship order and settle vendor account");
         
     }
     
@@ -285,20 +286,23 @@ public class Application {
     	ResponseEntity<String> stringResponse;
     	Map<String, Object> params;
     	
-    	finalUrl = baseUrl + "/customer?customerId={customerId}";
-    	params = new HashMap<String, Object>();
-    	params.put("customerId", customerId);
-    	restTemplate.delete(finalUrl, params);
-    	
     	finalUrl = baseUrl + "/product?productId={productId}";
     	params = new HashMap<String, Object>();
     	params.put("productId", productId);
-    	restTemplate.delete(finalUrl, params);
+    	stringResponse = restTemplate.exchange(finalUrl, HttpMethod.DELETE, null, String.class, params);
+    	displayStats(stringResponse, "DELETE for product");
     	
     	finalUrl = baseUrl + "/vendor?vendorId={vendorId}";
     	params = new HashMap<String, Object>();
     	params.put("vendorId", vendorId);
-    	restTemplate.delete(finalUrl, params);
+    	stringResponse = restTemplate.exchange(finalUrl, HttpMethod.DELETE, null, String.class, params);
+    	displayStats(stringResponse, "DELETE for vendor");
+    	
+    	finalUrl = baseUrl + "/customer?customerId={customerId}";
+    	params = new HashMap<String, Object>();
+    	params.put("customerId", customerId);
+    	stringResponse = restTemplate.exchange(finalUrl, HttpMethod.DELETE, null, String.class, params);
+    	displayStats(stringResponse, "DELETE for customer");
     }
     
     public static void displayStats(ResponseEntity<?> response, String message) {

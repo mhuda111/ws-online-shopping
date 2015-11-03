@@ -73,7 +73,7 @@ public class Product implements Serializable {
 	
 	//setters
 	
-	public void setId(Integer id) {
+	public void setProductId(Integer id) {
 		this.productId = id;
 	}
 	
@@ -103,7 +103,7 @@ public class Product implements Serializable {
 	
 	//getters
 	
-	public Integer getId() {
+	public Integer getProductId() {
 		return this.productId;
 	}
 	

@@ -20,9 +20,6 @@ public class VendorRepositoryImpl implements VendorCustomRepository {
 			this.em = em;
 		}
 
-		/**
-		 * Doing queries from database and mapped the results to the list of customer object.
-		 */
 		@Override
 		@Transactional
 		public Integer addVendor(Vendor vendor) {
@@ -55,6 +52,7 @@ public class VendorRepositoryImpl implements VendorCustomRepository {
 		@Transactional
 		public Integer updatePayment(Integer vendorId, Double amount) {
 			String SQL = "update vendor set amount_paid = '" + amount + "' where vendor_id = " + vendorId;
+			System.out.println(SQL);
 			Integer count = em.createNativeQuery(SQL).executeUpdate();
 			if (count == 1)
 				System.out.println("Amount Settled");

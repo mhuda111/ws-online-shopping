@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @XmlRootElement
 @Entity
 @Table(name="order_details")
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Component
 public class Order implements Serializable {
 	

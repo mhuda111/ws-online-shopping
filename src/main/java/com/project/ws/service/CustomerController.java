@@ -74,7 +74,7 @@ public class CustomerController {
 		return customerRepresentation;
     }
 	
-	@RequestMapping(value="/customer/", method=RequestMethod.DELETE)
+	@RequestMapping(value="/customer", method=RequestMethod.DELETE)
     public @ResponseBody String deleteCustomer(HttpServletRequest request) {
 		String message;
 		try {
