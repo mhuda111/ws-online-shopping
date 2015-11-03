@@ -71,6 +71,7 @@ public class CustomerBillingActivity {
 		billingDetail.setCardNo(billRequest.getCardNo());
 		billingDetail.setCardType(billRequest.getCardType());
 		billingDetail.setCVV(billRequest.getCVV());
+		billingDetail.setCustomerId(billRequest.getCustomerId());
 		return billingDetail;
 	}
 	

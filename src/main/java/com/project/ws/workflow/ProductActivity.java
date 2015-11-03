@@ -15,6 +15,7 @@ import com.project.ws.repository.CartRepository;
 import com.project.ws.repository.ProductRepository;
 import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.CartRepresentation;
+import com.project.ws.representation.CartRequest;
 import com.project.ws.representation.ProductRepresentation;
 
 @Transactional
@@ -42,14 +43,19 @@ public class ProductActivity {
 		this.vendorRepo = vendorRepo;
 	}
 	
-	public List<CartRepresentation> buyProduct(Cart cart) {
+	public List<CartRepresentation> buyProduct(CartRequest cartRequest) {
 		Boolean check = false;
-		check = prodRepo.getProductAvailability(cart.getProductId(), cart.getQuantity());
+		Cart cart = new Cart();
+		check = prodRepo.getProductAvailability(cartRequest.getProductId(), cartRequest.getQuantity());
 		if(check == false)
 			return null;
+		cart.setPrice(prodRepo.findOne(cartRequest.getProductId()).getPrice());
+		cart.setProductId(cartRequest.getProductId());
+		cart.setCustomerId(cartRequest.getProductId());
+		cart.setQuantity(cartRequest.getQuantity());
 		cartRepo.addCart(cart);
 		List<Cart> cartList = new ArrayList<Cart>();
-		cartList = cartRepo.getCartByCustomerId(cart.getCustomerId());
+		cartList = cartRepo.getCartByCustomerId(cartRequest.getCustomerId());
 		List<CartRepresentation> resultList = new ArrayList<CartRepresentation>();
 		for(Cart c: cartList) {
 			resultList.add(mapCartRepresentation(c));
@@ -63,7 +69,7 @@ public class ProductActivity {
 		Vendor vendor;
 		String vendorName;
 		for(Product p:productList) {
-			vendor = vendorRepo.findOne(p.getVendor());
+			vendor = vendorRepo.findOne(p.getVendorId());
 			vendorName = vendor.getVendorName();
 			resultList.add(mapProductRepresentation(p, vendorName));
 		}
@@ -76,7 +82,7 @@ public class ProductActivity {
 		Vendor vendor;
 		String vendorName;
 		for(Product p:productList) {
-			vendor = vendorRepo.findOne(p.getVendor());
+			vendor = vendorRepo.findOne(p.getVendorId());
 			vendorName = vendor.getVendorName();
 			resultList.add(mapProductRepresentation(p, vendorName));
 		}
@@ -84,9 +90,15 @@ public class ProductActivity {
 	}
 	
 	public ProductRepresentation addProduct(Product product) {
-		prodRepo.addProduct(product);
-		Vendor vendor = vendorRepo.findOne(product.getVendor());
-		return mapProductRepresentation(product, vendor.getVendorName());
+		System.out.println("in activity");
+		Integer count = prodRepo.addProduct(product);
+		Vendor vendor = new Vendor();
+		String vendorName = "";
+		if(count == 1) {
+			vendor = vendorRepo.findOne(product.getVendorId());
+			vendorName = vendor.getVendorName();
+		}
+		return mapProductRepresentation(product, vendorName);
 	}
 	
 	public Integer deleteProduct(Integer productId) {

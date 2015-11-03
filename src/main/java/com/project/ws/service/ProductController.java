@@ -32,7 +32,7 @@ public class ProductController {
 		String message = "";
 		if(ex.getMessage() != null)
 			message = ex.getMessage();
-        return "Error: " + message + " in path: " + req.getRequestURI();
+		return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
     }
 	
 	@RequestMapping(value="/product", method=RequestMethod.GET)

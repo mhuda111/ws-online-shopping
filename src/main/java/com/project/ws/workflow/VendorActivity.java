@@ -73,10 +73,10 @@ public class VendorActivity {
 		return mapRepresentation(vendor);
 	}
 	
-	public VendorRepresentation logicalDeleteVendor(Integer vendorId) {
-		vendorRepo.updateStatus(vendorId, "N");
-		vendor = vendorRepo.findOne(vendorId);
-		return mapRepresentation(vendor);
+	public Integer deleteVendor(Integer vendorId) {
+//		vendorRepo.updateStatus(vendorId, "N");
+		Integer count = vendorRepo.deleteVendor(vendorId);
+		return count;
 	}
 	
 	public Boolean validateVendor(Integer vendorId) {
@@ -93,6 +93,7 @@ public class VendorActivity {
 		vendorRepresentation.setVendorCountry(vendor.getVendorCountry());
 		vendorRepresentation.setVendorName(vendor.getVendorName());
 		vendorRepresentation.setVendorState(vendor.getVendorState());
+		vendorRepresentation.setVendorId(vendor.getVendorId());
 		return vendorRepresentation;
 	}
 	

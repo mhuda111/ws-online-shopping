@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @XmlRootElement(name = "Product")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductRepresentation {
 	
+	@JsonIgnore
+	private Integer productId;
 	private String productName;
 	private String productType;
 	private Integer quantity;
@@ -50,7 +54,10 @@ public class ProductRepresentation {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	
+
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
 	public void setPrice(Double price) {
 		this.price = price;
 	}
@@ -72,6 +79,10 @@ public class ProductRepresentation {
 	
 	public Integer getQuantity() {
 		return this.quantity;
+	}
+	
+	public Integer getProductId() {
+		return this.productId;
 	}
 	
 	public Double getPrice() {

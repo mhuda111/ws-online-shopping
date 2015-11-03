@@ -10,7 +10,7 @@ public interface ProductCustomRepository {
 
 	public List<Product> readByProductName(String productName);
 	public Boolean getProductAvailability(Integer productId, Integer quantity);
-	public String addProduct(Product product);
+	public Integer addProduct(Product product);
 	public Integer deleteProduct(Integer productId);
 	public Integer updateProductQuantity(Integer productId, Integer quantity, String operation);
 	public Integer updateProductPrice(Integer productId, Double price);

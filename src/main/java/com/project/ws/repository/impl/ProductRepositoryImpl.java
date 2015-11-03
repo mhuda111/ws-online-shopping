@@ -90,12 +90,13 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 	
 	@Override
 	@Transactional
-	public String addProduct(Product product) {
+	public Integer addProduct(Product product) {
 		Integer count = 0;
 		String message = "";
 		String SQL = "INSERT INTO product (product_name, product_description, product_type, product_quantity, product_price,vendor_id) VALUES ('" +
 				product.getName() + "', '" + product.getDescription() + "', '" + product.getType() + "', " +
-				product.getQuantity() + ", " + product.getPrice() + ", " + product.getVendor()+ ")";
+				product.getQuantity() + ", " + product.getPrice() + ", " + product.getVendorId()+ ")";
+		System.out.println(SQL);
 		try {
 			Query query = em.createNativeQuery(SQL);
 			count = query.executeUpdate();
@@ -104,9 +105,9 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 		}
 		
 		if (count == 1)
-			return "Product Added Successfully";
-		else
-			return message;
+			System.out.println("Product Added Successfully");
+
+		return count;
 	}
 
 	@Override

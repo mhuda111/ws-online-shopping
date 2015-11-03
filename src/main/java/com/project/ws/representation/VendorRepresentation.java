@@ -7,12 +7,16 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @XmlRootElement(name = "Vendor")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @Component
 public class VendorRepresentation {
 	
+	@JsonIgnore
+	private Integer vendorId;
 	private String vendorName;
 	private String vendorCity;
 	private String vendorState;
@@ -63,6 +67,14 @@ public class VendorRepresentation {
 	}
 	public void setVendorCountry(String vendorCountry) {
 		this.vendorCountry = vendorCountry;
+	}
+	
+	public Integer getVendorId() {
+		return vendorId;
+	}
+
+	public void setVendorId(Integer vendorId) {
+		this.vendorId = vendorId;
 	}
 	
 }

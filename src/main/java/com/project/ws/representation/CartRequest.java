@@ -11,14 +11,13 @@ import org.springframework.stereotype.Component;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @Component
-public class OrderRequest {
+public class CartRequest {
 
 	private Integer customerId;
 	private Integer productId;
-	private Double price;
 	private Integer quantity;
 	
-	public OrderRequest() {}
+	public CartRequest() {}
 	
 	//setters
 	
@@ -30,9 +29,9 @@ public class OrderRequest {
 		this.productId = productId;
 	}
 	
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+//	public void setPrice(Double price) {
+//		this.price = price;
+//	}
 	
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
@@ -48,9 +47,9 @@ public class OrderRequest {
 		return this.productId;
 	}
 	
-	public Double getPrice() {
-		return this.price;
-	}
+//	public Double getPrice() {
+//		return this.price;
+//	}
 	
 	public Integer getQuantity() {
 		return this.quantity;
@@ -58,6 +57,6 @@ public class OrderRequest {
 	
 	@Override
 	public String toString() {
-		return this.customerId + "-" + this.productId + "-" + this.price + "-" + this.quantity;
+		return this.customerId + "-" + this.productId + "-" + "-" + this.quantity;
 	}
 }

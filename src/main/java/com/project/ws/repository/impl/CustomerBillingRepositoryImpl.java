@@ -32,6 +32,7 @@ public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepos
 	@Override
 	@Transactional
 	public Integer addCardDetails(CustomerBillingDetails customerBillingDetail) {
+		java.sql.Date sqlDate = new java.sql.Date(customerBillingDetail.getCardExpiry().getTime());
 		SQL = "INSERT INTO customer_billing_details(cust_id, bill_addr_line1, bill_addr_line2, bill_city, " + 
 				"bill_state, bill_zip_code, card_type, card_no, cvv, card_name, card_expiry) VALUES (" +
 				customerBillingDetail.getCustomerId() + ", '" + customerBillingDetail.getBillAddrLine1() + "', '" +
@@ -39,8 +40,13 @@ public class CustomerBillingRepositoryImpl implements CustomerBillingCustomRepos
 				customerBillingDetail.getBillState() + "', '" + customerBillingDetail.getBillZipCode() + "', '" +
 				customerBillingDetail.getCardType() + "', '" + customerBillingDetail.getCardNo() + "', '" +
 				customerBillingDetail.getCVV() + "', '" + customerBillingDetail.getCardName() + "', '" + 
-				customerBillingDetail.getCardExpiry() + "')";
-		count = em.createNativeQuery(SQL).executeUpdate();
+				sqlDate + "')";
+		System.out.println(SQL);
+		try {
+			count = em.createNativeQuery(SQL).executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		//count = query.executeUpdate();
 		return count;
 	}

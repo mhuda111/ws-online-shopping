@@ -34,7 +34,7 @@ public class VendorController {
 		if(ex.getMessage() != null)
 			message = ex.getMessage();
 		ex.printStackTrace();
-        return "Error: " + message + " in path: " + req.getRequestURI();
+        return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
     }
 
 	@RequestMapping(value="/vendor/", method=RequestMethod.GET, params="vendorId")
@@ -67,8 +67,6 @@ public class VendorController {
 	public @ResponseBody VendorRepresentation addVendor(@RequestBody VendorRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
 		try {
-			if(vendorActivity.validateVendor(request.getVendorId()) == false) 
-				throw new VendorNotFoundException(request.getVendorId());
 			vendorRepresentation =  vendorActivity.addVendor(request);
 		} catch(RuntimeException e) {
 			throw new RuntimeException();
@@ -92,17 +90,21 @@ public class VendorController {
 	}
 	
 	@RequestMapping(value="/vendor/delete", method=RequestMethod.DELETE)
-	public @ResponseBody VendorRepresentation logicalDeleteVendor(HttpServletRequest request) {
+	public @ResponseBody String deleteVendor(HttpServletRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
+		Integer count = 0;
 		try {
 			Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
 			if(vendorActivity.validateVendor(vendorId) == false) 
 				throw new VendorNotFoundException(vendorId);
-			vendorRepresentation = vendorActivity.logicalDeleteVendor(vendorId);
+			count = vendorActivity.deleteVendor(vendorId);
 		} catch(RuntimeException e) {
 			throw new RuntimeException();
 		}
-		return vendorRepresentation;
+		if(count == 1)
+			return "Vendor Deleted Successfully";
+		else
+			return "Error deleting vendor. Please check the logs.";
 	}
 	
 }

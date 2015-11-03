@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import com.project.ws.domain.Cart;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.OrderRepresentation;
-import com.project.ws.representation.OrderRequest;
+import com.project.ws.representation.CartRequest;
 import com.project.ws.workflow.CustomerActivity;
 import com.project.ws.workflow.OrderActivity;
 import com.project.ws.workflow.ProductActivity;
@@ -60,7 +60,7 @@ public class OrderController {
 		String message = "";
 		if(ex.getMessage() != null)
 			message = ex.getMessage();
-        return "Error: " + message + " in path: " + req.getRequestURI();
+		return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
     }	
 
 	@RequestMapping(value="/order/activeOrders", method=RequestMethod.GET, params="customerId")
@@ -79,12 +79,12 @@ public class OrderController {
     }
 	
 	@RequestMapping(value="/order/createOrder", method=RequestMethod.POST)
-	public @ResponseBody List<CartRepresentation> createOrder(@RequestBody Cart cart) {
+	public @ResponseBody List<CartRepresentation> createOrder(@RequestBody CartRequest cartRequest) {
 		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();
 		try {
-			if(customerActivity.validateCustomer(cart.getCustomerId()) == false)
-				throw new CustomerNotFoundException(cart.getCustomerId());
-			cartRepresentation = productActivity.buyProduct(cart);
+			if(customerActivity.validateCustomer(cartRequest.getCustomerId()) == false)
+				throw new CustomerNotFoundException(cartRequest.getCustomerId());
+			cartRepresentation = productActivity.buyProduct(cartRequest);
 		} catch(RuntimeException e) {
 			throw new RuntimeException();
 		}
@@ -92,12 +92,27 @@ public class OrderController {
 	}
 
 	@RequestMapping(value="/order/placeOrder", method=RequestMethod.PUT)
-	 public @ResponseBody OrderRepresentation placeOrder(@RequestBody OrderRequest orderRequest) {
+	 public @ResponseBody OrderRepresentation placeOrder(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
 		try {
-			if(customerActivity.validateCustomer(orderRequest.getCustomerId()) == false)
-				throw new CustomerNotFoundException(orderRequest.getCustomerId());
-			orderActivity.placeOrder(orderRequest.getCustomerId());
+			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
+			orderActivity.placeOrder(customerId);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return orderRepresentation;
+	}
+	
+	@RequestMapping(value="/order/ship", method=RequestMethod.PUT)
+	 public @ResponseBody OrderRepresentation shipOrder(HttpServletRequest request) {
+		OrderRepresentation orderRepresentation = new OrderRepresentation();
+		try {
+			Integer orderId = Integer.parseInt(request.getParameter("orderId"));
+			if(customerActivity.validateCustomer(orderId) == false)
+				throw new OrderNotFoundException(orderId);
+			orderActivity.shipOrder(orderId);
 		} catch(RuntimeException e) {
 			throw new RuntimeException();
 		}

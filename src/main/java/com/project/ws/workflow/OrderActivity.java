@@ -106,7 +106,7 @@ public class OrderActivity {
 		VendorActivity vendorActivity = new VendorActivity(vendorRepo);
 		List<OrderLineItem> orderList = orderLineRepo.findByOrderId(orderId);
 		for(OrderLineItem item:orderList) {
-			vendorId = prodRepo.findByProductId(item.getProductId()).getVendor();
+			vendorId = prodRepo.findByProductId(item.getProductId()).getVendorId();
 			vendorActivity.settleAccount(vendorId, item.getOrderLinePrice(), "credit");
 		}
 		

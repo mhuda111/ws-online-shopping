@@ -34,7 +34,7 @@ public class CustomerController {
 		String message = "";
 		if(ex.getMessage() != null)
 			message = ex.getMessage();
-        return "Error: " + message + " in path: " + req.getRequestURI();
+		return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
     }
 	
 	@RequestMapping("/customer/firstName/")

@@ -119,7 +119,7 @@ public class Product implements Serializable {
 		return this.productType;
 	}
 	
-	public Integer getVendor() {
+	public Integer getVendorId() {
 		return this.vendorId;
 	}
 	
