@@ -71,6 +71,14 @@ public class CustomerActivity {
 		return mapRepresentation(customer);
 	}
 	
+	public Boolean validateCustomer(Integer customerId) {
+		Customer c = custRepo.findOne(customerId);
+		if(c == null)
+			return false;
+		else 
+			return true;
+	}
+	
 	public Customer mapRequest(CustomerRequest customerRequest) {
 		Customer customer = new Customer();
 		customer.setCustFirstname(customerRequest.getFirstName());

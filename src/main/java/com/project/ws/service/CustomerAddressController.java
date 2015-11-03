@@ -1,5 +1,6 @@
 package com.project.ws.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,50 +21,50 @@ import com.project.ws.domain.CustomerAddress;
 import com.project.ws.repository.CustomerAddressRepository;
 import com.project.ws.representation.AddressRequest;
 import com.project.ws.representation.CustAddrRepresentation;
+import com.project.ws.workflow.CustomerActivity;
 import com.project.ws.workflow.CustomerAddressActivity;
 
 
 @RestController
-public class CustomerAddressController implements ErrorController {
+public class CustomerAddressController {
 
 	@Autowired
 	CustomerAddressActivity custAddrActivity;
 	
-	private static final String ERRORPATH = "/error";
-	private static final String errorString = "You have received this page in ERROR. ";
+	@Autowired
+	CustomerActivity customerActivity;
 	
-	private static final Map<Object, String> errorMessages = ImmutableMap.<Object, String>builder()
-			.put(HttpServletResponse.SC_NOT_FOUND, "The requested resource does not exist")
-			.put(HttpServletResponse.SC_BAD_REQUEST, "The URI entered is incorrect. Please rectify and submit again")
-			.put(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Server Error. Please try later")
-			.put(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Please contact the System Administrator")
-			.put(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This method is not allowed to access the resource. Please rectify your request")
-			.put("Default", "Please contact the System Administrator")
-			.build();
-	
-    @Override
-    public String getErrorPath() {
-        return ERRORPATH;
-    }
-    
-	@RequestMapping(ERRORPATH)
-	public @ResponseBody String error(HttpServletRequest request, HttpServletResponse response) {
-		return errorString + errorMessages.get(response.getStatus());
+	@ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
+		String message = "";
+		if(ex.getMessage() != null)
+			message = ex.getMessage();
+        return "Error: " + message + " in path: " + req.getRequestURI();
     }
 	
 	@RequestMapping("/customeraddress/")
     public List<CustAddrRepresentation> getCustomersAddressFromId(HttpServletRequest request) {
-		int customerId = Integer.parseInt(request.getParameter("customerId"));
-    	return custAddrActivity.getAddress(customerId);
+		List<CustAddrRepresentation> custAddrRepresentation = new ArrayList<CustAddrRepresentation>();
+		try {
+			int customerId = Integer.parseInt(request.getParameter("customerId"));
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
+			custAddrRepresentation = custAddrActivity.getAddress(customerId);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+    	return custAddrRepresentation;
     }
 	
 	@RequestMapping(value="/customeraddress/add/", method=RequestMethod.POST)
     public String addCustomerAddress(@RequestBody AddressRequest request) {
 		try {
+			int customerId = request.getCustomerId();
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
 			custAddrActivity.addCustomerAddress(request);
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-			return "Error while adding the address";
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
 		}
 		return "Address added successfully";
     }
@@ -71,17 +73,14 @@ public class CustomerAddressController implements ErrorController {
     public CustAddrRepresentation updateCustomerAddress(@RequestBody AddressRequest request) {
 		CustAddrRepresentation custAddrRepresentation = new CustAddrRepresentation();
 		try {
+			int customerId = request.getCustomerId();
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
 			custAddrRepresentation = custAddrActivity.updateCustomerAddress(request);
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
 		}
-		if(custAddrRepresentation == null) {
-			custAddrRepresentation = new CustAddrRepresentation();
-			custAddrRepresentation.setMessage("Operation Failure");
-			return custAddrRepresentation;
-		}
-		else
-			return custAddrRepresentation;
+		return custAddrRepresentation;
     }
 	
 //	@RequestMapping("/customer/defAddress/")

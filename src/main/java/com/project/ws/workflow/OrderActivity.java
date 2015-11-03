@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.ws.domain.Cart;
+import com.project.ws.domain.Customer;
 import com.project.ws.domain.CustomerAddress;
 import com.project.ws.domain.Order;
 import com.project.ws.domain.OrderLineItem;
@@ -131,6 +132,14 @@ public class OrderActivity {
 		Order order = new Order();
 		order = orderRepo.findOne(orderId);
 		return mapRepresentation(order);
+	}
+	
+	public Boolean validateOrder(Integer orderId) {
+		Order o = orderRepo.findOne(orderId);
+		if(o == null)
+			return false;
+		else 
+			return true;
 	}
 	
 	public OrderRepresentation mapRepresentation(Order order) {

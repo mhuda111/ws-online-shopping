@@ -1,5 +1,6 @@
 package com.project.ws.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,69 +22,76 @@ import com.project.ws.workflow.ProductActivity;
 
 
 @RestController
-public class ProductController implements ErrorController {
-
-	private static final String ERRORPATH = "/error";
-	private static final String errorString = "You have received this page in ERROR. ";
-	
-	private static final Map<Object, String> errorMessages = ImmutableMap.<Object, String>builder()
-			.put(HttpServletResponse.SC_NOT_FOUND, "The requested resource does not exist")
-			.put(HttpServletResponse.SC_BAD_REQUEST, "The URI entered is incorrect. Please rectify and submit again")
-			.put(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Server Error. Please try later")
-			.put(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Please contact the System Administrator")
-			.put(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This method is not allowed to access the resource. Please rectify your request")
-			.put("Default", "Please contact the System Administrator")
-			.build();
+public class ProductController {
 	
 	@Autowired
     private ProductActivity productActivity;
-
-    @Override
-    public String getErrorPath() {
-        return ERRORPATH;
-    }
-    
-	@RequestMapping(ERRORPATH)
-	public @ResponseBody String error(HttpServletRequest request, HttpServletResponse response) {
-		return errorString + errorMessages.get(response.getStatus());
+	
+	@ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
+		String message = "";
+		if(ex.getMessage() != null)
+			message = ex.getMessage();
+        return "Error: " + message + " in path: " + req.getRequestURI();
     }
 	
 	@RequestMapping(value="/product", method=RequestMethod.GET)
     public List<ProductRepresentation> getAllProducts(HttpServletRequest request) {
-		List<ProductRepresentation> productRepresentations = productActivity.allProducts();
+		List<ProductRepresentation> productRepresentations = new ArrayList<ProductRepresentation>();
+		try {
+			productRepresentations = productActivity.allProducts();
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
     	return productRepresentations;
     }
 	
 	@RequestMapping(value="/product", method=RequestMethod.GET, params="name")
     public List<ProductRepresentation> readByProductName(HttpServletRequest request) {
-		String productName = request.getParameter("name");
-    	return productActivity.searchProduct(productName);
+		List<ProductRepresentation> productRepresentations = new ArrayList<ProductRepresentation>();
+		try {
+			String productName = request.getParameter("name");
+			productRepresentations = productActivity.searchProduct(productName); 
+		} catch (RuntimeException e) {
+			throw new RuntimeException();
+		}
+    	return productRepresentations;
     }
 	
 	@RequestMapping(value="/product/add", method=RequestMethod.POST)
     public ProductRepresentation addProduct(HttpServletRequest request) {
-		String productName =  request.getParameter("productName");
-		String productDescription =  request.getParameter("productDescription");
-		String productType =  request.getParameter("productType");
-		int quantity = Integer.parseInt(request.getParameter("quantity"));
-		Double price = Double.parseDouble(request.getParameter("price"));
-		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
-
-		Product product = new Product();
-		product.setName(productName);
-		product.setDescription(productDescription);
-		product.setType(productType);
-		product.setQuantity(quantity);
-		product.setPrice(price);
-		product.setVendorId(vendorId);
-		return productActivity.addProduct(product);
+		ProductRepresentation productRepresentation = new ProductRepresentation();
+		try {
+			String productName =  request.getParameter("productName");
+			String productDescription =  request.getParameter("productDescription");
+			String productType =  request.getParameter("productType");
+			int quantity = Integer.parseInt(request.getParameter("quantity"));
+			Double price = Double.parseDouble(request.getParameter("price"));
+			int vendorId = Integer.parseInt(request.getParameter("vendorId"));
+			Product product = new Product();
+			product.setName(productName);
+			product.setDescription(productDescription);
+			product.setType(productType);
+			product.setQuantity(quantity);
+			product.setPrice(price);
+			product.setVendorId(vendorId);
+			
+			productRepresentation = productActivity.addProduct(product);
+		} catch (RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return productRepresentation;
     }
 
 	@RequestMapping(value="/product", method=RequestMethod.DELETE, params="productId")
     public String deleteProduct(HttpServletRequest request) {
-		Integer productId = Integer.parseInt(request.getParameter("productId"));
-
-		int productDeleted = productActivity.deleteProduct(productId);
+		int productDeleted = 0;
+		try {
+			Integer productId = Integer.parseInt(request.getParameter("productId"));
+			productDeleted = productActivity.deleteProduct(productId);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
 		if (productDeleted>0) {
 			return "Successful delete product";
 		}

@@ -93,6 +93,14 @@ public class ProductActivity {
 		return prodRepo.deleteProduct(productId);
 	}
 	
+	public Boolean validateProduct(Integer productId) {
+		Product p = prodRepo.findOne(productId);
+		if(p == null)
+			return false;
+		else
+			return true;
+	}
+	
 	public ProductRepresentation mapProductRepresentation(Product product, String vendorName) {
 		prodRepresentation = new ProductRepresentation();
 		prodRepresentation.setName(product.getName());

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.ws.domain.Customer;
 import com.project.ws.domain.CustomerAddress;
 import com.project.ws.repository.CustomerAddressRepository;
 import com.project.ws.representation.AddressRequest;

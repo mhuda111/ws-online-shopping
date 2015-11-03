@@ -1,13 +1,11 @@
 package com.project.ws.service;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ErrorController;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ClassUtils;
 
-import com.google.common.collect.ImmutableMap;
 import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
 import com.project.ws.workflow.CustomerActivity;
@@ -28,44 +24,42 @@ import com.project.ws.workflow.CustomerActivity;
  * that specify the end points for the customer web service.
  */
 @RestController
-public class CustomerController implements ErrorController {
+public class CustomerController {
 	
 	@Autowired
 	CustomerActivity customerActivity;
 	
-	private static final String ERRORPATH = "/error";
-	private static final String errorString = "You have received this page in ERROR. ";
-	
-	private static final Map<Object, String> errorMessages = ImmutableMap.<Object, String>builder()
-			.put(HttpServletResponse.SC_NOT_FOUND, "The requested resource does not exist")
-			.put(HttpServletResponse.SC_BAD_REQUEST, "The URI entered is incorrect. Please rectify and submit again")
-			.put(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Server Error. Please try later")
-			.put(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Please contact the System Administrator")
-			.put(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This method is not allowed to access the resource. Please rectify your request")
-			.put("Default", "Please contact the System Administrator")
-			.build();
-	
-    @Override
-    public String getErrorPath() {
-        return ERRORPATH;
-    }
-    
-	@RequestMapping(ERRORPATH)
-	public @ResponseBody String error(HttpServletRequest request, HttpServletResponse response) {
-		return errorString + errorMessages.get(response.getStatus());
+	@ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
+		String message = "";
+		if(ex.getMessage() != null)
+			message = ex.getMessage();
+        return "Error: " + message + " in path: " + req.getRequestURI();
     }
 	
 	@RequestMapping("/customer/firstName/")
     public CustomerRepresentation getCustomersByFirstName(HttpServletRequest request) {
-		String name = request.getParameter("fname");
-    	CustomerRepresentation customerRepresentation = customerActivity.getCustomersByFirstName(name);
-    	if(customerRepresentation == null) throw new ResourceNotFoundException();
+		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+		try {
+			String name = request.getParameter("fname");
+			customerRepresentation = customerActivity.getCustomersByFirstName(name);
+		} catch (RuntimeException e) {
+			throw new RuntimeException();
+		}
     	return customerRepresentation;
     }
 
 	@RequestMapping(value="/customer/", method=RequestMethod.GET)
     public CustomerRepresentation getCustomerById(HttpServletRequest request) {
-    	CustomerRepresentation customerRepresentation =  customerActivity.getCustomerById(Integer.parseInt(request.getParameter("customerId")));
+		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+		try {
+			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
+			customerRepresentation =  customerActivity.getCustomerById(customerId);
+		} catch (RuntimeException e) {
+			throw new RuntimeException();
+		}
     	return customerRepresentation;
     }
 	
@@ -75,8 +69,7 @@ public class CustomerController implements ErrorController {
 		try {
 			 customerRepresentation = customerActivity.addCustomer(customerRequest);
 		} catch(RuntimeException e) {
-			System.out.println("error message " + e.getMessage());
-			throw new MethodNotAllowedException();
+			throw new RuntimeException();
 		}
 		return customerRepresentation;
     }
@@ -84,46 +77,61 @@ public class CustomerController implements ErrorController {
 	@RequestMapping(value="/customer/", method=RequestMethod.DELETE)
     public @ResponseBody String deleteCustomer(HttpServletRequest request) {
 		String message;
-		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
 		try {
+			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
 			message = customerActivity.deleteCustomer(customerId);
 		} catch (RuntimeException e) {
-			System.out.println(e.getMessage());
-			message = "ERROR!";
-			throw new MethodNotAllowedException();
+			throw new RuntimeException();
 		}
 		return message;
     }
 	
 	@RequestMapping(value="/customer/updateName", method=RequestMethod.PUT)
 	 public CustomerRepresentation updateCustomerWithInfo(HttpServletRequest request) {
-		int customerId = Integer.parseInt(request.getParameter("customerId"));
-		String firstName = request.getParameter("firstName");
-		String lastName = request.getParameter("lastName");
-		CustomerRepresentation customerRepresentation = customerActivity.updateName(customerId, firstName, lastName);
+		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+		try {
+			int customerId = Integer.parseInt(request.getParameter("customerId"));
+			String firstName = request.getParameter("firstName");
+			String lastName = request.getParameter("lastName");
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
+			customerRepresentation = customerActivity.updateName(customerId, firstName, lastName);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
 		return customerRepresentation;
 	}
 	
 	@RequestMapping(value="/customer/updateEmail", method=RequestMethod.PUT)
 	 public CustomerRepresentation updateEmail(HttpServletRequest request) {
-		int customerId = Integer.parseInt(request.getParameter("customerId"));
-		String email = request.getParameter("email");
-		CustomerRepresentation customerRepresentation = customerActivity.updateEmail(customerId, email);
+		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+		try {
+			int customerId = Integer.parseInt(request.getParameter("customerId"));
+			String email = request.getParameter("email");
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
+			customerRepresentation = customerActivity.updateEmail(customerId, email);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
 		return customerRepresentation;
 	}
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleResourceNotFoundException() {
-        return "Resource you are trying to access does not exist. Please check your link again";
-    }
+}
 
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class ResourceNotFoundException extends RuntimeException {
+	private static final long serialVersionUID = -7531082778174131155L;
+	public ResourceNotFoundException() {
+	    super("Resource you are trying to access does not exist. Please check your link again");
+	}
 }
 
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 class ServerErrorException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
-
 	public ServerErrorException() {
 		super("Server is Not Responding Currently. Please try again later");
 	}

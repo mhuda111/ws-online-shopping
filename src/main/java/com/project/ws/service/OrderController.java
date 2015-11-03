@@ -1,5 +1,6 @@
 package com.project.ws.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,19 +29,7 @@ import com.project.ws.workflow.OrderActivity;
 import com.project.ws.workflow.ProductActivity;
 
 @RestController
-public class OrderController implements ErrorController {
-
-	private static final String ERRORPATH = "/error";
-	private static final String errorString = "You have received this page in ERROR. ";
-	
-	private static final Map<Object, String> errorMessages = ImmutableMap.<Object, String>builder()
-			.put(HttpServletResponse.SC_NOT_FOUND, "The requested resource does not exist")
-			.put(HttpServletResponse.SC_BAD_REQUEST, "The URI entered is incorrect. Please rectify and submit again")
-			.put(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Server Error. Please try later")
-			.put(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Please contact the System Administrator")
-			.put(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This method is not allowed to access the resource. Please rectify your request")
-			.put("Default", "Please contact the System Administrator")
-			.build();
+public class OrderController {
 	
 	@Autowired
     private OrderActivity orderActivity;
@@ -50,65 +39,118 @@ public class OrderController implements ErrorController {
 	
 	@Autowired
 	private CustomerActivity customerActivity;
-	
-    @Override
-    public String getErrorPath() {
-        return ERRORPATH;
-    }
-    
-	@RequestMapping(ERRORPATH)
-	public @ResponseBody String error(HttpServletRequest request, HttpServletResponse response) {
-		return errorString + errorMessages.get(response.getStatus());
-    }
 
 	@RequestMapping(value="/order", method=RequestMethod.GET, params="customerId")
 	public @ResponseBody List<OrderRepresentation> findAllOrders(HttpServletRequest request) {
-		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		Integer customerId = 0;
+		List<OrderRepresentation> orderRepr = new ArrayList<OrderRepresentation>();
 		try {
-			customerActivity.getCustomerById(customerId);
+			customerId = Integer.parseInt(request.getParameter("customerId"));
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
+			orderRepr = orderActivity.allOrders(customerId, "all");
 		} catch(RuntimeException ex) {
-			throw new ResourceNotFoundException();
+			throw new RuntimeException();
 		}
-		
-		List<OrderRepresentation> orderRepr = orderActivity.allOrders(customerId, "all");
 		return orderRepr;
     }
-
-	@ResponseStatus(value=HttpStatus.NOT_FOUND)
-	@ExceptionHandler(ResourceNotFoundException.class)
-    public String handleResourceNotFoundException(ResourceNotFoundException ex) {
-        return ex.getMessage();
+	
+	@ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
+		String message = "";
+		if(ex.getMessage() != null)
+			message = ex.getMessage();
+        return "Error: " + message + " in path: " + req.getRequestURI();
     }	
 
-	
 	@RequestMapping(value="/order/activeOrders", method=RequestMethod.GET, params="customerId")
     public @ResponseBody List<OrderRepresentation> findAllActiveOrders(HttpServletRequest request) {
-		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
-		return orderActivity.allOrders(customerId, "active");
+		Integer customerId;
+		List<OrderRepresentation> orderRepr = new ArrayList<OrderRepresentation>();
+		try {
+			customerId = Integer.parseInt(request.getParameter("customerId"));
+			if(customerActivity.validateCustomer(customerId) == false)
+				throw new CustomerNotFoundException(customerId);
+			orderRepr = orderActivity.allOrders(customerId, "active");
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return orderRepr;
     }
 	
 	@RequestMapping(value="/order/createOrder", method=RequestMethod.POST)
 	public @ResponseBody List<CartRepresentation> createOrder(@RequestBody Cart cart) {
-		return productActivity.buyProduct(cart);
+		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();
+		try {
+			if(customerActivity.validateCustomer(cart.getCustomerId()) == false)
+				throw new CustomerNotFoundException(cart.getCustomerId());
+			cartRepresentation = productActivity.buyProduct(cart);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return cartRepresentation;
 	}
 
 	@RequestMapping(value="/order/placeOrder", method=RequestMethod.PUT)
 	 public @ResponseBody OrderRepresentation placeOrder(@RequestBody OrderRequest orderRequest) {
-		return orderActivity.placeOrder(orderRequest.getCustomerId());
+		OrderRepresentation orderRepresentation = new OrderRepresentation();
+		try {
+			if(customerActivity.validateCustomer(orderRequest.getCustomerId()) == false)
+				throw new CustomerNotFoundException(orderRequest.getCustomerId());
+			orderActivity.placeOrder(orderRequest.getCustomerId());
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return orderRepresentation;
 	}
 	
 	@RequestMapping(value="/order/cancelOrder", method=RequestMethod.PUT, params="orderId")
 	 public @ResponseBody OrderRepresentation cancelOrder(HttpServletRequest request) {
-		Integer orderId = Integer.parseInt(request.getParameter("orderId"));
-		return orderActivity.cancelOrder(orderId);
+		OrderRepresentation orderRepresentation = new OrderRepresentation();
+		try {
+			Integer orderId = Integer.parseInt(request.getParameter("orderId"));
+			if(orderActivity.validateOrder(orderId) == false)
+				throw new OrderNotFoundException(orderId);
+			orderRepresentation = orderActivity.cancelOrder(orderId);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return orderRepresentation;
 	}
 	
 	@RequestMapping(value="/order/checkOrderStatus", method=RequestMethod.GET, params="orderId")
 	public @ResponseBody OrderRepresentation checkOrderStatus(HttpServletRequest request) {
-		Integer orderId = Integer.parseInt(request.getParameter("orderId"));
-		return orderActivity.checkOrderStatus(orderId);
+		OrderRepresentation orderRepresentation = new OrderRepresentation();
+		try {
+			Integer orderId = Integer.parseInt(request.getParameter("orderId"));
+			if(orderActivity.validateOrder(orderId) == false)
+				throw new OrderNotFoundException(orderId);
+			orderRepresentation = orderActivity.checkOrderStatus(orderId);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return orderRepresentation; 
 	}
 
+}
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class CustomerNotFoundException extends RuntimeException {
+
+	private static final long serialVersionUID = -6919160978660692882L;
+
+	public CustomerNotFoundException(Integer customerId) {
+		super("Could not find customer- " + customerId);
+	}
+}
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class OrderNotFoundException extends RuntimeException {
+	private static final long serialVersionUID = 4064641490641085268L;
+
+	public OrderNotFoundException(Integer orderId) {
+		super("Could not find order - " + orderId);
+	}
 }
 
 

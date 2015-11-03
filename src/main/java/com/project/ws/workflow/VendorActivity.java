@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.ws.domain.Product;
 import com.project.ws.domain.Vendor;
 import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.VendorRepresentation;
@@ -76,6 +77,14 @@ public class VendorActivity {
 		vendorRepo.updateStatus(vendorId, "N");
 		vendor = vendorRepo.findOne(vendorId);
 		return mapRepresentation(vendor);
+	}
+	
+	public Boolean validateVendor(Integer vendorId) {
+		Vendor v = vendorRepo.findOne(vendorId);
+		if(v == null)
+			return false;
+		else
+			return true;
 	}
 	
 	public VendorRepresentation mapRepresentation(Vendor vendor) {

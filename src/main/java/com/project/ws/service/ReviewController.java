@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,51 +19,39 @@ import com.project.ws.domain.Review;
 import com.project.ws.workflow.ReviewActivity;
 
 @RestController
-public class ReviewController implements ErrorController {
-
-	private static final String ERRORPATH = "/error";
-	private static final String errorString = "You have received this page in ERROR. ";
-	
-	private static final Map<Object, String> errorMessages = ImmutableMap.<Object, String>builder()
-			.put(HttpServletResponse.SC_NOT_FOUND, "The requested resource does not exist")
-			.put(HttpServletResponse.SC_BAD_REQUEST, "The URI entered is incorrect. Please rectify and submit again")
-			.put(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Server Error. Please try later")
-			.put(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Please contact the System Administrator")
-			.put(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This method is not allowed to access the resource. Please rectify your request")
-			.put("Default", "Please contact the System Administrator")
-			.build();
+public class ReviewController {
 
 	@Autowired
 	private ReviewActivity reviewActivity;
 	
-    @Override
-    public String getErrorPath() {
-        return ERRORPATH;
-    }
-    
-	@RequestMapping(ERRORPATH)
-	public @ResponseBody String error(HttpServletRequest request, HttpServletResponse response) {
-		return errorString + errorMessages.get(response.getStatus());
+	@ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
+		String message = "";
+		if(ex.getMessage() != null)
+			message = ex.getMessage();
+        return "Error: " + message + " in path: " + req.getRequestURI();
     }
 
 	@RequestMapping("/review/add")
 	public String addReview(HttpServletRequest request) {
-		String reviewDesc = request.getParameter("reviewDesc");
-		String reviewType = request.getParameter("reviewType");
-		int custId = Integer.parseInt(request.getParameter("custId"));
-		int productId = Integer.parseInt(request.getParameter("productId"));
-		Double rating = Double.parseDouble(request.getParameter("rating"));
+		int reviewAdded = 0;
+		try {
+			String reviewDesc = request.getParameter("reviewDesc");
+			String reviewType = request.getParameter("reviewType");
+			int custId = Integer.parseInt(request.getParameter("custId"));
+			int productId = Integer.parseInt(request.getParameter("productId"));
+			Double rating = Double.parseDouble(request.getParameter("rating"));
+			Review review = new Review();
+			review.setReviewDesc(reviewDesc);
+			review.setReviewType(reviewType);
+			review.setCustId(custId);
+			review.setProductId(productId);
+			review.setRating(rating);
 
-		Review review = new Review();
-
-		review.setReviewDesc(reviewDesc);
-		review.setReviewType(reviewType);
-		review.setCustId(custId);
-		review.setProductId(productId);
-		review.setRating(rating);
-
-
-		int reviewAdded = reviewActivity.addReview(review);
+			reviewAdded = reviewActivity.addReview(review);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
 		if (reviewAdded > 0) {
 			return "Successfully Added Review" ;
 		}
@@ -72,27 +61,41 @@ public class ReviewController implements ErrorController {
 
 	@RequestMapping("/review/avgReview/product")
 	public double getAvgRatingProduct(HttpServletRequest request) {
-		int productId = Integer.parseInt(request.getParameter("productId"));
-		return  reviewActivity.getAvgRatingProduct(productId);
+		double avgRating = 0.00;
+		try {
+			int productId = Integer.parseInt(request.getParameter("productId"));
+			avgRating = reviewActivity.getAvgRatingProduct(productId);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return avgRating;
     }
 
 
 	@RequestMapping("/review/avgReview/vendor")
 	public double getAvgRatingVendor(HttpServletRequest request) {
-		int vendorId = Integer.parseInt(request.getParameter("vendorId"));
-		return reviewActivity.getAvgRatingVendor(vendorId);
+		double avgRating = 0.00;
+		try {
+			int vendorId = Integer.parseInt(request.getParameter("vendorId"));
+			avgRating = reviewActivity.getAvgRatingVendor(vendorId);
+		} catch(RuntimeException e) {
+			throw new RuntimeException();
+		}
+		return avgRating;
     }
 	
 	@RequestMapping(value = "/review/deleteReview/{rId}", method = RequestMethod.DELETE)
     public @ResponseBody String deleteCustomer(@PathVariable String rId) {
-		int reviewId = Integer.parseInt(rId);
+		int noOfDeletedRow = 0;
 		try {
-			int noOfDeletedRow = reviewActivity.deleteReview(reviewId);
-			if (noOfDeletedRow > 0) {
-				return "Deleted Successfully";
-			}
-		} catch (Exception ex) {
-			return "ERROR!";
+			int reviewId = Integer.parseInt(rId);
+			noOfDeletedRow = reviewActivity.deleteReview(reviewId);
+
+		} catch (RuntimeException e) {
+			throw new RuntimeException();
+		}
+		if (noOfDeletedRow > 0) {
+			return "Deleted Successfully";
 		}
 		return "No rows found to delete";
     }
