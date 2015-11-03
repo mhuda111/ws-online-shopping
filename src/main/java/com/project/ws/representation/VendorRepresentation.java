@@ -22,20 +22,7 @@ public class VendorRepresentation {
 	private String vendorCountry;
 
 	public VendorRepresentation() {
-		this.vendorName = "";
-		this.vendorCity = "";
-		this.vendorState = "";
-		this.vendorCountry = "";
 	}
-	
-	public VendorRepresentation(String name, String addr1, String addr2, String city, String state, String country, String zip, String flag) {
-		
-		this.vendorName = name;
-		this.vendorCity = city;
-		this.vendorState = state;
-		this.vendorCountry = country;
-	}
-
 
 	public String getVendorName() {
 		return vendorName;

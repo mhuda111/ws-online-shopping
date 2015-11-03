@@ -36,6 +36,7 @@ public class VendorActivity {
 	
 	public VendorRepresentation getVendor(String vendorName) {
 		vendor = vendorRepo.findByVendorName(vendorName);
+		if(vendor == null) return null;
 		vendorRepresentation = mapRepresentation(vendor);
 		return vendorRepresentation;
 	}
@@ -49,14 +50,11 @@ public class VendorActivity {
 	public VendorRepresentation settleAccount(Integer vendorId, Double amount, String type) {
 		Double currAmount = 0.00;
 		Double newAmount = 0.00;
-		System.out.println("in vendor activity now");
-		System.out.println("vendorId " + vendorId);
 		currAmount = vendorRepo.findOne(vendorId).getVendorAmount();
 		if(type.equals("credit"))
 			newAmount = currAmount + amount;
 		else if(type.equals("debit"))
 			newAmount = currAmount - amount;
-		System.out.println("new amount" + newAmount);
 		vendorRepo.updatePayment(vendorId, newAmount);
 		vendor = vendorRepo.findOne(vendorId);
 		return mapRepresentation(vendor);

@@ -45,12 +45,9 @@ public class ProductActivity {
 	}
 	
 	public List<CartRepresentation> buyProduct(CartRequest cartRequest) {
-		System.out.println("in buy");
 		Boolean check = false;
 		Cart cart = new Cart();
-		System.out.println(cartRequest.getCustomerId());
 		check = prodRepo.getProductAvailability(cartRequest.getProductId(), cartRequest.getQuantity());
-		System.out.println("after prod availability");
 		if(check == false)
 			return null;
 		cart.setPrice(prodRepo.findOne(cartRequest.getProductId()).getPrice());
@@ -82,6 +79,7 @@ public class ProductActivity {
 	
 	public List<ProductRepresentation> searchProduct(String name) {
 		List<Product> productList = prodRepo.readByProductName(name);
+		if(productList.isEmpty()) return null;
 		List<ProductRepresentation> resultList = new ArrayList<ProductRepresentation>();
 		Vendor vendor;
 		String vendorName;

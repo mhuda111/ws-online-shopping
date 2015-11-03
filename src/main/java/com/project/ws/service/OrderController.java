@@ -44,14 +44,10 @@ public class OrderController {
 	public @ResponseBody List<OrderRepresentation> findAllOrders(HttpServletRequest request) {
 		Integer customerId = 0;
 		List<OrderRepresentation> orderRepr = new ArrayList<OrderRepresentation>();
-		try {
-			customerId = Integer.parseInt(request.getParameter("customerId"));
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			orderRepr = orderActivity.allOrders(customerId, "all");
-		} catch(RuntimeException ex) {
-			throw new RuntimeException();
-		}
+		customerId = Integer.parseInt(request.getParameter("customerId"));
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		orderRepr = orderActivity.allOrders(customerId, "all");
 		return orderRepr;
     }
 	
@@ -67,85 +63,60 @@ public class OrderController {
     public @ResponseBody List<OrderRepresentation> findAllActiveOrders(HttpServletRequest request) {
 		Integer customerId;
 		List<OrderRepresentation> orderRepr = new ArrayList<OrderRepresentation>();
-		try {
-			customerId = Integer.parseInt(request.getParameter("customerId"));
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			orderRepr = orderActivity.allOrders(customerId, "active");
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		customerId = Integer.parseInt(request.getParameter("customerId"));
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		orderRepr = orderActivity.allOrders(customerId, "active");
 		return orderRepr;
     }
 	
 	@RequestMapping(value="/order/createOrder", method=RequestMethod.POST)
 	public @ResponseBody List<CartRepresentation> createOrder(@RequestBody CartRequest cartRequest) {
 		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();
-		try {
-			System.out.println("+++++" + cartRequest.getCustomerId());
-			if(customerActivity.validateCustomer(cartRequest.getCustomerId()) == false)
-				throw new CustomerNotFoundException(cartRequest.getCustomerId());
-			cartRepresentation = productActivity.buyProduct(cartRequest);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		if(customerActivity.validateCustomer(cartRequest.getCustomerId()) == false)
+			throw new CustomerNotFoundException(cartRequest.getCustomerId());
+		cartRepresentation = productActivity.buyProduct(cartRequest);
 		return cartRepresentation;
 	}
 
 	@RequestMapping(value="/order/placeOrder", method=RequestMethod.PUT)
 	 public @ResponseBody OrderRepresentation placeOrder(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
-		try {
-			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			orderRepresentation = orderActivity.placeOrder(customerId);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		orderRepresentation = orderActivity.placeOrder(customerId);
 		return orderRepresentation;
 	}
 	
 	@RequestMapping(value="/order/ship", method=RequestMethod.PUT)
 	 public @ResponseBody OrderRepresentation shipOrder(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
-		try {
-			Integer orderId = Integer.parseInt(request.getParameter("orderId"));
-			System.out.println("in controller " + orderId);
-			if(orderActivity.validateOrder(orderId) == false)
-				throw new OrderNotFoundException(orderId);
-			orderRepresentation = orderActivity.shipOrder(orderId);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer orderId = Integer.parseInt(request.getParameter("orderId"));
+		System.out.println("in controller " + orderId);
+		if(orderActivity.validateOrder(orderId) == false)
+			throw new OrderNotFoundException(orderId);
+		orderRepresentation = orderActivity.shipOrder(orderId);
 		return orderRepresentation;
 	}
 	
 	@RequestMapping(value="/order/cancelOrder", method=RequestMethod.PUT, params="orderId")
 	 public @ResponseBody OrderRepresentation cancelOrder(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
-		try {
-			Integer orderId = Integer.parseInt(request.getParameter("orderId"));
-			if(orderActivity.validateOrder(orderId) == false)
-				throw new OrderNotFoundException(orderId);
-			orderRepresentation = orderActivity.cancelOrder(orderId);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer orderId = Integer.parseInt(request.getParameter("orderId"));
+		if(orderActivity.validateOrder(orderId) == false)
+			throw new OrderNotFoundException(orderId);
+		orderRepresentation = orderActivity.cancelOrder(orderId);
 		return orderRepresentation;
 	}
 	
 	@RequestMapping(value="/order/checkOrderStatus", method=RequestMethod.GET, params="orderId")
 	public @ResponseBody OrderRepresentation checkOrderStatus(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
-		try {
-			Integer orderId = Integer.parseInt(request.getParameter("orderId"));
-			if(orderActivity.validateOrder(orderId) == false)
-				throw new OrderNotFoundException(orderId);
-			orderRepresentation = orderActivity.checkOrderStatus(orderId);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer orderId = Integer.parseInt(request.getParameter("orderId"));
+		if(orderActivity.validateOrder(orderId) == false)
+			throw new OrderNotFoundException(orderId);
+		orderRepresentation = orderActivity.checkOrderStatus(orderId);
 		return orderRepresentation; 
 	}
 
@@ -156,8 +127,8 @@ class CustomerNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = -6919160978660692882L;
 
-	public CustomerNotFoundException(Integer customerId) {
-		super("Could not find customer- " + customerId);
+	public CustomerNotFoundException(Object customer) {
+		super("Could not find customer- " + customer);
 	}
 }
 

@@ -43,47 +43,35 @@ public class CustomerBillingDetailsController {
 		String message = "";
 		if(ex.getMessage() != null)
 			message = ex.getMessage();
-		return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
+		return "Error: " + message + " : " + req.getRequestURI() + ".\n\n OR Please contact the system administrator ";
     }
 	
 	@RequestMapping(value="/billing/processPayment", method=RequestMethod.PUT)
     public CustBillingRepresentation processPayment(HttpServletRequest request) {
-		try {
-			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
-			Integer billId = Integer.parseInt(request.getParameter("billId"));
-			Double amount = Double.parseDouble(request.getParameter("amount"));
-			String type = request.getParameter("type");
-			billRepresentation = billActivity.processPayment(customerId, billId, amount, type);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		Integer billId = Integer.parseInt(request.getParameter("billId"));
+		Double amount = Double.parseDouble(request.getParameter("amount"));
+		String type = request.getParameter("type");
+		billRepresentation = billActivity.processPayment(customerId, billId, amount, type);
 		return billRepresentation;
     }
 
 	@RequestMapping(value="/billing/", method=RequestMethod.GET)
     public List<CustBillingRepresentation> getBillingInfo(HttpServletRequest request) {
 		List<CustBillingRepresentation> billList = new ArrayList<CustBillingRepresentation>();
-		try {
-			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			billList = billActivity.getBillingDetails(customerId);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		billList = billActivity.getBillingDetails(customerId);
 		return billList;
     }
 	
 	@RequestMapping(value="/billing/", method=RequestMethod.POST)
     public CustBillingRepresentation getBillingInfo(@RequestBody BillingRequest request) {
-		try {
-			Integer customerId = request.getCustomerId();
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			billRepresentation = billActivity.addBillingDetails(request);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer customerId = request.getCustomerId();
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		billRepresentation = billActivity.addBillingDetails(request);
 		return billRepresentation;
     }
 

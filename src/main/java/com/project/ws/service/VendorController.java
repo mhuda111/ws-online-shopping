@@ -34,72 +34,54 @@ public class VendorController {
 		if(ex.getMessage() != null)
 			message = ex.getMessage();
 		ex.printStackTrace();
-        return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
+        return "Error: " + message + " : " + req.getRequestURI() + ".\n\n OR Please contact the system administrator ";
     }
 
-	@RequestMapping(value="/vendor/", method=RequestMethod.GET, params="vendorId")
+	@RequestMapping(value="/vendor", method=RequestMethod.GET, params="vendorId")
 	public @ResponseBody VendorRepresentation getVendorById(HttpServletRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
-		try {
-			Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
-			if(vendorActivity.validateVendor(vendorId) == false) 
-				throw new VendorNotFoundException(vendorId);
-			vendorRepresentation =  vendorActivity.getVendor(vendorId);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
+		if(vendorActivity.validateVendor(vendorId) == false) 
+			throw new VendorNotFoundException(vendorId);
+		vendorRepresentation =  vendorActivity.getVendor(vendorId);
 		return vendorRepresentation;
 	}
 
-	@RequestMapping(value="/vendor/", method=RequestMethod.GET, params="vendorName")
+	@RequestMapping(value="/vendor/name", method=RequestMethod.GET, params="vendorName")
 	public @ResponseBody VendorRepresentation getVendorByName(HttpServletRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
-		try {
-			String name = request.getParameter("vendorName");
-			vendorRepresentation =  vendorActivity.getVendor(name);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		String name = request.getParameter("vendorName");
+		vendorRepresentation =  vendorActivity.getVendor(name);
+		if(vendorRepresentation == null)
+			throw new VendorNotFoundException(name);
 		return vendorRepresentation;
 	}
 	
-	@RequestMapping(value="/vendor/addVendor/", method=RequestMethod.POST)
-	public @ResponseBody VendorRepresentation addVendor(@RequestBody VendorRequest request) {
+	@RequestMapping(value="/vendor/addVendor", method=RequestMethod.POST)
+	public @ResponseBody VendorRepresentation addVendor(@RequestBody VendorRequest request, HttpServletResponse response) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
-		try {
-			vendorRepresentation =  vendorActivity.addVendor(request);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		vendorRepresentation =  vendorActivity.addVendor(request);
 		return vendorRepresentation;
 	}
 
 	@RequestMapping(value="/vendor/", method=RequestMethod.PUT, params={"vendorId", "vendorName"})
-	public @ResponseBody VendorRepresentation updateVendorName(HttpServletRequest request) {
+	public @ResponseBody VendorRepresentation updateVendorName(HttpServletRequest request, HttpServletResponse response) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
-		try {
-			String vendorName = request.getParameter("vendorName");
-			Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
-			if(vendorActivity.validateVendor(vendorId) == false) 
-				throw new VendorNotFoundException(vendorId);
-			vendorRepresentation = vendorActivity.updateName(vendorId, vendorName);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		String vendorName = request.getParameter("vendorName");
+		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
+		if(vendorActivity.validateVendor(vendorId) == false) 
+			throw new VendorNotFoundException(vendorId);
+		vendorRepresentation = vendorActivity.updateName(vendorId, vendorName);
 		return vendorRepresentation;
 	}
 	
 	@RequestMapping(value="/vendor", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteVendor(HttpServletRequest request) {
 		Integer count = 0;
-		try {
-			Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
-			if(vendorActivity.validateVendor(vendorId) == false) 
-				throw new VendorNotFoundException(vendorId);
-			count = vendorActivity.deleteVendor(vendorId);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
+		if(vendorActivity.validateVendor(vendorId) == false) 
+			throw new VendorNotFoundException(vendorId);
+		count = vendorActivity.deleteVendor(vendorId);
 		if(count == 1)
 			return "Vendor Deleted Successfully";
 		else
@@ -113,7 +95,8 @@ class VendorNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = -5356641914207234841L;
 
-	public VendorNotFoundException(Integer vendorId) {
-		super("Could not find vendor - " + vendorId);
+	public VendorNotFoundException(Object vendor) {
+		super("Could not find vendor - " + vendor);
 	}
 }
+

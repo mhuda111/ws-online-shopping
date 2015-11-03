@@ -54,7 +54,6 @@ public class CustomerActivity {
 
 	public String deleteCustomer(Integer customerId) {
 		Integer count = custRepo.deleteCustomer(customerId);
-		newCustomer = custRepo.findOne(customerId);
 		if(count == 0)
 			return "Error deleting Customer";
 		else
@@ -68,6 +67,7 @@ public class CustomerActivity {
 	
 	public CustomerRepresentation getCustomersByFirstName(String name) {
 		Customer customer = custRepo.findByCustFirstName(name);
+		if(customer == null) return null;
 		return mapRepresentation(customer);
 	}
 	

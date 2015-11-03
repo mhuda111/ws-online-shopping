@@ -24,17 +24,6 @@ public class ProductRepresentation {
 	private String vendorName;
 
 	public ProductRepresentation() {
-		this.productName = "";
-		this.productType = "";
-		this.price = 0.00;
-		this.quantity = 0;
-	}
-
-	public ProductRepresentation(String name, String type, String description, Double price, Integer quantity) {
-		this.productName = name;
-		this.productType = type;
-		this.price = price;
-		this.quantity = quantity;
 	}
 	
 	//setters

@@ -39,47 +39,35 @@ public class CustomerAddressController {
 		String message = "";
 		if(ex.getMessage() != null)
 			message = ex.getMessage();
-		return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
+		return "Error: " + message + " : " + req.getRequestURI() + ".\n\n OR Please contact the system administrator ";
     }
 	
 	@RequestMapping("/customeraddress/")
     public List<CustAddrRepresentation> getCustomersAddressFromId(HttpServletRequest request) {
 		List<CustAddrRepresentation> custAddrRepresentation = new ArrayList<CustAddrRepresentation>();
-		try {
-			int customerId = Integer.parseInt(request.getParameter("customerId"));
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			custAddrRepresentation = custAddrActivity.getAddress(customerId);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		custAddrRepresentation = custAddrActivity.getAddress(customerId);
     	return custAddrRepresentation;
     }
 	
 	@RequestMapping(value="/customeraddress/add/", method=RequestMethod.POST)
     public String addCustomerAddress(@RequestBody AddressRequest request) {
-		try {
-			int customerId = request.getCustomerId();
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			custAddrActivity.addCustomerAddress(request);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		int customerId = request.getCustomerId();
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		custAddrActivity.addCustomerAddress(request);
 		return "Address added successfully";
     }
 	
 	@RequestMapping(value="/customeraddress/update/", method=RequestMethod.PUT)
     public CustAddrRepresentation updateCustomerAddress(@RequestBody AddressRequest request) {
 		CustAddrRepresentation custAddrRepresentation = new CustAddrRepresentation();
-		try {
-			int customerId = request.getCustomerId();
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			custAddrRepresentation = custAddrActivity.updateCustomerAddress(request);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		int customerId = request.getCustomerId();
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		custAddrRepresentation = custAddrActivity.updateCustomerAddress(request);
 		return custAddrRepresentation;
     }
 	

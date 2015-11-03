@@ -23,17 +23,8 @@ public class CustomerRepresentation {
 	private String message;
 	
 	public CustomerRepresentation() {
-		this.custFirstname = "";
-		this.custLastName = "";
-		this.custEmail = "";
-		this.message = "Operation Successful";
 	}
-	
-	public CustomerRepresentation(String firstName, String lastName, String email, String password) {
-		this.custFirstname = firstName;
-		this.custLastName = lastName;
-		this.custEmail = email;
-	}
+
 	
 	public String getCustFirstname() {
 		return custFirstname;

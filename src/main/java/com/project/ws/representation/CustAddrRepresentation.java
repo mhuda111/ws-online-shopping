@@ -28,12 +28,6 @@ public class CustAddrRepresentation {
 	//default constructor
 	
 	public CustAddrRepresentation() {
-		this.custAddrLine1 = "";
-		this.custAddrLine2 = "";
-		this.custCity = "";
-		this.custState = "";
-		this.custZipCode = "";
-		this.message = "Operation Successful";
 	}	
 
 	public void setAddrId(Integer addrId) {

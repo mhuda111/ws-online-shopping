@@ -27,16 +27,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.project.ws.domain.Order;
-import com.project.ws.representation.CartRepresentation;
-import com.project.ws.representation.CustomerRepresentation;
-import com.project.ws.representation.CustAddrRepresentation;
-import com.project.ws.representation.CustBillingRepresentation;
-import com.project.ws.representation.CustomerRequest;
 import com.project.ws.representation.AddressRequest;
 import com.project.ws.representation.BillingRequest;
-import com.project.ws.representation.OrderRepresentation;
+import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.CartRequest;
+import com.project.ws.representation.CustAddrRepresentation;
+import com.project.ws.representation.CustBillingRepresentation;
+import com.project.ws.representation.CustomerRepresentation;
+import com.project.ws.representation.CustomerRequest;
+import com.project.ws.representation.OrderRepresentation;
 import com.project.ws.representation.ProductRepresentation;
 import com.project.ws.representation.ProductRequest;
 import com.project.ws.representation.VendorRepresentation;
@@ -62,15 +61,15 @@ public class Application {
 	 
     public static void main(String[] args) {
     	SpringApplication.run(Application.class, args);
-    	try {
-			setUpProject();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-    	processOrder();
-    	//cancelOrder();
-    	//addComments();
-    	cleanUpProject();
+//    	try {
+//			setUpProject();
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//    	processOrder();
+//    	//cancelOrder();
+//    	//addComments();
+//    	cleanUpProject();
     }
     
     public static void setUpProject() throws ParseException {
@@ -107,7 +106,7 @@ public class Application {
          * Check if the customer was added
     	 * GET for Customer by First Name
     	 */
-        finalUrl = baseUrl + "/customer/firstName/?fname={fname}";
+        finalUrl = baseUrl + "/customer?fname={fname}";
     	params = new HashMap<String, Object>();
     	params.put("fname", (String) "Bradley");
     	
@@ -192,7 +191,7 @@ public class Application {
     	/*
     	 * Processing for GET vendor by name
     	 */
-		finalUrl = baseUrl + "vendor/?vendorName={vendorName}";
+		finalUrl = baseUrl + "vendor/name?vendorName={vendorName}";
 		params = new HashMap<String, Object>();
 		params.put("vendorName", (String) "NEW Test Vendor");
         vendorResponse = restTemplate.getForEntity(finalUrl, VendorRepresentation.class, params);
@@ -248,7 +247,6 @@ public class Application {
          * POST for creating an Order using OrderRequest - populating a cart		
          */
 		finalUrl = baseUrl + "order/createOrder";
-		System.out.println("customer is " + customerId);
 		CartRequest cartRequest = new CartRequest();
 		cartRequest.setCustomerId(customerId);
 		cartRequest.setProductId(productId);

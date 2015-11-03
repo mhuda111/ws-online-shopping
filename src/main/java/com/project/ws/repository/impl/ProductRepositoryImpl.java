@@ -40,11 +40,9 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 
 	@Override
 	public Boolean getProductAvailability(Integer productId, Integer quantity) {
-		System.out.println("-------" + productId);
 		String SQL = "SELECT p FROM Product p WHERE product_id = " + productId;
 		TypedQuery<Product> query = em.createQuery(SQL, Product.class);
 		Product productInfo = query.getSingleResult();
-		System.out.println("-------" + productInfo.toString());
 		if(productInfo.getQuantity() >= quantity)
 			return true;
 		else

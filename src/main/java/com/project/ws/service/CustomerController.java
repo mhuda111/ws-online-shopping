@@ -34,88 +34,66 @@ public class CustomerController {
 		String message = "";
 		if(ex.getMessage() != null)
 			message = ex.getMessage();
-		return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
+		return "Error: " + message + " : " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
     }
 	
-	@RequestMapping("/customer/firstName/")
+	@RequestMapping(value="/customer", method=RequestMethod.GET, params="fname")
     public CustomerRepresentation getCustomersByFirstName(HttpServletRequest request) {
 		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
-		try {
-			String name = request.getParameter("fname");
-			customerRepresentation = customerActivity.getCustomersByFirstName(name);
-		} catch (RuntimeException e) {
-			throw new RuntimeException();
-		}
+		String name = request.getParameter("fname");
+		customerRepresentation = customerActivity.getCustomersByFirstName(name);
+		if(customerRepresentation == null)
+			throw new CustomerNotFoundException(name);
     	return customerRepresentation;
     }
 
-	@RequestMapping(value="/customer/", method=RequestMethod.GET)
+	@RequestMapping(value="/customer", method=RequestMethod.GET)
     public CustomerRepresentation getCustomerById(HttpServletRequest request) {
 		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
-		try {
-			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			customerRepresentation =  customerActivity.getCustomerById(customerId);
-		} catch (RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		customerRepresentation =  customerActivity.getCustomerById(customerId);
     	return customerRepresentation;
     }
 	
 	@RequestMapping(value = "/customer/addCustomer", method=RequestMethod.POST)
     public @ResponseBody CustomerRepresentation addCustomerWithInfo(@RequestBody CustomerRequest customerRequest) {
 		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
-		try {
-			 customerRepresentation = customerActivity.addCustomer(customerRequest);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		customerRepresentation = customerActivity.addCustomer(customerRequest);
 		return customerRepresentation;
     }
 	
 	@RequestMapping(value="/customer", method=RequestMethod.DELETE)
     public @ResponseBody String deleteCustomer(HttpServletRequest request) {
 		String message;
-		try {
-			Integer customerId = Integer.parseInt(request.getParameter("customerId"));
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			message = customerActivity.deleteCustomer(customerId);
-		} catch (RuntimeException e) {
-			throw new RuntimeException();
-		}
+		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		message = customerActivity.deleteCustomer(customerId);
 		return message;
     }
 	
-	@RequestMapping(value="/customer/updateName", method=RequestMethod.PUT)
+	@RequestMapping(value="/customer", method=RequestMethod.PUT, params={"customerId","firstName", "lastName" })
 	 public CustomerRepresentation updateCustomerWithInfo(HttpServletRequest request) {
 		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
-		try {
-			int customerId = Integer.parseInt(request.getParameter("customerId"));
-			String firstName = request.getParameter("firstName");
-			String lastName = request.getParameter("lastName");
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			customerRepresentation = customerActivity.updateName(customerId, firstName, lastName);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		customerRepresentation = customerActivity.updateName(customerId, firstName, lastName);
 		return customerRepresentation;
 	}
 	
-	@RequestMapping(value="/customer/updateEmail", method=RequestMethod.PUT)
+	@RequestMapping(value="/customer", method=RequestMethod.PUT, params={"customerId", "email"})
 	 public CustomerRepresentation updateEmail(HttpServletRequest request) {
 		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
-		try {
-			int customerId = Integer.parseInt(request.getParameter("customerId"));
-			String email = request.getParameter("email");
-			if(customerActivity.validateCustomer(customerId) == false)
-				throw new CustomerNotFoundException(customerId);
-			customerRepresentation = customerActivity.updateEmail(customerId, email);
-		} catch(RuntimeException e) {
-			throw new RuntimeException();
-		}
+		int customerId = Integer.parseInt(request.getParameter("customerId"));
+		String email = request.getParameter("email");
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		customerRepresentation = customerActivity.updateEmail(customerId, email);
 		return customerRepresentation;
 	}
 
