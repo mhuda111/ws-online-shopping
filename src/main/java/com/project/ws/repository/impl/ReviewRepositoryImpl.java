@@ -33,7 +33,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 				review.getReviewDesc() + "', '" + review.getReviewType() + "', " + review.getCustId() + ", " + 
 				review.getProductId() +", " + review.getVendorId() + ", " + review.getRating() + ")";
 		else if(review.getReviewType().equals("vendor"))
-			SQL = "INSERT INTO review (review_desc, review_type, cust_id, vendor_id, rating) VALUES ('" + 
+			SQL = "INSERT INTO review (review_desc, review_type, cust_id, product_id, vendor_id, rating) VALUES ('" + 
 					review.getReviewDesc() + "', '" + review.getReviewType() + "', " + review.getCustId() 
 					+ ", " + review.getProductId() + ", " + review.getVendorId() + ", " + review.getRating() +")";
 		

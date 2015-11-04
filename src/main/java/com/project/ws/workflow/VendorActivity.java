@@ -60,10 +60,12 @@ public class VendorActivity {
 		return mapRepresentation(vendor);
 	}
 	
-	public VendorRepresentation updateName(Integer vendorId, String name) {
-		vendorRepo.updateVendorName(vendorId, name);
-		vendor = vendorRepo.findOne(vendorId);
-		return mapRepresentation(vendor);
+	public String updateName(Integer vendorId, String name) {
+		Integer count = vendorRepo.updateVendorName(vendorId, name);
+		if(count == 0)
+			return "Error updating Vendor " + vendorId;
+		else
+			return "Vendor Name updated Successfully to - " + name + " for " + vendorId;
 	}
 	
 	public VendorRepresentation updateAddress(VendorRequest vendorRequest) {

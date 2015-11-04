@@ -65,14 +65,12 @@ public class VendorController {
 	}
 
 	@RequestMapping(value="/vendor/", method=RequestMethod.PUT, params={"vendorId", "vendorName"})
-	public @ResponseBody VendorRepresentation updateVendorName(HttpServletRequest request, HttpServletResponse response) {
-		VendorRepresentation vendorRepresentation = new VendorRepresentation();
+	public @ResponseBody String updateVendorName(HttpServletRequest request, HttpServletResponse response) {
 		String vendorName = request.getParameter("vendorName");
 		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
 		if(vendorActivity.validateVendor(vendorId) == false) 
 			throw new VendorNotFoundException(vendorId);
-		vendorRepresentation = vendorActivity.updateName(vendorId, vendorName);
-		return vendorRepresentation;
+		return vendorActivity.updateName(vendorId, vendorName);
 	}
 	
 	@RequestMapping(value="/vendor", method=RequestMethod.DELETE)
@@ -88,6 +86,17 @@ public class VendorController {
 			return "Error deleting vendor. Please check the logs.";
 	}
 	
+	@RequestMapping(value="/vendor/settleAccount", method=RequestMethod.PUT)
+	public @ResponseBody VendorRepresentation settleVendorAccount(HttpServletRequest request) {
+		VendorRepresentation vendorRepresentation = new VendorRepresentation();
+		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
+		Double amount = Double.parseDouble(request.getParameter("amount"));
+		String type = request.getParameter("type");
+		if(vendorActivity.validateVendor(vendorId) == false) 
+			throw new VendorNotFoundException(vendorId);
+		vendorRepresentation = vendorActivity.settleAccount(vendorId, amount, type);
+		return vendorRepresentation;
+	}
 }
 
 @ResponseStatus(HttpStatus.NOT_FOUND)

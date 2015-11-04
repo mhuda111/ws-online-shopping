@@ -13,6 +13,7 @@ import com.project.ws.repository.ProductRepository;
 import com.project.ws.repository.ReviewRepository;
 import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.ReviewRepresentation;
+import com.project.ws.representation.ReviewRequest;
 
 @Component
 @Transactional
@@ -36,7 +37,8 @@ public class ReviewActivity {
 		this.prodRepo = prodRepo;
 	}
 	
-	public Integer addReview(Review review) {
+	public Integer addReview(ReviewRequest reviewRequest) {
+		Review review = mapRequest(reviewRequest);
 		return reviewRepo.addReview(review);
 	}
 	
@@ -81,6 +83,20 @@ public class ReviewActivity {
 		reviewRepresentation.setRating(review.getRating());
 		reviewRepresentation.setReviewDesc(review.getReviewDesc());
 		return reviewRepresentation;
+	}
+	
+	public Review mapRequest(ReviewRequest reviewRequest) {
+		Review review = new Review();
+		review.setCustId(reviewRequest.getCustomerId());
+		review.setProductId(reviewRequest.getProductId());
+		review.setVendorId(reviewRequest.getVendorId());
+		if(reviewRequest.getProductId() != null)
+			review.setReviewType("product");
+		else if(reviewRequest.getVendorId() != null)
+			review.setReviewType("vendor");
+		review.setReviewDesc(reviewRequest.getReviewDescription());
+		review.setRating(reviewRequest.getRating());
+		return review;
 	}
 	
 }

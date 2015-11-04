@@ -95,9 +95,13 @@ public class OrderActivity {
 	}
 
 	public OrderRepresentation cancelOrder(Integer orderId) {
+		VendorActivity vendorActivity = new VendorActivity(vendorRepo);
+		Integer vendorId;
 		List<OrderLineItem> orderList = orderLineRepo.findByOrderId(orderId);
 		for(OrderLineItem item:orderList) {
 			prodRepo.updateProductQuantity(item.getProductId(), item.getOrderLineQuantity(), "add");
+			vendorId = prodRepo.findOne(item.getProductId()).getVendorId();
+			vendorActivity.settleAccount(vendorId, item.getOrderLinePrice(), "debit");
 		}
 		orderRepo.updateOrderStatus(orderId, "CAN");
 		Order order = orderRepo.findOrder(orderId);

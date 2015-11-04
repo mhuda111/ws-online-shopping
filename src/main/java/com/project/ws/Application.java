@@ -38,6 +38,8 @@ import com.project.ws.representation.CustomerRequest;
 import com.project.ws.representation.OrderRepresentation;
 import com.project.ws.representation.ProductRepresentation;
 import com.project.ws.representation.ProductRequest;
+import com.project.ws.representation.ReviewRepresentation;
+import com.project.ws.representation.ReviewRequest;
 import com.project.ws.representation.VendorRepresentation;
 import com.project.ws.representation.VendorRequest;
 
@@ -61,15 +63,15 @@ public class Application {
 	 
     public static void main(String[] args) {
     	SpringApplication.run(Application.class, args);
-//    	try {
-//			setUpProject();
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//		}
-//    	processOrder();
-//    	//cancelOrder();
-//    	//addComments();
-//    	cleanUpProject();
+    	try {
+			setUpProject();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	processOrder();
+    	cancelOrder();
+    	addComments();
+    	cleanUpProject();
     }
     
     public static void setUpProject() throws ParseException {
@@ -230,8 +232,7 @@ public class Application {
         Assert.assertEquals("Philips CFL Lamp", prodListResponse.getBody()[0].getName());
         Assert.assertEquals((Double) 8.50, prodListResponse.getBody()[0].getPrice());
         Assert.assertTrue(1 == prodListResponse.getBody().length);
-        productId = prodListResponse.getBody()[0].getProductId();
-        
+        productId = prodListResponse.getBody()[0].getProductId();   
     }
     
     public static void processOrder() {
@@ -303,13 +304,69 @@ public class Application {
     	displayStats(stringResponse, "DELETE for customer");
     }
     
+    
+    public static void cancelOrder() {
+    	/*
+    	 * Declare variables
+    	 */
+    	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<OrderRepresentation> orderResponse;
+    	ResponseEntity<String> stringResponse;
+    	Map<String, Object> params;
+    	
+    	/*
+         * PUT for canceling an Order 		
+         */
+		finalUrl = baseUrl + "order/cancelOrder/?orderId={orderId}";
+		params = new HashMap<String, Object>();
+		params.put("orderId", orderId);
+		
+		stringResponse = restTemplate.exchange(finalUrl, HttpMethod.PUT, null, String.class, params);
+		displayStats(stringResponse, "PUT for cancelling an Order");
+		
+		/*
+		 * GET to check if the order is cancelled
+		 */
+		finalUrl = baseUrl + "order/checkOrderStatus/?orderId={orderId}";
+		params = new HashMap<String, Object>();
+		params.put("orderId", orderId);
+		
+		orderResponse = restTemplate.getForEntity(finalUrl, OrderRepresentation.class, params);
+		displayStats(orderResponse, "GET for order status check");
+		System.out.println(orderResponse.getBody().getOrderStatus());
+		Assert.assertEquals("CAN", orderResponse.getBody().getOrderStatus());
+    	
+    }
+    
+    public static void addComments() {
+    	/*
+    	 * Declare Variables
+    	 */
+    	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<ReviewRepresentation[]> reviewResponse;
+    	ResponseEntity<String> stringResponse;
+    	Map<String, Object> params;
+    	ReviewRequest reviewRequest = new ReviewRequest();
+    	/*
+    	 * Add a review for the product
+    	 */
+    	finalUrl = baseUrl + "review/add";
+    	reviewRequest.setCustomerId(customerId);
+    	reviewRequest.setVendorId(vendorId);
+    	reviewRequest.setRating(1.0);
+    	reviewRequest.setReviewDescription("The product was broken. Will not recommend the vendor");
+    	
+    	reviewResponse = restTemplate.postForEntity(finalUrl, reviewRequest, ReviewRepresentation[].class);
+    	displayStats(reviewResponse, "POST to add a review");
+    	
+    }
+    
     public static void displayStats(ResponseEntity<?> response, String message) {
         System.out.println("----" + message + "-------------------------------------------------------------");
         System.out.println("Response Status " + response.getStatusCode());
         System.out.println("Response Headers " + response.getHeaders());
         System.out.println("Response Body " + Arrays.asList(response.getBody()));
         System.out.println("-----------------------------------------------------------------------------------------");
-
     }
     
     

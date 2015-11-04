@@ -78,10 +78,10 @@ public class VendorRepositoryImpl implements VendorCustomRepository {
 
 		@Override
 		@Transactional
-		public Vendor updateVendorName(Integer vendorId, String name) {
+		public Integer updateVendorName(Integer vendorId, String name) {
 			String SQL = "update vendor set vendor_name = '" + name + "' where vendor_id = " + vendorId;
 			Integer count = em.createNativeQuery(SQL).executeUpdate();
-			return em.find(Vendor.class, vendorId);
+			return count;
 		}
 
 

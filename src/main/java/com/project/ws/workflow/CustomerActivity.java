@@ -40,16 +40,20 @@ public class CustomerActivity {
 		return mapRepresentation(newCustomer);
 	}
 	
-	public CustomerRepresentation updateName(Integer customerId, String firstName, String lastName) {
+	public String updateName(Integer customerId, String firstName, String lastName) {
 		Integer count = custRepo.updateName(customerId, firstName, lastName);
-		newCustomer = custRepo.findOne(customerId);
-		return mapRepresentation(newCustomer);
+		if(count == 0)
+			return "Error updating customer " + customerId;
+		else
+			return "Updated customer " + customerId + " 's name successfully to " + firstName + " " + lastName;
 	}
 
-	public CustomerRepresentation updateEmail(Integer customerId, String email) {
+	public String updateEmail(Integer customerId, String email) {
 		Integer count = custRepo.updateEmail(customerId, email);
-		newCustomer = custRepo.findOne(customerId);
-		return mapRepresentation(newCustomer);
+		if(count == 0)
+			return "Error updating customer " + customerId;
+		else
+			return "Updated customer " + customerId + " 's email successfully to " + email;
 	}
 
 	public String deleteCustomer(Integer customerId) {

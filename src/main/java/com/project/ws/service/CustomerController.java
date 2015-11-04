@@ -74,27 +74,23 @@ public class CustomerController {
 		return message;
     }
 	
-	@RequestMapping(value="/customer", method=RequestMethod.PUT, params={"customerId","firstName", "lastName" })
-	 public CustomerRepresentation updateCustomerWithInfo(HttpServletRequest request) {
-		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+	@RequestMapping(value="/customer/", method=RequestMethod.PUT, params={"customerId","firstName", "lastName" })
+	 public String updateCustomerWithInfo(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
-		customerRepresentation = customerActivity.updateName(customerId, firstName, lastName);
-		return customerRepresentation;
+		return customerActivity.updateName(customerId, firstName, lastName);
 	}
 	
 	@RequestMapping(value="/customer", method=RequestMethod.PUT, params={"customerId", "email"})
-	 public CustomerRepresentation updateEmail(HttpServletRequest request) {
-		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+	 public String updateEmail(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String email = request.getParameter("email");
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
-		customerRepresentation = customerActivity.updateEmail(customerId, email);
-		return customerRepresentation;
+		return customerActivity.updateEmail(customerId, email);
 	}
 
 }
