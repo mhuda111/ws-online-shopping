@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -26,6 +27,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.project.ws.representation.AddressRequest;
 import com.project.ws.representation.BillingRequest;
@@ -60,7 +63,7 @@ public class Application {
     private static Integer billId;
     private static Integer addrId;
     private static Integer orderId;
-	 
+    
     public static void main(String[] args) {
     	SpringApplication.run(Application.class, args);
     	try {

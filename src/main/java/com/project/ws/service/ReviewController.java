@@ -28,30 +28,25 @@ public class ReviewController {
 
 	@Autowired
 	private ReviewActivity reviewActivity;
-	
-	@ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
-		String message = "";
-		if(ex.getMessage() != null)
-			message = ex.getMessage();
-		return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
-    }
 
-	@RequestMapping("/review/add")
+	/*
+	 * POST to add new Review
+	 */
+	@RequestMapping(value = "/review/add", method=RequestMethod.POST)
 	public List<ReviewRepresentation> addReview(@RequestBody ReviewRequest request) {
 		System.out.println("in review controller");
 		List<ReviewRepresentation> reviewRepresentations = new ArrayList<ReviewRepresentation>();
 		int reviewAdded = 0;		
 		reviewAdded = reviewActivity.addReview(request);
-//		if(request.getProductId() != null)
-//			reviewRepresentations = reviewActivity.getProductReviews(request.getProductId());
-//		if(request.getVendorId() != null)
-			reviewRepresentations = reviewActivity.getVendorReviews(request.getVendorId());
+		reviewRepresentations = reviewActivity.getVendorReviews(request.getVendorId());
 		System.out.println(reviewRepresentations.get(0));
 		return reviewRepresentations;
 	}
 	
-	@RequestMapping("/review/avgReview/product")
+	/*
+	 * GET to retrieve average rating by productId
+	 */
+	@RequestMapping(value="/review/avgReview/product", method=RequestMethod.GET, params="productId")
 	public double getAvgRatingProduct(HttpServletRequest request) {
 		double avgRating = 0.00;
 		try {
@@ -63,8 +58,10 @@ public class ReviewController {
 		return avgRating;
     }
 
-
-	@RequestMapping("/review/avgReview/vendor")
+	/*
+	 * GET to retrieve average rating by vendorId
+	 */
+	@RequestMapping(value="/review/avgReview/vendor", method=RequestMethod.GET, params="vendorId")
 	public double getAvgRatingVendor(HttpServletRequest request) {
 		double avgRating = 0.00;
 		try {
@@ -76,7 +73,10 @@ public class ReviewController {
 		return avgRating;
     }
 	
-	@RequestMapping(value = "/review/deleteReview/{rId}", method = RequestMethod.DELETE)
+	/*
+	 * DELETE to delete a review by reviewId
+	 */
+	@RequestMapping(value = "/review/deleteReview/{rId}", method = RequestMethod.DELETE, params="reviewId")
     public @ResponseBody String deleteCustomer(@PathVariable String rId) {
 		int noOfDeletedRow = 0;
 		try {

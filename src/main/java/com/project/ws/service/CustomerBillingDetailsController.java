@@ -37,16 +37,11 @@ public class CustomerBillingDetailsController {
 	
 	@Autowired
 	BillingRequest billRequest;
-
-	@ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
-		String message = "";
-		if(ex.getMessage() != null)
-			message = ex.getMessage();
-		return "Error: " + message + " : " + req.getRequestURI() + ".\n\n OR Please contact the system administrator ";
-    }
 	
-	@RequestMapping(value="/billing/processPayment", method=RequestMethod.PUT)
+	/*
+	 * PUT to process a customer payment for an order
+	 */
+	@RequestMapping(value="/billing/processPayment", method=RequestMethod.PUT, params={"customerId", "billId", "amount"})
     public CustBillingRepresentation processPayment(HttpServletRequest request) {
 		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
 		Integer billId = Integer.parseInt(request.getParameter("billId"));
@@ -56,7 +51,10 @@ public class CustomerBillingDetailsController {
 		return billRepresentation;
     }
 
-	@RequestMapping(value="/billing/", method=RequestMethod.GET)
+	/*
+	 * GET to retrieve customer billing details by customerId
+	 */
+	@RequestMapping(value="/billing/", method=RequestMethod.GET, params="customerId")
     public List<CustBillingRepresentation> getBillingInfo(HttpServletRequest request) {
 		List<CustBillingRepresentation> billList = new ArrayList<CustBillingRepresentation>();
 		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
@@ -66,6 +64,9 @@ public class CustomerBillingDetailsController {
 		return billList;
     }
 	
+	/*
+	 * POST to add new billing details for a customer using billing Request
+	 */
 	@RequestMapping(value="/billing/", method=RequestMethod.POST)
     public CustBillingRepresentation getBillingInfo(@RequestBody BillingRequest request) {
 		Integer customerId = request.getCustomerId();

@@ -35,32 +35,33 @@ public class ProductController {
 	@Autowired
     private VendorActivity vendorActivity;
 	
-	@ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
-		String message = "";
-		if(ex.getMessage() != null)
-			message = ex.getMessage();
-		return "Error: " + message + " : " + req.getRequestURI() + ".\n\n Or Please contact the system administrator ";
-    }
-	
-	@RequestMapping(value="/product", method=RequestMethod.GET)
+	/*
+	 * GET to retrieve all product details
+	 */
+	@RequestMapping(value="/products", method=RequestMethod.GET)
     public List<ProductRepresentation> getAllProducts(HttpServletRequest request) {
 		List<ProductRepresentation> productRepresentations = new ArrayList<ProductRepresentation>();
 			productRepresentations = productActivity.allProducts();
     	return productRepresentations;
     }
 	
+	/*
+	 * GET to search a product using name
+	 */
 	@RequestMapping(value="/product", method=RequestMethod.GET, params="name")
     public List<ProductRepresentation> readByProductName(HttpServletRequest request) {
 		List<ProductRepresentation> productRepresentations = new ArrayList<ProductRepresentation>();
 			String productName = request.getParameter("name");
 			productRepresentations = productActivity.searchProduct(productName);
 			if(productRepresentations == null) {
-				throw new ResourceNotFoundException();
+				throw new ProductNotFoundException(productName);
 			}
     	return productRepresentations;
     }
 	
+	/*
+	 * POST to add a new product
+	 */
 	@RequestMapping(value="/product/add", method=RequestMethod.POST)
     public ProductRepresentation addProduct(@RequestBody ProductRequest productRequest) {
 		ProductRepresentation productRepresentation = new ProductRepresentation();
@@ -70,6 +71,9 @@ public class ProductController {
 		return productRepresentation;
     }
 
+	/*
+	 * DELETE to delete a product
+	 */
 	@RequestMapping(value="/product", method=RequestMethod.DELETE, params="productId")
     public String deleteProduct(HttpServletRequest request) {
 		int productDeleted = 0;
@@ -88,7 +92,12 @@ public class ProductController {
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class ProductNotFoundException extends RuntimeException {
 
-	public ProductNotFoundException(Integer productId) {
-		super("Could not find product - " + productId);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1357644244197546536L;
+
+	public ProductNotFoundException(Object product) {
+		super("Could not find product - " + product);
 	}
 }

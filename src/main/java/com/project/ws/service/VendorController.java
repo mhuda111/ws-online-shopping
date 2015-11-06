@@ -28,15 +28,9 @@ public class VendorController {
 	@Autowired
 	VendorActivity vendorActivity;
 	
-	@ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
-		String message = "";
-		if(ex.getMessage() != null)
-			message = ex.getMessage();
-		ex.printStackTrace();
-        return "Error: " + message + " : " + req.getRequestURI() + ".\n\n OR Please contact the system administrator ";
-    }
-
+	/*
+	 * GET to retrieve details about a vendor using vendorId
+	 */
 	@RequestMapping(value="/vendor", method=RequestMethod.GET, params="vendorId")
 	public @ResponseBody VendorRepresentation getVendorById(HttpServletRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
@@ -47,6 +41,9 @@ public class VendorController {
 		return vendorRepresentation;
 	}
 
+	/*
+	 * GET to retrieve vendor details by vendor name
+	 */
 	@RequestMapping(value="/vendor/name", method=RequestMethod.GET, params="vendorName")
 	public @ResponseBody VendorRepresentation getVendorByName(HttpServletRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
@@ -57,15 +54,21 @@ public class VendorController {
 		return vendorRepresentation;
 	}
 	
+	/*
+	 * POST to add vendor details using Vendor Request
+	 */
 	@RequestMapping(value="/vendor/addVendor", method=RequestMethod.POST)
-	public @ResponseBody VendorRepresentation addVendor(@RequestBody VendorRequest request, HttpServletResponse response) {
+	public @ResponseBody VendorRepresentation addVendor(@RequestBody VendorRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
 		vendorRepresentation =  vendorActivity.addVendor(request);
 		return vendorRepresentation;
 	}
 
+	/*
+	 * PUT to update vendor Name using vendorId
+	 */
 	@RequestMapping(value="/vendor/", method=RequestMethod.PUT, params={"vendorId", "vendorName"})
-	public @ResponseBody String updateVendorName(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody String updateVendorName(HttpServletRequest request) {
 		String vendorName = request.getParameter("vendorName");
 		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
 		if(vendorActivity.validateVendor(vendorId) == false) 
@@ -73,7 +76,10 @@ public class VendorController {
 		return vendorActivity.updateName(vendorId, vendorName);
 	}
 	
-	@RequestMapping(value="/vendor", method=RequestMethod.DELETE)
+	/*
+	 * DELETE to delete vendor information using vendorId
+	 */
+	@RequestMapping(value="/vendor", method=RequestMethod.DELETE, params="vendorId")
 	public @ResponseBody String deleteVendor(HttpServletRequest request) {
 		Integer count = 0;
 		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
@@ -86,7 +92,10 @@ public class VendorController {
 			return "Error deleting vendor. Please check the logs.";
 	}
 	
-	@RequestMapping(value="/vendor/settleAccount", method=RequestMethod.PUT)
+	/*
+	 * PUT to settle vendor account
+	 */
+	@RequestMapping(value="/vendor/settleAccount", method=RequestMethod.PUT, params={"vendorId", "amount"})
 	public @ResponseBody VendorRepresentation settleVendorAccount(HttpServletRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
 		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));

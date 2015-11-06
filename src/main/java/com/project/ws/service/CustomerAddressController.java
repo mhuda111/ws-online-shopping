@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,15 +35,10 @@ public class CustomerAddressController {
 	@Autowired
 	CustomerActivity customerActivity;
 	
-	@ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
-		String message = "";
-		if(ex.getMessage() != null)
-			message = ex.getMessage();
-		return "Error: " + message + " : " + req.getRequestURI() + ".\n\n OR Please contact the system administrator ";
-    }
-	
-	@RequestMapping("/customeraddress/")
+	/*
+	 * GET to retrieve customer address using customerId
+	 */
+	@RequestMapping(value="/customeraddress/", method=RequestMethod.GET, params="customerId")
     public List<CustAddrRepresentation> getCustomersAddressFromId(HttpServletRequest request) {
 		List<CustAddrRepresentation> custAddrRepresentation = new ArrayList<CustAddrRepresentation>();
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
@@ -52,6 +48,9 @@ public class CustomerAddressController {
     	return custAddrRepresentation;
     }
 	
+	/*
+	 * POST to add a new customer address
+	 */
 	@RequestMapping(value="/customeraddress/add/", method=RequestMethod.POST)
     public String addCustomerAddress(@RequestBody AddressRequest request) {
 		int customerId = request.getCustomerId();
@@ -61,6 +60,9 @@ public class CustomerAddressController {
 		return "Address added successfully";
     }
 	
+	/*
+	 * PUT to update customer Address using Address Request
+	 */
 	@RequestMapping(value="/customeraddress/update/", method=RequestMethod.PUT)
     public CustAddrRepresentation updateCustomerAddress(@RequestBody AddressRequest request) {
 		CustAddrRepresentation custAddrRepresentation = new CustAddrRepresentation();

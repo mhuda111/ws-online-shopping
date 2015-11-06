@@ -2,11 +2,14 @@ package com.project.ws.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,14 +32,10 @@ public class CustomerController {
 	@Autowired
 	CustomerActivity customerActivity;
 	
-	@ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
-		String message = "";
-		if(ex.getMessage() != null)
-			message = ex.getMessage();
-		return "Error: " + message + " : " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
-    }
 	
+	/*
+	 * GET customer by first name
+	 */
 	@RequestMapping(value="/customer", method=RequestMethod.GET, params="fname")
     public CustomerRepresentation getCustomersByFirstName(HttpServletRequest request) {
 		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
@@ -47,16 +46,23 @@ public class CustomerController {
     	return customerRepresentation;
     }
 
-	@RequestMapping(value="/customer", method=RequestMethod.GET)
+	/*
+	 * GET customer by customerId
+	 */
+	@RequestMapping(value="/customer", method=RequestMethod.GET, params="customerId")
     public CustomerRepresentation getCustomerById(HttpServletRequest request) {
 		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
-		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
+		String param = request.getParameter("customerId");
+		Integer customerId = Integer.parseInt(param);
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
 		customerRepresentation =  customerActivity.getCustomerById(customerId);
     	return customerRepresentation;
     }
 	
+	/*
+	 * POST to add new customer using Customer Request
+	 */
 	@RequestMapping(value = "/customer/addCustomer", method=RequestMethod.POST)
     public @ResponseBody CustomerRepresentation addCustomerWithInfo(@RequestBody CustomerRequest customerRequest) {
 		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
@@ -64,7 +70,10 @@ public class CustomerController {
 		return customerRepresentation;
     }
 	
-	@RequestMapping(value="/customer", method=RequestMethod.DELETE)
+	/*
+	 * DELETE to delete a customer using customerId
+	 */
+	@RequestMapping(value="/customer", method=RequestMethod.DELETE, params="customerId")
     public @ResponseBody String deleteCustomer(HttpServletRequest request) {
 		String message;
 		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
@@ -74,6 +83,9 @@ public class CustomerController {
 		return message;
     }
 	
+	/*
+	 * PUT to update customer first and last name using customerId
+	 */
 	@RequestMapping(value="/customer/", method=RequestMethod.PUT, params={"customerId","firstName", "lastName" })
 	 public String updateCustomerWithInfo(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
@@ -84,6 +96,9 @@ public class CustomerController {
 		return customerActivity.updateName(customerId, firstName, lastName);
 	}
 	
+	/*
+	 * PUT to update customer email using PUT
+	 */
 	@RequestMapping(value="/customer", method=RequestMethod.PUT, params={"customerId", "email"})
 	 public String updateEmail(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
@@ -111,7 +126,7 @@ class ServerErrorException extends RuntimeException {
 	}
 }
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 class PageNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 

@@ -40,6 +40,9 @@ public class OrderController {
 	@Autowired
 	private CustomerActivity customerActivity;
 
+	/*
+	 * GET to retrieve all orders by customerId
+	 */
 	@RequestMapping(value="/order", method=RequestMethod.GET, params="customerId")
 	public @ResponseBody List<OrderRepresentation> findAllOrders(HttpServletRequest request) {
 		Integer customerId = 0;
@@ -50,15 +53,10 @@ public class OrderController {
 		orderRepr = orderActivity.allOrders(customerId, "all");
 		return orderRepr;
     }
-	
-	@ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(HttpServletRequest req, RuntimeException ex) {
-		String message = "";
-		if(ex.getMessage() != null)
-			message = ex.getMessage();
-		return "Error: " + message + " in path: " + req.getRequestURI() + ".\n\n Please contact the system administrator ";
-    }	
 
+	/*
+	 * GET to retrieve all Active orders by customerId
+	 */
 	@RequestMapping(value="/order/activeOrders", method=RequestMethod.GET, params="customerId")
     public @ResponseBody List<OrderRepresentation> findAllActiveOrders(HttpServletRequest request) {
 		Integer customerId;
@@ -70,6 +68,9 @@ public class OrderController {
 		return orderRepr;
     }
 	
+	/*
+	 * POST to create new order using CartRequest
+	 */
 	@RequestMapping(value="/order/createOrder", method=RequestMethod.POST)
 	public @ResponseBody List<CartRepresentation> createOrder(@RequestBody CartRequest cartRequest) {
 		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();
@@ -79,7 +80,10 @@ public class OrderController {
 		return cartRepresentation;
 	}
 
-	@RequestMapping(value="/order/placeOrder", method=RequestMethod.PUT)
+	/*
+	 * PUT to place an order using customerId
+	 */
+	@RequestMapping(value="/order/placeOrder", method=RequestMethod.PUT, params="customerId")
 	 public @ResponseBody OrderRepresentation placeOrder(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
 		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
@@ -89,7 +93,10 @@ public class OrderController {
 		return orderRepresentation;
 	}
 	
-	@RequestMapping(value="/order/ship", method=RequestMethod.PUT)
+	/*
+	 * PUT to ship an order using orderId
+	 */
+	@RequestMapping(value="/order/ship", method=RequestMethod.PUT, params="orderId")
 	 public @ResponseBody OrderRepresentation shipOrder(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
 		Integer orderId = Integer.parseInt(request.getParameter("orderId"));
@@ -100,6 +107,9 @@ public class OrderController {
 		return orderRepresentation;
 	}
 	
+	/*
+	 * PUT to cancel and order using orderId
+	 */
 	@RequestMapping(value="/order/cancelOrder", method=RequestMethod.PUT, params="orderId")
 	 public @ResponseBody OrderRepresentation cancelOrder(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
@@ -110,6 +120,9 @@ public class OrderController {
 		return orderRepresentation;
 	}
 	
+	/*
+	 * GET to check order status using orderId
+	 */
 	@RequestMapping(value="/order/checkOrderStatus", method=RequestMethod.GET, params="orderId")
 	public @ResponseBody OrderRepresentation checkOrderStatus(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
@@ -122,7 +135,7 @@ public class OrderController {
 
 }
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@ResponseStatus(value=HttpStatus.NOT_FOUND)
 class CustomerNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = -6919160978660692882L;
