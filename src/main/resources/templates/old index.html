@@ -11,24 +11,27 @@
 <p><i>Click on the following links to test the project</i></p>
 
 <h1>Product</h1>
-<p><a href="http://localhost:8080/product/?productName=Flakes">Search for products containing Flakes</a></p>
-<p><a th:href="@{/product/buy/(customerId='10000054',productId='10000050',productPrice='10.00')}">Buy Product</a></p>
-<p><a th:href="@{/product/add/(productName='Introduction to Java',productDescription='Book for Java',productType='Book South',quantity='5',price='100.00',vendorId='10000000')}">Add product Information.</a></p>
-<p><a th:href="@{/product/delete/(productName='Introduction to Java')}">Delete product Information</a></p>
-<p><a th:href="@{/product/updateProductQuantity/(productId='10000050',quantity='20',operation='add')}">Add product quantity</a></p>
-<p><a th:href="@{/product/updateProductQuantity/(productId='10000050',quantity='20',operation='subtract')}">Subtract product quantity</a></p>
+<p><a th:href="@{/product/}">All Products</a></p>
+<p><a th:href="@{/product?name=Flakes}">Search Product with name like Flakes</a></p>
+<p><a th:href="@{/product/name?name=Flakes}">Test incorrect Product Link to search</a></p>
+<p><a th:href="@{/product?name=lotion}">Test Resource not Found exception for Product</a></p>
+
+<h1>Vendor</h1>
+<p><a th:href="@{/vendor?vendorId=10000062}">Retrieve specific Vendor details</a></p>
+<p><a th:href="@{/vendor/name?vendorName=Ali Baba}">Retrieve vendors by name</a></p>
+<p><a th:href="@{/vendorr?vendorId=10000062}">Test incorrect Vendor Link </a></p>
+<p><a th:href="@{/vendor/name?vendorName=amazon}">Test Resource not Found exception for Vendor</a></p>	
 
 <h2>CUSTOMER</h2>
-<p><a th:href="@{/customer/addCustomer/(firstName='George',lastName='Cloony',email='gcloony@gmail.com',password='abc')}">Add George Clooney as a Customer</a></p>
-<p><a th:href="@{/customer/firstLetter/(letter='G')}">Search Customer who's first name starts with G</a></p>
-<p><a th:href="@{/customer/updateCustomer/(customerId='10000054',firstName='Azrin',lastName='Alom')}">Customer Name Updated.</a></p>
-<p><a th:href="@{/billing/chargeCard(customerId='10000053',billId='10000001',amount='20.00')}">Charging customer.</a></p>
 
-<h3>VENDOR</h3>
-<p><a th:href="@{/vendor/addVendor/(vendorName='iSmartOnlineBoutique',vendor_addr_line1='NewYorkStreet',vendor_addr_line2='1200 South',vendor_city='Aurora',state='IL',vendor_zip_code='60502')}">Add Vendor Information</a></p>
+<p><a th:href="@{/customer?customerId=10000132}">Retrieve specific Vendor details</a></p>
+<p><a th:href="@{/customer?fname=Manmeet}">Retrieve customer by name</a></p>
+<p><a th:href="@{/customer/find/?customerId=10000132}">Test incorrect Customer Link </a></p>
+<p><a th:href="@{/customer?customerId=111}">Test Resource not Found exception for Customer</a></p>
+<p><a th:href="@{/customer/(customerId='10000132',firstName='Arlo',lastName='Something')}">Customer Name and Email Update</a></p>
 
-<h3>REVIEW</h3>
-<p><a th:href="@{/review/add/(reviewDesc='Productisverygood',reviewType='product',custId='10000053',productId='10000050',rating='5.00')}">Add Review Information about product</a></p>
+
+<!-- <p><a th:href="@{/product/updateProductQuantity/(productId='10000012',quantity='20',operation='subtract')}">Update Product Quantity(Subtract)</a></p> -->
 
 
 

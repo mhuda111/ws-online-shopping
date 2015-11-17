@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @Component
-public class CustAddrRepresentation {
+public class CustAddrRepresentation extends AbstractRepresentation {
 	
 	private Integer customerId;
 	private Integer addrId;

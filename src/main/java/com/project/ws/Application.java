@@ -27,8 +27,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.DispatcherServlet;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.project.ws.representation.AddressRequest;
 import com.project.ws.representation.BillingRequest;
@@ -66,15 +64,15 @@ public class Application {
     
     public static void main(String[] args) {
     	SpringApplication.run(Application.class, args);
-    	try {
-			setUpProject();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-    	processOrder();
-    	cancelOrder();
-    	addComments();
-    	cleanUpProject();
+//    	try {
+//			setUpProject();
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//    	processOrder();
+//    	cancelOrder();
+//    	addComments();
+//    	cleanUpProject();
     }
     
     public static void setUpProject() throws ParseException {

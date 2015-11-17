@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @Component
-public class VendorRepresentation {
+public class VendorRepresentation extends AbstractRepresentation {
 	
 	private Integer vendorId;
 	private String vendorName;

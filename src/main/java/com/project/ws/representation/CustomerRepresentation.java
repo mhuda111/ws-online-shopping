@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @XmlType(name = "")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Component
-public class CustomerRepresentation {
+public class CustomerRepresentation extends AbstractRepresentation {
 
 	private Integer custId;
 	private String custFirstname;

@@ -19,7 +19,7 @@ import com.project.ws.domain.OrderLineItem;
 @XmlType(name = "")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Component
-public class OrderRepresentation {
+public class OrderRepresentation extends AbstractRepresentation {
 
 	private Integer orderId;
 	private Date orderDate;

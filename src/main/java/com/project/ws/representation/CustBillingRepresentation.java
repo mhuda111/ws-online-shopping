@@ -1,6 +1,5 @@
 package com.project.ws.representation;
 
-import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @Component
-public class CustBillingRepresentation {
+public class CustBillingRepresentation extends AbstractRepresentation {
 	
 	private Integer custBillId;
 	private Integer customerId;

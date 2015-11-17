@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @Component
-public class CartRepresentation {
+public class CartRepresentation extends AbstractRepresentation {
 
 	private Integer productId;
 	

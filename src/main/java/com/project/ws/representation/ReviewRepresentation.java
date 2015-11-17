@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @Component
-public class ReviewRepresentation {
+public class ReviewRepresentation extends AbstractRepresentation {
 
 	private String reviewDesc;
 	private Double rating;

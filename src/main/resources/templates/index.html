@@ -1,39 +1,53 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hello Spring Boot!</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-<p></p><p></p><p></p><p></p>
-<p><div align="center">Hello there! Welcome to SAM Mart</div></p>
-<p></p><p></p><p></p>
-<p><i>Click on the following links to test the project</i></p>
+<!doctype html>
+<html ng-app = "lakeShoreMart">
+	<head>
+	    <meta charset="utf-8"></meta>
+    	<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+		<title>Hello AngularJS</title>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+		    <!-- Custom styles for this template -->
+    <link href="../static/css/signin.css" rel="stylesheet">
+		<link href="../static/css/starter-template.css" rel="stylesheet"></link>
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script> -->
+	</head>
 
-<h1>Product</h1>
-<p><a th:href="@{/product/}">All Products</a></p>
-<p><a th:href="@{/product?name=Flakes}">Search Product with name like Flakes</a></p>
-<p><a th:href="@{/product/name?name=Flakes}">Test incorrect Product Link to search</a></p>
-<p><a th:href="@{/product?name=lotion}">Test Resource not Found exception for Product</a></p>
+	<body>
+<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Lake Shore Mart</a>
+			</div>
+			<div>
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#">About</a></li>
+					<li><a href="#">Contact</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+					<li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
+				</ul>
+			</div>
+		</div>
+</nav>
+        <div class="container">
 
-<h1>Vendor</h1>
-<p><a th:href="@{/vendor?vendorId=10000062}">Retrieve specific Vendor details</a></p>
-<p><a th:href="@{/vendor/name?vendorName=Ali Baba}">Retrieve vendors by name</a></p>
-<p><a th:href="@{/vendorr?vendorId=10000062}">Test incorrect Vendor Link </a></p>
-<p><a th:href="@{/vendor/name?vendorName=amazon}">Test Resource not Found exception for Vendor</a></p>	
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
 
-<h2>CUSTOMER</h2>
-
-<p><a th:href="@{/customer?customerId=10000132}">Retrieve specific Vendor details</a></p>
-<p><a th:href="@{/customer?fname=Manmeet}">Retrieve customer by name</a></p>
-<p><a th:href="@{/customer/find/?customerId=10000132}">Test incorrect Customer Link </a></p>
-<p><a th:href="@{/customer?customerId=111}">Test Resource not Found exception for Customer</a></p>
-<p><a th:href="@{/customer/(customerId='10000132',firstName='Arlo',lastName='Something')}">Customer Name and Email Update</a></p>
-
-
-<!-- <p><a th:href="@{/product/updateProductQuantity/(productId='10000012',quantity='20',operation='subtract')}">Update Product Quantity(Subtract)</a></p> -->
-
-
-
-</body>
+    </div><!-- /.container -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	</body>
 </html>
