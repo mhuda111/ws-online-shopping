@@ -5,7 +5,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
-
 public class WebMvcAutoConfiguration extends WebMvcConfigurerAdapter {
 
 	private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
@@ -17,6 +16,7 @@ public class WebMvcAutoConfiguration extends WebMvcConfigurerAdapter {
 //	        registry.addResourceHandler("/webjars/**").addResourceLocations(
 //	        		CLASSPATH_RESOURCE_LOCATIONS);
 //	    }
+		registry.addResourceHandler("/**").addResourceLocations("classpath:/templates/");
 	    if (!registry.hasMappingForPattern("/static/**")) {
 	        registry.addResourceHandler("/static/**").addResourceLocations(
 	        		CLASSPATH_RESOURCE_LOCATIONS);
