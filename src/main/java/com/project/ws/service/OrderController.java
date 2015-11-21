@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import com.project.ws.domain.Cart;
 import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.OrderRepresentation;
+import com.project.ws.representation.StringRepresentation;
 import com.project.ws.representation.CartRequest;
 import com.project.ws.workflow.CustomerActivity;
 import com.project.ws.workflow.OrderActivity;
@@ -67,18 +68,6 @@ public class OrderController {
 		orderRepr = orderActivity.allOrders(customerId, "active");
 		return orderRepr;
     }
-	
-	/*
-	 * POST to create new order using CartRequest
-	 */
-	@RequestMapping(value="/order/createOrder", method=RequestMethod.POST)
-	public @ResponseBody List<CartRepresentation> createOrder(@RequestBody CartRequest cartRequest) {
-		List<CartRepresentation> cartRepresentation = new ArrayList<CartRepresentation>();
-		if(customerActivity.validateCustomer(cartRequest.getCustomerId()) == false)
-			throw new CustomerNotFoundException(cartRequest.getCustomerId());
-		cartRepresentation = productActivity.buyProduct(cartRequest);
-		return cartRepresentation;
-	}
 
 	/*
 	 * PUT to place an order using customerId

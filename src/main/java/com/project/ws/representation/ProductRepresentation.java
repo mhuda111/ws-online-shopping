@@ -27,15 +27,15 @@ public class ProductRepresentation extends AbstractRepresentation {
 	}
 	
 	//setters
-	public void setName(String name) {
-		this.productName = name;
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
 	public void setVendorName(String vendorName) {
 		this.vendorName = vendorName;
 	}
 	
-	public void setType(String type) {
+	public void setProductType(String type) {
 		this.productType = type;
 	}
 	
@@ -51,9 +51,7 @@ public class ProductRepresentation extends AbstractRepresentation {
 	}
 		
 	//getters
-
-	
-	public String getName() {
+	public String getProductName() {
 		return this.productName;
 	}
 	
@@ -61,7 +59,7 @@ public class ProductRepresentation extends AbstractRepresentation {
 		return this.vendorName;
 	}
 	
-	public String getType() {
+	public String getProductType() {
 		return this.productType;
 	}
 	

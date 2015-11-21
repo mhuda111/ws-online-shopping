@@ -1,7 +1,7 @@
 (function(angular) {
   "use strict";
   
-  angular.module("myApp.directives", []).directive("ngEquals", function() {
+  var directives = angular.module("myApp.directives", []).directive("ngEquals", function() {
     var directive = { };
      
     directive.restrict = 'A';

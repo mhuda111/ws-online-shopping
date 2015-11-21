@@ -35,7 +35,13 @@ public class CustomerActivity {
 	
 	public CustomerRepresentation addCustomer(CustomerRequest customerRequest) {
 		newCustomer = mapRequest(customerRequest);
-		Integer count = custRepo.addCustomer(newCustomer.getCustFirstname(), newCustomer.getCustLastName(), newCustomer.getCustEmail(), newCustomer.getCustPassword());
+		Customer checkCustomer = custRepo.findByCustEmail(customerRequest.getEmail());
+		if(checkCustomer == null) {
+			CustomerRepresentation nullCustomerRepr = new CustomerRepresentation();
+			nullCustomerRepr.setMessage("Customer Already Exists");
+			return nullCustomerRepr;
+		}
+		custRepo.addCustomer(newCustomer.getCustFirstname(), newCustomer.getCustLastName(), newCustomer.getCustEmail(), newCustomer.getCustPassword());
 		newCustomer = custRepo.findByCustFirstName(newCustomer.getCustFirstname());
 		return mapRepresentation(newCustomer);
 	}
@@ -100,13 +106,5 @@ public class CustomerActivity {
 		customerRepresentation.setCustId(customer.getCustId());
 		return customerRepresentation;
 	}
-	
-//	public CustomerRepresentation mapRepresentation(Customer customer, CustomerAddress custAddr) {
-//		customerRepresentation = new CustomerRepresentation();
-//		customerRepresentation.setCustFirstname(customer.getCustFirstname());
-//		customerRepresentation.setCustLastName(customer.getCustLastName());
-//		customerRepresentation.setCustEmail(customer.getCustEmail());
-//		customerRepresentation.setCustId(customer.getCustId());
-//		return customerRepresentation;
-//	}
+
 }

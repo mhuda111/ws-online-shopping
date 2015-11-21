@@ -50,14 +50,6 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 			System.out.println("ERROR!!! Check logs/database");
 		return count;
 	}
-	
-//	@Override
-//	@Transactional
-//	public Customer addCustomer(Customer customer) {
-//		em.persist(customer);
-//		Customer newCustomer = em.find(Customer.class, customer.getCustId());
-//		return newCustomer;
-//	}
 
 	
 	@Override

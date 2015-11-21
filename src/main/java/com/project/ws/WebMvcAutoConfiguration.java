@@ -1,10 +1,14 @@
 package com.project.ws;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
+@EnableWebMvc
 public class WebMvcAutoConfiguration extends WebMvcConfigurerAdapter {
 
 	private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
@@ -22,4 +26,6 @@ public class WebMvcAutoConfiguration extends WebMvcConfigurerAdapter {
 	        		CLASSPATH_RESOURCE_LOCATIONS);
 	    }
 	}
+	
+
 }

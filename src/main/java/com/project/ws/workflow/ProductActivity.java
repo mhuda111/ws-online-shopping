@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.ws.domain.Cart;
+import com.project.ws.domain.Link;
 import com.project.ws.domain.Product;
 import com.project.ws.domain.Vendor;
 import com.project.ws.repository.CartRepository;
@@ -18,6 +19,7 @@ import com.project.ws.representation.CartRepresentation;
 import com.project.ws.representation.CartRequest;
 import com.project.ws.representation.ProductRepresentation;
 import com.project.ws.representation.ProductRequest;
+import com.project.ws.representation.StringRepresentation;
 
 @Transactional
 @Service
@@ -27,6 +29,7 @@ public class ProductActivity {
 	private final ProductRepository prodRepo;
 	private final CartRepository cartRepo;
 	private final VendorRepository vendorRepo;
+	private final String baseUrl = "http://localhost:8080";
 	
 	@Autowired
 	Product product;
@@ -44,7 +47,17 @@ public class ProductActivity {
 		this.vendorRepo = vendorRepo;
 	}
 	
-	public List<CartRepresentation> buyProduct(CartRequest cartRequest) {
+	public List<CartRepresentation> viewCart(Integer customerId) {
+		List<Cart> cartList = new ArrayList<Cart>();
+		cartList = cartRepo.getCartByCustomerId(customerId);
+		List<CartRepresentation> resultList = new ArrayList<CartRepresentation>();
+		for(Cart c: cartList) {
+			resultList.add(mapCartRepresentation(c));
+		}
+		return resultList;
+	}
+	
+	public StringRepresentation buyProduct(CartRequest cartRequest) {
 		Boolean check = false;
 		Cart cart = new Cart();
 		check = prodRepo.getProductAvailability(cartRequest.getProductId(), cartRequest.getQuantity());
@@ -55,13 +68,10 @@ public class ProductActivity {
 		cart.setCustomerId(cartRequest.getCustomerId());
 		cart.setQuantity(cartRequest.getQuantity());
 		cartRepo.addCart(cart);
-		List<Cart> cartList = new ArrayList<Cart>();
-		cartList = cartRepo.getCartByCustomerId(cartRequest.getCustomerId());
-		List<CartRepresentation> resultList = new ArrayList<CartRepresentation>();
-		for(Cart c: cartList) {
-			resultList.add(mapCartRepresentation(c));
-		}
-		return resultList;
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		stringRepresentation.setMessage("Cart Updated Successfully");
+		setLinks(stringRepresentation);
+		return stringRepresentation;
 	}
 	
 	public List<ProductRepresentation> allProducts() {
@@ -128,12 +138,13 @@ public class ProductActivity {
 	
 	public ProductRepresentation mapProductRepresentation(Product product, String vendorName) {
 		prodRepresentation = new ProductRepresentation();
-		prodRepresentation.setName(product.getName());
+		prodRepresentation.setProductName(product.getName());
 		prodRepresentation.setPrice(product.getPrice());
 		prodRepresentation.setQuantity(product.getQuantity());
 		prodRepresentation.setVendorName(vendorName);
-		prodRepresentation.setType(product.getType());
+		prodRepresentation.setProductType(product.getType());
 		prodRepresentation.setProductId(product.getProductId());
+		setLinks(prodRepresentation);
 		return prodRepresentation;
 	}
 	
@@ -141,7 +152,22 @@ public class ProductActivity {
 		cartRepresentation.setProductId(cart.getProductId());
 		cartRepresentation.setPrice(cart.getPrice());
 		cartRepresentation.setQuantity(cart.getQuantity());
+		setLinks(cartRepresentation);
 		return cartRepresentation;
 	}
 	
+	private void setLinks(ProductRepresentation prodRepresentation) {
+		Link cart = new Link("POST", baseUrl + "/order/createOrder", "cart");
+		prodRepresentation.setLinks(cart);
+	}
+	
+	private void setLinks(CartRepresentation cartRepresentation) {
+		Link order = new Link("PUT", baseUrl + "/order/placeOrder", "order");
+		prodRepresentation.setLinks(order);
+	}
+	
+	private void setLinks(StringRepresentation stringRepresentation) {
+		Link cart = new Link("GET", baseUrl + "/cart/view", "cart");
+		prodRepresentation.setLinks(cart);
+	}
 }

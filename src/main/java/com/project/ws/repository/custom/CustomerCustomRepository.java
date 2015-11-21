@@ -13,7 +13,6 @@ public interface CustomerCustomRepository {
 	
 	public List<Customer> getCustomersByNamesFirstLetter(String letter);
 	public Integer addCustomer(String firstName, String lastName, String email, String password);
-	//public Customer addCustomer(Customer customer);
 	public Integer updateName(Integer customerId, String firstName, String lastName);
 	public Integer updateEmail(Integer customerId, String email);
 	public Integer updatePassword(Integer customerId, String password);

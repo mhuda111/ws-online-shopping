@@ -27,6 +27,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.project.ws.representation.AddressRequest;
 import com.project.ws.representation.BillingRequest;
@@ -73,6 +76,16 @@ public class Application {
 //    	cancelOrder();
 //    	addComments();
 //    	cleanUpProject();
+    }
+    
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:8081");
+            }
+        };
     }
     
     public static void setUpProject() throws ParseException {
@@ -230,7 +243,7 @@ public class Application {
     	params.put("name", (String) "Philips CFL Lamp");
     	prodListResponse = restTemplate.getForEntity(finalUrl, ProductRepresentation[].class, params);
         displayStats(productResponse, "GET all products matching param");
-        Assert.assertEquals("Philips CFL Lamp", prodListResponse.getBody()[0].getName());
+        Assert.assertEquals("Philips CFL Lamp", prodListResponse.getBody()[0].getProductName());
         Assert.assertEquals((Double) 8.50, prodListResponse.getBody()[0].getPrice());
         Assert.assertTrue(1 == prodListResponse.getBody().length);
         productId = prodListResponse.getBody()[0].getProductId();   

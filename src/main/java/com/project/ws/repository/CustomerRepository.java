@@ -21,6 +21,6 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer>, C
     public Customer findByCustFirstName(String custFirstname);
     @Override
 	public List<Customer> findAll();
-    public List<Customer> findByCustEmail(String custEmail);
+    public Customer findByCustEmail(String custEmail);
     public Customer findByCustId(Integer customerId);
 }
