@@ -81,6 +81,16 @@ public class CustomerActivity {
 		return mapRepresentation(customer);
 	}
 	
+	public List<CustomerRepresentation> getAllCustomers() {
+		List<Customer> customers = custRepo.findAll();
+		if(customers == null) return null;
+		List<CustomerRepresentation> customerRepresentations = new ArrayList<CustomerRepresentation>();
+		for (Customer customer : customers) {
+			customerRepresentations.add(mapRepresentation(customer));
+		}
+		return customerRepresentations;
+	}
+	
 	public Boolean validateCustomer(Integer customerId) {
 		Customer c = custRepo.findOne(customerId);
 		if(c == null)

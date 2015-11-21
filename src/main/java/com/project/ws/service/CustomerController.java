@@ -1,5 +1,8 @@
 package com.project.ws.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -20,6 +23,7 @@ import org.springframework.http.HttpStatus;
 
 import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
+import com.project.ws.representation.ProductRepresentation;
 import com.project.ws.workflow.CustomerActivity;
 
 /**
@@ -31,6 +35,16 @@ public class CustomerController {
 	
 	@Autowired
 	CustomerActivity customerActivity;
+	
+	/*
+	 * GET to retrieve all product details
+	 */
+	@RequestMapping(value="/customers", method=RequestMethod.GET)
+    public List<CustomerRepresentation> getAllCustomers(HttpServletRequest request) {
+		List<CustomerRepresentation> customerRepresentations = new ArrayList<CustomerRepresentation>();
+		customerRepresentations = customerActivity.getAllCustomers();
+    	return customerRepresentations;
+    }
 	
 	
 	/*
