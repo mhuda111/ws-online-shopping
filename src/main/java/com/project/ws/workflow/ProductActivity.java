@@ -157,7 +157,7 @@ public class ProductActivity {
 	}
 	
 	private void setLinks(ProductRepresentation prodRepresentation) {
-		Link cart = new Link("POST", baseUrl + "/order/createOrder", "cart");
+		Link cart = new Link("POST", baseUrl + "/cart/add", "cart");
 		prodRepresentation.setLinks(cart);
 	}
 	
@@ -168,6 +168,7 @@ public class ProductActivity {
 	
 	private void setLinks(StringRepresentation stringRepresentation) {
 		Link cart = new Link("GET", baseUrl + "/cart/view", "cart");
-		prodRepresentation.setLinks(cart);
+		Link order = new Link("PUT", baseUrl + "/order/placeOrder", "order");
+		prodRepresentation.setLinks(cart, order);
 	}
 }
