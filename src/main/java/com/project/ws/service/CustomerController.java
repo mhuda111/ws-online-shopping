@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 
 import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
+import com.project.ws.representation.CustomerUpdateRequest;
 import com.project.ws.representation.ProductRepresentation;
 import com.project.ws.workflow.CustomerActivity;
 
@@ -37,7 +38,7 @@ public class CustomerController {
 	CustomerActivity customerActivity;
 	
 	/*
-	 * GET to retrieve all product details
+	 * GET to retrieve all customer details
 	 */
 	@RequestMapping(value="/customers", method=RequestMethod.GET)
     public List<CustomerRepresentation> getAllCustomers(HttpServletRequest request) {
@@ -113,13 +114,24 @@ public class CustomerController {
 	/*
 	 * PUT to update customer email using PUT
 	 */
-	@RequestMapping(value="/customer", method=RequestMethod.PUT, params={"customerId", "email"})
+	@RequestMapping(value="/customer/", method=RequestMethod.PUT, params={"customerId", "email"})
 	 public String updateEmail(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String email = request.getParameter("email");
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
 		return customerActivity.updateEmail(customerId, email);
+	}
+	
+	/*
+	 * Update customer using PUT
+	 */
+	@RequestMapping(value="/customer/updateCustomer", method=RequestMethod.PUT)
+	 public String updateEmail(@RequestBody CustomerUpdateRequest customerUpdateRequest) {
+		int customerId = customerUpdateRequest.getId();
+		if(customerActivity.validateCustomer(customerId) == false)
+			throw new CustomerNotFoundException(customerId);
+		return customerActivity.updateCustomer(customerUpdateRequest);
 	}
 
 }

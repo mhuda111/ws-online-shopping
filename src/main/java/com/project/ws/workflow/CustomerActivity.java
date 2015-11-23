@@ -11,9 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.project.ws.domain.Customer;
 import com.project.ws.domain.CustomerAddress;
 import com.project.ws.domain.CustomerBillingDetails;
+import com.project.ws.domain.Link;
 import com.project.ws.repository.CustomerRepository;
 import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
+import com.project.ws.representation.CustomerUpdateRequest;
+import com.project.ws.representation.ProductRepresentation;
 
 @Component
 @Transactional
@@ -28,6 +31,8 @@ public class CustomerActivity {
 	@Autowired
 	CustomerRepresentation customerRepresentation;
 	
+	private static final String baseUrl = "http://localhost:8080";
+	
 	@Autowired
 	CustomerActivity(CustomerRepository custRepo) {
 		this.custRepo = custRepo;
@@ -36,7 +41,7 @@ public class CustomerActivity {
 	public CustomerRepresentation addCustomer(CustomerRequest customerRequest) {
 		newCustomer = mapRequest(customerRequest);
 		Customer checkCustomer = custRepo.findByCustEmail(customerRequest.getEmail());
-		if(checkCustomer == null) {
+		if(checkCustomer != null) {
 			CustomerRepresentation nullCustomerRepr = new CustomerRepresentation();
 			nullCustomerRepr.setMessage("Customer Already Exists");
 			return nullCustomerRepr;
@@ -60,6 +65,14 @@ public class CustomerActivity {
 			return "Error updating customer " + customerId;
 		else
 			return "Updated customer " + customerId + " 's email successfully to " + email;
+	}
+	
+	public String updateCustomer(CustomerUpdateRequest customerUpdateRequest) {
+		Integer count = custRepo.updateCustomer(customerUpdateRequest.getId(), customerUpdateRequest.getFirstName(), customerUpdateRequest.getLastName(), customerUpdateRequest.getEmail());
+		if(count == 0)
+			return "Error updating customer " + customerUpdateRequest.getId();
+		else
+			return "Updated customer " + customerUpdateRequest.getId() + " 's name successfully to " + customerUpdateRequest.getFirstName() + " " + customerUpdateRequest.getLastName();
 	}
 
 	public String deleteCustomer(Integer customerId) {
@@ -114,7 +127,13 @@ public class CustomerActivity {
 		customerRepresentation.setCustLastName(customer.getCustLastName());
 		customerRepresentation.setCustEmail(customer.getCustEmail());
 		customerRepresentation.setCustId(customer.getCustId());
+		setLinks(customerRepresentation);
 		return customerRepresentation;
+	}
+	
+	private void setLinks(CustomerRepresentation customerRepresentation) {
+		Link cart = new Link("PUT", baseUrl + "/customer/updateCustomer/", "update email");
+		customerRepresentation.setLinks(cart);
 	}
 
 }

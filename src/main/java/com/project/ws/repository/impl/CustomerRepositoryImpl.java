@@ -67,6 +67,19 @@ public class CustomerRepositoryImpl implements CustomerCustomRepository {
 	
 	@Override
 	@Transactional
+	public Integer updateCustomer(Integer customerId, String firstName, String lastName, String email) {
+		String SQL = "Update customer set cust_firstname = '" + firstName + "', cust_lastname = '" + lastName +
+				"', cust_email = '" + email + "' where cust_id = " + customerId;
+		Integer count = em.createNativeQuery(SQL).executeUpdate();
+		if (count == 1) 
+			System.out.println("customer updated successfully");
+		else
+			System.out.println("ERROR!!! Check logs/database");
+		return count;
+	}
+	
+	@Override
+	@Transactional
 	public Integer updateEmail(Integer customerId, String email) {
 		String SQL = "Update customer set cust_email = '" + email + "' where cust_id = " + customerId ;
 		Integer count = em.createNativeQuery(SQL).executeUpdate();
