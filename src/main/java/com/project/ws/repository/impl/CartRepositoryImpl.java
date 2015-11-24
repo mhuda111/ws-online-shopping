@@ -28,12 +28,22 @@ public class CartRepositoryImpl implements CartCustomRepository{
 		/**
 		 * Doing queries from database and mapped the results to the list of customer object.
 		 */
-		@Override
-		public List<Cart> getCartByCustomerId(Integer id) {
-			TypedQuery<Cart> query = em.createQuery("SELECT c FROM Cart c where cust_id = " + id, Cart.class);
-			List<Cart> resultList = query.getResultList();
-			return resultList;
-		}
+//		@Override
+//		public List<Cart> getCartByCustomerId(Integer id) {
+//			System.out.println("in repo for: " + id);
+//			String SQL = "SELECT c FROM Cart c where cust_id = " + id;
+//			TypedQuery<Cart> query = em.createQuery(SQL, Cart.class);
+//			List<Cart> resultList = query.getResultList();
+//			System.out.println(" repo :" + resultList.size() );
+//			System.out.println(" repo :" + resultList.get(0).getProductId());
+//			System.out.println(" repo :" + resultList.get(1).getProductId());
+//			System.out.println(" repo :" + resultList.get(2).getProductId());
+//			System.out.println(" repo :" + resultList.get(3).getProductId());
+//			for(Cart c: resultList) {
+//				System.out.println("in repo" + c.getProductId());
+//			}
+//			return resultList;
+//		}
 		
 		@Override
 		@Transactional

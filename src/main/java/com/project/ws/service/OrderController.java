@@ -73,13 +73,13 @@ public class OrderController {
 	 * PUT to place an order using customerId
 	 */
 	@RequestMapping(value="/order/placeOrder", method=RequestMethod.PUT, params="customerId")
-	 public @ResponseBody OrderRepresentation placeOrder(HttpServletRequest request) {
-		OrderRepresentation orderRepresentation = new OrderRepresentation();
+	 public @ResponseBody StringRepresentation placeOrder(HttpServletRequest request) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
-		orderRepresentation = orderActivity.placeOrder(customerId);
-		return orderRepresentation;
+		stringRepresentation = orderActivity.placeOrder(customerId);
+		return stringRepresentation;
 	}
 	
 	/*

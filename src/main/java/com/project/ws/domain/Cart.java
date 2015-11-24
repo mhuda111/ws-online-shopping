@@ -21,10 +21,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class Cart implements Serializable{
 
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue
+	@Column(name="cart_id")
+	private Integer cartId;
+	
 	@Column(name="cust_id")
 	private Integer customerId;
 	
@@ -32,18 +36,34 @@ public class Cart implements Serializable{
 	private Integer productId;
 	
 	@Column(name="cust_bill_id")
-	private Integer cust_bill_id;
+	private Integer cardId;
 	
 	@Column(name="quantity")
 	private Integer quantity;
-	
+
 	@Column(name="price")
 	private Double price;
 	
 	
 	public Cart() {}
 	
+	
 	//setters
+	public Integer getCartId() {
+		return cartId;
+	}
+
+	public void setCartId(Integer cartId) {
+		this.cartId = cartId;
+	}
+	
+	public Integer getCardId() {
+		return cardId;
+	}
+
+	public void setCardId(Integer cardId) {
+		this.cardId = cardId;
+	}
 	
 	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
@@ -51,10 +71,6 @@ public class Cart implements Serializable{
 	
 	public void setProductId(Integer productId) {
 		this.productId = productId;
-	}
-	
-	public void setCardId(Integer cust_bill_id) {
-		this.cust_bill_id = cust_bill_id;
 	}
 	
 	public void setQuantity(Integer quantity) {
@@ -73,10 +89,6 @@ public class Cart implements Serializable{
 	
 	public Integer getProductId() {
 		return this.productId;
-	}
-	
-	public Integer getCardId() {
-		return this.cust_bill_id;
 	}
 	
 	public Integer getQuantity() {

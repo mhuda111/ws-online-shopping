@@ -12,6 +12,7 @@ import com.project.ws.repository.custom.CartCustomRepository;
 public interface CartRepository extends CrudRepository<Cart, Long>, CartCustomRepository{
 	
 		public List<Cart> findAll();
+		public List<Cart> findByCustomerId(Integer customerId);
 
 
 }

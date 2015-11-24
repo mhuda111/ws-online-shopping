@@ -49,9 +49,10 @@ public class ProductActivity {
 	
 	public List<CartRepresentation> viewCart(Integer customerId) {
 		List<Cart> cartList = new ArrayList<Cart>();
-		cartList = cartRepo.getCartByCustomerId(customerId);
+		cartList = cartRepo.findByCustomerId(customerId);
 		List<CartRepresentation> resultList = new ArrayList<CartRepresentation>();
 		for(Cart c: cartList) {
+			System.out.println(c.getCustomerId() + "-" + c.getPrice() + "=" + c.getProductId() + "=" + c.getQuantity());
 			resultList.add(mapCartRepresentation(c));
 		}
 		return resultList;
@@ -94,6 +95,7 @@ public class ProductActivity {
 		Vendor vendor;
 		String vendorName;
 		for(Product p:productList) {
+			System.out.println(p.getProductId() + p.getName() + p.getPrice());
 			vendor = vendorRepo.findOne(p.getVendorId());
 			vendorName = vendor.getVendorName();
 			resultList.add(mapProductRepresentation(p, vendorName));
@@ -149,26 +151,29 @@ public class ProductActivity {
 	}
 	
 	public CartRepresentation mapCartRepresentation(Cart cart) {
+		CartRepresentation cartRepresentation = new CartRepresentation();
 		cartRepresentation.setProductId(cart.getProductId());
 		cartRepresentation.setPrice(cart.getPrice());
 		cartRepresentation.setQuantity(cart.getQuantity());
+		Product product = prodRepo.findByProductId(cart.getProductId());
+		cartRepresentation.setProductName(product.getName());
 		setLinks(cartRepresentation);
 		return cartRepresentation;
 	}
 	
 	private void setLinks(ProductRepresentation prodRepresentation) {
-		Link cart = new Link("POST", baseUrl + "/cart/add", "cart");
+		Link cart = new Link("post", baseUrl + "/cart/add", "cart");
 		prodRepresentation.setLinks(cart);
 	}
 	
 	private void setLinks(CartRepresentation cartRepresentation) {
-		Link order = new Link("PUT", baseUrl + "/order/placeOrder", "order");
-		prodRepresentation.setLinks(order);
+		Link order = new Link("put", baseUrl + "/order/placeOrder?customerId=", "order");
+		cartRepresentation.setLinks(order);
 	}
 	
 	private void setLinks(StringRepresentation stringRepresentation) {
-		Link cart = new Link("GET", baseUrl + "/cart/view", "cart");
-		Link order = new Link("PUT", baseUrl + "/order/placeOrder", "order");
-		prodRepresentation.setLinks(cart, order);
+		Link cart = new Link("get", baseUrl + "/cart/view?customerId=", "cart");
+		Link order = new Link("put", baseUrl + "/order/placeOrder?customerId=", "order");
+		stringRepresentation.setLinks(cart, order);
 	}
 }

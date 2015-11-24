@@ -1,7 +1,10 @@
 package com.project.ws.workflow;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.project.ws.domain.Cart;
 import com.project.ws.domain.Customer;
 import com.project.ws.domain.CustomerAddress;
+import com.project.ws.domain.Link;
 import com.project.ws.domain.Order;
 import com.project.ws.domain.OrderLineItem;
+import com.project.ws.domain.Product;
 import com.project.ws.domain.Vendor;
 import com.project.ws.repository.CartRepository;
 import com.project.ws.repository.CustomerAddressRepository;
@@ -21,7 +26,9 @@ import com.project.ws.repository.OrderLineItemRepository;
 import com.project.ws.repository.OrderRepository;
 import com.project.ws.repository.ProductRepository;
 import com.project.ws.repository.VendorRepository;
+import com.project.ws.representation.OrderLineRepresentation;
 import com.project.ws.representation.OrderRepresentation;
+import com.project.ws.representation.StringRepresentation;
 
 @Transactional
 @Service
@@ -31,6 +38,16 @@ public class OrderActivity {
 	Integer orderId, addrId;
 	Integer count;
 	Double orderAmount = 0.00;
+	
+	Calendar calendar = Calendar.getInstance();
+	
+	static Map<String, String> statusMap = new HashMap<String, String>(); 
+	static {
+		statusMap.put("ACT", "Order is being processed");
+		statusMap.put("SHP", "Order has been shipped");
+		statusMap.put("CAN", "Order has been cancelled");
+		statusMap.put("DEL", "Order has been delivered");
+	};
 	
 	@Autowired
 	OrderRepresentation orderRepresentation;
@@ -49,6 +66,8 @@ public class OrderActivity {
 	
 	private final VendorRepository vendorRepo;
 	
+	private final String baseUrl = "http://localhost:8080";
+	
 	
 	@Autowired
 	public OrderActivity(VendorRepository vendorRepo, OrderRepository orderRepo, CustomerBillingRepository billRepo, CustomerAddressRepository addrRepo, ProductRepository prodRepo, CartRepository cartRepo, OrderLineItemRepository orderLineRepo) {
@@ -61,10 +80,10 @@ public class OrderActivity {
 		this.orderLineRepo = orderLineRepo;
 	}
 	
-	public OrderRepresentation placeOrder(Integer customerId) {
-		Order newOrder = new Order();
+	public StringRepresentation placeOrder(Integer customerId) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		try {
-			List<Cart> cartList = cartRepo.getCartByCustomerId(customerId);
+			List<Cart> cartList = cartRepo.findByCustomerId(customerId);
 			for(Cart cart: cartList) {
 				orderAmount = orderAmount + cart.getPrice() * cart.getQuantity();
 			}
@@ -86,14 +105,28 @@ public class OrderActivity {
 			Integer count = orderRepo.addOrder(order);
 			System.out.println("Order inserted : " + count);
 			
-			newOrder = orderRepo.findOne(orderRepo.findLatestOrder(customerId));
+			Order newOrder = orderRepo.findOne(orderRepo.findLatestOrder(customerId));
 			orderLineRepo.addOrderLine(customerId, newOrder.getOrderId());
+			cartRepo.deleteCart(customerId);
+			
+			stringRepresentation.setMessage("Order Placed Successfully");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return mapRepresentation(newOrder);
+		setLinks(stringRepresentation);
+		return stringRepresentation;
+	}
+	
+	private void setLinks(StringRepresentation stringRepresentation) {
+		Link order = new Link("get", baseUrl + "/order/activeOrders?customerId=", "order");
+		stringRepresentation.setLinks(order);
 	}
 
+	private void setLinks(OrderRepresentation orderRepresentation) {
+		Link order = new Link("get", baseUrl + "/order/checkOrderStatus?orderId=", "order");
+		orderRepresentation.setLinks(order);
+	}
+	
 	public OrderRepresentation cancelOrder(Integer orderId) {
 		VendorActivity vendorActivity = new VendorActivity(vendorRepo);
 		Integer vendorId;
@@ -160,14 +193,32 @@ public class OrderActivity {
 		orderRepresentation.setOrderId(order.getOrderId());
 		orderRepresentation.setOrderAmount(order.getOrderAmount());
 		orderRepresentation.setOrderDate(order.getOrderDate());
-		orderRepresentation.setOrderStatus(order.getOrderStatus());
+		orderRepresentation.setOrderStatus(statusMap.get(order.getOrderStatus()));
 		orderRepresentation.setOrderShipMethod(order.getOrderShipMethod());
-		
+		calendar.setTime(order.getOrderDate());
+		calendar.add(Calendar.DATE, 5);
+		orderRepresentation.setOrderDeliveryDate(calendar.getTime());
 		List<OrderLineItem> subResultList = orderLineRepo.findByOrderId(order.getOrderId());
+		List<OrderLineRepresentation> orderLineReprList = new ArrayList<OrderLineRepresentation>();
 		for(OrderLineItem ol: subResultList) {
-			orderRepresentation.setProducts(ol);
+			orderLineReprList.add(mapOrderLineRepresentation(ol));
 		}
+		
+		orderRepresentation.setLineItems(orderLineReprList);
+
+		setLinks(orderRepresentation);
 		return orderRepresentation;
+	}
+	
+	public OrderLineRepresentation mapOrderLineRepresentation(OrderLineItem ol) {
+		OrderLineRepresentation orderLineRepresentation = new OrderLineRepresentation();
+		orderLineRepresentation.setOrderId(ol.getOrderId());
+		orderLineRepresentation.setOrderLinePrice(ol.getOrderLinePrice());
+		orderLineRepresentation.setOrderLineQuantity(ol.getOrderLineQuantity());
+		orderLineRepresentation.setProductId(ol.getProductId());
+		Product product = prodRepo.findByProductId(ol.getProductId());
+		orderLineRepresentation.setProductName(product.getName());
+		return orderLineRepresentation;
 	}
 	
 	

@@ -2,6 +2,7 @@ package com.project.ws.representation;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.ws.domain.OrderLineItem;
+import com.project.ws.domain.Product;
 
 @XmlRootElement(name = "Order")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -27,20 +29,18 @@ public class OrderRepresentation extends AbstractRepresentation {
 	private Double orderAmount;
 	private String orderShipMethod;
 	private String orderStatus;
-	private Map<String, Object> products = new HashMap<String, Object>();
+	private List<OrderLineRepresentation> lineItems;
 
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
 
-	public Map<String, Object> getProducts() {
-		return products;
+	public List<OrderLineRepresentation> getLineItems() {
+		return lineItems;
 	}
 
-	public void setProducts(OrderLineItem lineItem) {
-		products.put("id", lineItem.getProductId());
-		products.put("quantity", lineItem.getOrderLineQuantity());
-		products.put("price", lineItem.getOrderLinePrice());
+	public void setLineItems(List<OrderLineRepresentation> lineItems) {
+		this.lineItems = lineItems;
 	}
 	
 	public OrderRepresentation() {

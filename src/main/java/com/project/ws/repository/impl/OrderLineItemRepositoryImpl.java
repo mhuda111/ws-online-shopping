@@ -1,6 +1,5 @@
 package com.project.ws.repository.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,12 +8,9 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.project.ws.domain.Cart;
-import com.project.ws.domain.CustomerAddress;
-import com.project.ws.domain.OrderLineItem;
 import com.project.ws.repository.CartRepository;
-import com.project.ws.repository.CustomerAddressRepository;
-import com.project.ws.repository.CustomerBillingRepository;
 import com.project.ws.repository.ProductRepository;
+
 
 public class OrderLineItemRepositoryImpl {
 	
@@ -36,7 +32,7 @@ public class OrderLineItemRepositoryImpl {
 	
 	public void addOrderLine(Integer customerId, Integer orderId) {
 
-		List<Cart> list = cartRepo.getCartByCustomerId(customerId);
+		List<Cart> list = cartRepo.findByCustomerId(customerId);
 		String SQL = "";
 		
 		for(Cart cart:list) {
