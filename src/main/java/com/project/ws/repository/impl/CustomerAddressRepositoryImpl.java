@@ -39,9 +39,11 @@ public class CustomerAddressRepositoryImpl implements CustomerAddressCustomRepos
 	@Transactional
 	public Integer addCustomerAddress(CustomerAddress customerAddress) {
 		Integer count = 0;
-		String SQL = "INSERT INTO customer_address (cust_id, cust_addr_line1, cust_addr_line2, cust_city, cust_state, cust_zip_code) VALUES(" +
+		String SQL="update customer_address set default_addr = 'N' where cust_id = " + customerAddress.getCustomerId();
+		em.createNativeQuery(SQL).executeUpdate();
+		SQL = "INSERT INTO customer_address (cust_id, cust_addr_line1, cust_addr_line2, cust_city, cust_state, cust_zip_code, default_addr) VALUES(" +
 				customerAddress.getCustomerId() + ", '" + customerAddress.getCustAddrLine1() + "', '" + customerAddress.getCustAddrLine2() + "', '" + customerAddress.getCustCity() + 
-				"', '" + customerAddress.getCustState() + "', '" + customerAddress.getCustZipCode() + "')";
+				"', '" + customerAddress.getCustState() + "', '" + customerAddress.getCustZipCode() + "', 'Y')";
 		try {
 			count = em.createNativeQuery(SQL).executeUpdate();
 		} catch (Exception e) {
@@ -49,6 +51,7 @@ public class CustomerAddressRepositoryImpl implements CustomerAddressCustomRepos
 		}
 		if (count == 1) 
 			System.out.println("address added successfully");
+		
 		else
 			System.out.println("ERROR!!! Check logs/database");
 		return count;

@@ -9,14 +9,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.ws.domain.CustomerBillingDetails;
+import com.project.ws.domain.Link;
 import com.project.ws.repository.CustomerBillingRepository;
 import com.project.ws.representation.BillingRequest;
+import com.project.ws.representation.CustAddrRepresentation;
 import com.project.ws.representation.CustBillingRepresentation;
 
 @Component
 @Transactional
 @Service
 public class CustomerBillingActivity {
+	
+	private static final String baseUrl = "http://localhost:8080";
 
 	private final CustomerBillingRepository billRepo;
 	
@@ -86,6 +90,12 @@ public class CustomerBillingActivity {
 		billRepresentation.setCardNo("************" + cardNo.substring(cardNo.length()-4, cardNo.length()));
 		billRepresentation.setCardType(billingDetail.getCardType());
 		billRepresentation.setCustomerId(billingDetail.getCustomerId());
+		setLinks(billRepresentation);
 		return billRepresentation;
+	}
+	
+	private void setLinks(CustBillingRepresentation billRepresentation) {
+		Link billingAdd = new Link("post", baseUrl + "/billing/", "billing");
+		billRepresentation.setLinks(billingAdd);
 	}
 }

@@ -13,10 +13,12 @@ import com.project.ws.domain.CustomerAddress;
 import com.project.ws.domain.CustomerBillingDetails;
 import com.project.ws.domain.Link;
 import com.project.ws.repository.CustomerRepository;
+import com.project.ws.representation.AbstractRepresentation;
 import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
 import com.project.ws.representation.CustomerUpdateRequest;
 import com.project.ws.representation.ProductRepresentation;
+import com.project.ws.representation.StringRepresentation;
 
 @Component
 @Transactional
@@ -36,6 +38,19 @@ public class CustomerActivity {
 	@Autowired
 	CustomerActivity(CustomerRepository custRepo) {
 		this.custRepo = custRepo;
+	}
+	
+	public CustomerRepresentation authenticateCustomer(String email, String password) {
+		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+		Customer customer = custRepo.findByCustEmail(email);
+		if(customer == null)
+			return null;
+		if(customer.getCustPassword().equals(password)) {
+			customerRepresentation = mapRepresentation(customer);
+			return customerRepresentation;
+		}
+		else
+			return null;
 	}
 	
 	public CustomerRepresentation addCustomer(CustomerRequest customerRequest) {
@@ -132,8 +147,17 @@ public class CustomerActivity {
 	}
 	
 	private void setLinks(CustomerRepresentation customerRepresentation) {
-		Link cart = new Link("PUT", baseUrl + "/customer/updateCustomer/", "update email");
-		customerRepresentation.setLinks(cart);
+		Link address = new Link("get", baseUrl + "/customeraddress/?customerId=", "address");
+		Link billing = new Link("get", baseUrl + "/billing/?customerId=", "billing");
+		Link orders = new Link("get", baseUrl + "/order?customerId=", "orders");
+		Link cart = new Link("get", baseUrl + "/cart/view?customerId=", "cart");
+		customerRepresentation.setLinks(address, billing, orders, cart);
 	}
+
+	
+	//	private void setLinks(CustomerRepresentation customerRepresentation) {
+//		Link cart = new Link("PUT", baseUrl + "/customer/updateCustomer/", "update email");
+//		customerRepresentation.setLinks(cart);
+//	}
 
 }

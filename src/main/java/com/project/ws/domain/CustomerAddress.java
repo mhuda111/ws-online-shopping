@@ -49,9 +49,19 @@ public class CustomerAddress implements Serializable {
 	private String custZipCode;
 	@Column(name = "cust_phone")
 	private String custPhone;
+	@Column(name = "default_addr")
+	private String defaultAddr;
 	
 	//default constructor
 	
+	public String getDefaultAddr() {
+		return defaultAddr;
+	}
+
+	public void setDefaultAddr(String defaultAddr) {
+		this.defaultAddr = defaultAddr;
+	}
+
 	public CustomerAddress() {
 		this.custAddrLine1 = "";
 		this.custAddrLine2 = "";

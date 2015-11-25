@@ -22,6 +22,7 @@ import com.project.ws.domain.CustomerAddress;
 import com.project.ws.repository.CustomerAddressRepository;
 import com.project.ws.representation.AddressRequest;
 import com.project.ws.representation.CustAddrRepresentation;
+import com.project.ws.representation.StringRepresentation;
 import com.project.ws.workflow.CustomerActivity;
 import com.project.ws.workflow.CustomerAddressActivity;
 
@@ -49,28 +50,44 @@ public class CustomerAddressController {
     }
 	
 	/*
+	 * GET to retrieve customer address using customerId
+	 */
+	@RequestMapping(value="/customeraddress/", method=RequestMethod.DELETE, params="addrId")
+    public StringRepresentation deleteCustomerAddress(HttpServletRequest request) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		int addrId = Integer.parseInt(request.getParameter("addrId"));
+		stringRepresentation = custAddrActivity.deleteCustomerAddress(addrId);
+    	return stringRepresentation;
+    }
+	
+	/*
 	 * POST to add a new customer address
 	 */
 	@RequestMapping(value="/customeraddress/add/", method=RequestMethod.POST)
-    public String addCustomerAddress(@RequestBody AddressRequest request) {
+    public @ResponseBody StringRepresentation addCustomerAddress(@RequestBody AddressRequest request) throws Exception {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		int customerId = request.getCustomerId();
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
-		custAddrActivity.addCustomerAddress(request);
-		return "Address added successfully";
+		stringRepresentation = custAddrActivity.addCustomerAddress(request);
+		if(stringRepresentation == null)
+			throw new Exception("Error adding customer address.");
+		return stringRepresentation;
     }
 	
 	/*
 	 * PUT to update customer Address using Address Request
 	 */
 	@RequestMapping(value="/customeraddress/update/", method=RequestMethod.PUT)
-    public CustAddrRepresentation updateCustomerAddress(@RequestBody AddressRequest request) {
-		CustAddrRepresentation custAddrRepresentation = new CustAddrRepresentation();
+    public StringRepresentation updateCustomerAddress(@RequestBody AddressRequest request) throws Exception {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		int customerId = request.getCustomerId();
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
-		custAddrRepresentation = custAddrActivity.updateCustomerAddress(request);
-		return custAddrRepresentation;
+		stringRepresentation = custAddrActivity.updateCustomerAddress(request);
+		if(stringRepresentation == null)
+			throw new Exception("Error updating customer address.");
+		return stringRepresentation;
     }
 	
 //	@RequestMapping("/customer/defAddress/")

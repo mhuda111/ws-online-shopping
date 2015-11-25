@@ -38,6 +38,22 @@ public class CustomerController {
 	CustomerActivity customerActivity;
 	
 	/*
+	 * GET customer by customer email and password
+	 */
+	@RequestMapping(value="/customer/login", method=RequestMethod.POST)
+    public CustomerRepresentation authenticateCustomer(@RequestBody CustomerRequest customerRequest) {
+		CustomerRepresentation customerRepresentation = new CustomerRepresentation();
+		String email = customerRequest.getEmail();
+		String password = customerRequest.getPassword();
+		System.out.println("email is " + email);
+		System.out.println("password is " + password);
+		customerRepresentation =  customerActivity.authenticateCustomer(email, password);
+		if(customerRepresentation == null) 
+			throw new CustomerNotFoundException(email);
+    	return customerRepresentation;
+    }
+	
+	/*
 	 * GET to retrieve all customer details
 	 */
 	@RequestMapping(value="/customers", method=RequestMethod.GET)

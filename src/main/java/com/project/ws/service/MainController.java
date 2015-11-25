@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.ImmutableMap;
+import com.project.ws.representation.StringRepresentation;
 
 @Controller
 @RequestMapping(value="/")
@@ -34,8 +35,10 @@ public class MainController implements ErrorController {
     }
     
 	@RequestMapping(ERRORPATH)
-	public @ResponseBody String error(HttpServletRequest request, HttpServletResponse response) {
-		return errorString + errorMessages.get(response.getStatus());
+	public @ResponseBody StringRepresentation error(HttpServletRequest request, HttpServletResponse response) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		stringRepresentation.setMessage(errorString + errorMessages.get(response.getStatus()));
+		return stringRepresentation;
     }
 				
 	@RequestMapping("/")
