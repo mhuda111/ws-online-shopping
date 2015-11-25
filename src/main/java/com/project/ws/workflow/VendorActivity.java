@@ -1,13 +1,18 @@
 package com.project.ws.workflow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.ws.domain.Customer;
 import com.project.ws.domain.Product;
 import com.project.ws.domain.Vendor;
 import com.project.ws.repository.VendorRepository;
+import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.VendorRepresentation;
 import com.project.ws.representation.VendorRequest;
 
@@ -87,6 +92,16 @@ public class VendorActivity {
 			return false;
 		else
 			return true;
+	}
+	
+	public List<VendorRepresentation> getAllVendors() {
+		List<Vendor> vendors = vendorRepo.findAll();
+		if(vendors == null) return null;
+		List<VendorRepresentation> vendorRepresentations = new ArrayList<VendorRepresentation>();
+		for (Vendor vendor : vendors) {
+			vendorRepresentations.add(mapRepresentation(vendor));
+		}
+		return vendorRepresentations;
 	}
 	
 	public VendorRepresentation mapRepresentation(Vendor vendor) {

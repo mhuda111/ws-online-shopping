@@ -1,5 +1,7 @@
 package com.project.ws.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.ImmutableMap;
+import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.VendorRepresentation;
 import com.project.ws.representation.VendorRequest;
 import com.project.ws.workflow.VendorActivity;
@@ -31,6 +34,14 @@ public class VendorController {
 	/*
 	 * GET to retrieve details about a vendor using vendorId
 	 */
+	@RequestMapping(value="/vendors", method=RequestMethod.GET)
+    public List<VendorRepresentation> getAllVendors(HttpServletRequest request) {
+		List<VendorRepresentation> vendorRepresentations = new ArrayList<VendorRepresentation>();
+		vendorRepresentations = vendorActivity.getAllVendors();
+    	return vendorRepresentations;
+    }
+	
+	
 	@RequestMapping(value="/vendor", method=RequestMethod.GET, params="vendorId")
 	public @ResponseBody VendorRepresentation getVendorById(HttpServletRequest request) {
 		VendorRepresentation vendorRepresentation = new VendorRepresentation();
