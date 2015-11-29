@@ -163,7 +163,9 @@ public class ProductActivity {
 	
 	private void setLinks(ProductRepresentation prodRepresentation) {
 		Link cart = new Link("post", baseUrl + "/cart/add", "cart");
-		prodRepresentation.setLinks(cart);
+		Link reviewsToShow = new Link("get", baseUrl + "/review/view?productId=", "reviews");
+		Link reviewToAdd = new Link("post", baseUrl + "/review/add", "addReview");
+		prodRepresentation.setLinks(cart, reviewsToShow, reviewToAdd);
 	}
 	
 	private void setLinks(CartRepresentation cartRepresentation) {

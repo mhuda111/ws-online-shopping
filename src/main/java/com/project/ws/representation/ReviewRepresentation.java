@@ -17,6 +17,7 @@ public class ReviewRepresentation extends AbstractRepresentation {
 	private Double rating;
 	private String productName;
 	private String vendorName;
+	private String customerName;
 	
 	public ReviewRepresentation() {
 		
@@ -52,6 +53,14 @@ public class ReviewRepresentation extends AbstractRepresentation {
 
 	public void setRating(Double rating) {
 		this.rating = rating;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 
 }

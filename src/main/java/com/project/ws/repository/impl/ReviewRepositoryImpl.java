@@ -30,11 +30,11 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 		
 		if(review.getReviewType().equals("product"))
 			SQL = "INSERT INTO review (review_desc, review_type, cust_id, product_id,vendor_id, rating) VALUES ('" + 
-				review.getReviewDesc() + "', '" + review.getReviewType() + "', " + review.getCustId() + ", " + 
+				review.getReviewDesc() + "', '" + "P" + "', " + review.getCustId() + ", " + 
 				review.getProductId() +", " + review.getVendorId() + ", " + review.getRating() + ")";
 		else if(review.getReviewType().equals("vendor"))
 			SQL = "INSERT INTO review (review_desc, review_type, cust_id, product_id, vendor_id, rating) VALUES ('" + 
-					review.getReviewDesc() + "', '" + review.getReviewType() + "', " + review.getCustId() 
+					review.getReviewDesc() + "', '" + "V" + "', " + review.getCustId() 
 					+ ", " + review.getProductId() + ", " + review.getVendorId() + ", " + review.getRating() +")";
 		
 		Query query = em.createNativeQuery(SQL);

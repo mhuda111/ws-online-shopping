@@ -8,12 +8,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.ws.domain.Link;
 import com.project.ws.domain.Review;
+import com.project.ws.repository.CustomerRepository;
 import com.project.ws.repository.ProductRepository;
 import com.project.ws.repository.ReviewRepository;
 import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.ReviewRepresentation;
 import com.project.ws.representation.ReviewRequest;
+import com.project.ws.representation.StringRepresentation;
 
 @Component
 @Transactional
@@ -23,12 +26,16 @@ public class ReviewActivity {
 	private final ReviewRepository reviewRepo;
 	private final ProductRepository prodRepo;
 	private final VendorRepository vendorRepo;
+	private final String baseUrl = "http://localhost:8080";
 	
 	@Autowired
 	Review review;
 	
 	@Autowired
 	ReviewRepresentation reviewRepresentation;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
 
 	@Autowired
 	public ReviewActivity(ReviewRepository reviewRepo, VendorRepository vendorRepo, ProductRepository prodRepo) {
@@ -50,8 +57,20 @@ public class ReviewActivity {
 		return reviewRepo.getAvgRatingVendor(vendorId);
 	}
 	
-	public Integer deleteReview(Integer reviewId) {
-		return reviewRepo.deleteReview(reviewId);
+	public StringRepresentation deleteReview(Integer reviewId) {
+		int noOfDeletedRow = 0;
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		try {
+			noOfDeletedRow = reviewRepo.deleteReview(reviewId);
+
+		} catch (RuntimeException e) {
+			throw new RuntimeException();
+		}
+		if (noOfDeletedRow > 0) {
+			stringRepresentation.setMessage("Deleted Successfully");
+		} else 
+			stringRepresentation.setMessage("No rows found to delete");
+		return stringRepresentation;
 	}
 	
 	public List<ReviewRepresentation> getProductReviews(Integer productId) {
@@ -80,8 +99,11 @@ public class ReviewActivity {
 			reviewRepresentation.setProductName(prodRepo.findOne(review.getProductId()).getName());
 		if(review.getVendorId() != null)
 			reviewRepresentation.setVendorName(vendorRepo.findOne(review.getVendorId()).getVendorName());
+		if(review.getCustId() != null)
+			reviewRepresentation.setCustomerName(customerRepository.findOne(review.getCustId()).getCustFirstname());
 		reviewRepresentation.setRating(review.getRating());
 		reviewRepresentation.setReviewDesc(review.getReviewDesc());
+		setLinks(reviewRepresentation);
 		return reviewRepresentation;
 	}
 	
@@ -97,6 +119,11 @@ public class ReviewActivity {
 		review.setReviewDesc(reviewRequest.getReviewDescription());
 		review.setRating(reviewRequest.getRating());
 		return review;
+	}
+	
+	private void setLinks(ReviewRepresentation reviewRepresentation) {
+		Link product = new Link("get", baseUrl + "/product?name=", "search_product");
+		reviewRepresentation.setLinks(product);
 	}
 	
 }
