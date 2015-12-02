@@ -25,6 +25,7 @@ import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
 import com.project.ws.representation.CustomerUpdateRequest;
 import com.project.ws.representation.ProductRepresentation;
+import com.project.ws.representation.StringRepresentation;
 import com.project.ws.workflow.CustomerActivity;
 
 /**
@@ -105,8 +106,8 @@ public class CustomerController {
 	 * DELETE to delete a customer using customerId
 	 */
 	@RequestMapping(value="/customer", method=RequestMethod.DELETE, params="customerId")
-    public @ResponseBody String deleteCustomer(HttpServletRequest request) {
-		String message;
+    public @ResponseBody StringRepresentation deleteCustomer(HttpServletRequest request) {
+		StringRepresentation message;
 		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
@@ -118,7 +119,7 @@ public class CustomerController {
 	 * PUT to update customer first and last name using customerId
 	 */
 	@RequestMapping(value="/customer/", method=RequestMethod.PUT, params={"customerId","firstName", "lastName" })
-	 public String updateCustomerWithInfo(HttpServletRequest request) {
+	 public StringRepresentation updateCustomerWithInfo(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
@@ -131,7 +132,7 @@ public class CustomerController {
 	 * PUT to update customer email using PUT
 	 */
 	@RequestMapping(value="/customer/", method=RequestMethod.PUT, params={"customerId", "email"})
-	 public String updateEmail(HttpServletRequest request) {
+	 public StringRepresentation updateEmail(HttpServletRequest request) {
 		int customerId = Integer.parseInt(request.getParameter("customerId"));
 		String email = request.getParameter("email");
 		if(customerActivity.validateCustomer(customerId) == false)
@@ -143,7 +144,7 @@ public class CustomerController {
 	 * Update customer using PUT
 	 */
 	@RequestMapping(value="/customer/updateCustomer", method=RequestMethod.PUT)
-	 public String updateEmail(@RequestBody CustomerUpdateRequest customerUpdateRequest) {
+	 public StringRepresentation updateEmail(@RequestBody CustomerUpdateRequest customerUpdateRequest) {
 		int customerId = customerUpdateRequest.getId();
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);

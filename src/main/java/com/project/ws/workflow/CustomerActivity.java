@@ -66,36 +66,48 @@ public class CustomerActivity {
 		return mapRepresentation(newCustomer);
 	}
 	
-	public String updateName(Integer customerId, String firstName, String lastName) {
+	public StringRepresentation updateName(Integer customerId, String firstName, String lastName) {
 		Integer count = custRepo.updateName(customerId, firstName, lastName);
-		if(count == 0)
-			return "Error updating customer " + customerId;
-		else
-			return "Updated customer " + customerId + " 's name successfully to " + firstName + " " + lastName;
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		setLinks(stringRepresentation);
+		if(count == 0) {
+			stringRepresentation.setMessage("Error updating customer " + customerId);
+		} else
+			stringRepresentation.setMessage("Updated customer " + customerId + " 's name successfully to " + firstName + " " + lastName);
+		return stringRepresentation;
 	}
 
-	public String updateEmail(Integer customerId, String email) {
+	public StringRepresentation updateEmail(Integer customerId, String email) {
 		Integer count = custRepo.updateEmail(customerId, email);
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		setLinks(stringRepresentation);
 		if(count == 0)
-			return "Error updating customer " + customerId;
+			stringRepresentation.setMessage("Error updating customer " + customerId);
 		else
-			return "Updated customer " + customerId + " 's email successfully to " + email;
+			stringRepresentation.setMessage("Updated customer " + customerId + " 's email successfully to " + email);
+		return stringRepresentation;
 	}
 	
-	public String updateCustomer(CustomerUpdateRequest customerUpdateRequest) {
+	public StringRepresentation updateCustomer(CustomerUpdateRequest customerUpdateRequest) {
 		Integer count = custRepo.updateCustomer(customerUpdateRequest.getId(), customerUpdateRequest.getFirstName(), customerUpdateRequest.getLastName(), customerUpdateRequest.getEmail());
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		setLinks(stringRepresentation);
 		if(count == 0)
-			return "Error updating customer " + customerUpdateRequest.getId();
+			stringRepresentation.setMessage("Error updating customer " + customerUpdateRequest.getId());
 		else
-			return "Updated customer " + customerUpdateRequest.getId() + " 's name successfully to " + customerUpdateRequest.getFirstName() + " " + customerUpdateRequest.getLastName();
+			stringRepresentation.setMessage("Updated customer " + customerUpdateRequest.getId() + " 's name successfully to " + customerUpdateRequest.getFirstName() + " " + customerUpdateRequest.getLastName());
+		return stringRepresentation;
 	}
 
-	public String deleteCustomer(Integer customerId) {
+	public StringRepresentation deleteCustomer(Integer customerId) {
 		Integer count = custRepo.deleteCustomer(customerId);
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		setLinks(stringRepresentation);
 		if(count == 0)
-			return "Error deleting Customer";
+			stringRepresentation.setMessage("Error deleting Customer");
 		else
-			return "Customer deleted Successfully";
+			stringRepresentation.setMessage("Customer deleted Successfully");
+		return stringRepresentation;
 	}
 	
 	public CustomerRepresentation getCustomerById(Integer customerId) {
@@ -152,6 +164,14 @@ public class CustomerActivity {
 		Link orders = new Link("get", baseUrl + "/order?customerId=", "orders");
 		Link cart = new Link("get", baseUrl + "/cart/view?customerId=", "cart");
 		customerRepresentation.setLinks(address, billing, orders, cart);
+	}
+	
+	private void setLinks(StringRepresentation stringRepresentation) {
+		Link address = new Link("get", baseUrl + "/customeraddress/?customerId=", "address");
+		Link billing = new Link("get", baseUrl + "/billing/?customerId=", "billing");
+		Link orders = new Link("get", baseUrl + "/order?customerId=", "orders");
+		Link cart = new Link("get", baseUrl + "/cart/view?customerId=", "cart");
+		stringRepresentation.setLinks(address, billing, orders, cart);
 	}
 
 	

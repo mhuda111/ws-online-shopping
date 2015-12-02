@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.project.ws.domain.Review;
 import com.project.ws.representation.ReviewRepresentation;
 import com.project.ws.representation.ReviewRequest;
+import com.project.ws.representation.StringRepresentation;
 import com.project.ws.workflow.ReviewActivity;
 
 @RestController
@@ -38,10 +39,20 @@ public class ReviewController {
 		List<ReviewRepresentation> reviewRepresentations = new ArrayList<ReviewRepresentation>();
 		int reviewAdded = 0;		
 		reviewAdded = reviewActivity.addReview(request);
-		reviewRepresentations = reviewActivity.getVendorReviews(request.getVendorId());
+		reviewRepresentations = reviewActivity.getProductReviews(request.getProductId());
 		System.out.println(reviewRepresentations.get(0));
 		return reviewRepresentations;
 	}
+	
+	/*
+	 * GET to retrieve reviews by productId
+	 */
+	@RequestMapping(value="/review/view", method=RequestMethod.GET, params="productId")
+	public List<ReviewRepresentation> getProductReviews(HttpServletRequest request) {
+		int productId = Integer.parseInt(request.getParameter("productId"));
+		List<ReviewRepresentation> reviewRepresentations = reviewActivity.getProductReviews(productId);
+		return reviewRepresentations;
+    }
 	
 	/*
 	 * GET to retrieve average rating by productId
@@ -77,19 +88,9 @@ public class ReviewController {
 	 * DELETE to delete a review by reviewId
 	 */
 	@RequestMapping(value = "/review/deleteReview/{rId}", method = RequestMethod.DELETE, params="reviewId")
-    public @ResponseBody String deleteCustomer(@PathVariable String rId) {
-		int noOfDeletedRow = 0;
-		try {
-			int reviewId = Integer.parseInt(rId);
-			noOfDeletedRow = reviewActivity.deleteReview(reviewId);
-
-		} catch (RuntimeException e) {
-			throw new RuntimeException();
-		}
-		if (noOfDeletedRow > 0) {
-			return "Deleted Successfully";
-		}
-		return "No rows found to delete";
+    public @ResponseBody StringRepresentation deleteReview(@PathVariable String rId) {
+		int reviewId = Integer.parseInt(rId);
+		return reviewActivity.deleteReview(reviewId);
     }
 
 
