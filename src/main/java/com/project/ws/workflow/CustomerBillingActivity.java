@@ -14,6 +14,7 @@ import com.project.ws.repository.CustomerBillingRepository;
 import com.project.ws.representation.BillingRequest;
 import com.project.ws.representation.CustAddrRepresentation;
 import com.project.ws.representation.CustBillingRepresentation;
+import com.project.ws.representation.StringRepresentation;
 
 @Component
 @Transactional
@@ -21,6 +22,7 @@ import com.project.ws.representation.CustBillingRepresentation;
 public class CustomerBillingActivity {
 	
 	private static final String baseUrl = "http://localhost:8080";
+	private static final String mediaType = "application/json";
 
 	private final CustomerBillingRepository billRepo;
 	
@@ -35,13 +37,28 @@ public class CustomerBillingActivity {
 		this.billRepo = billRepo;
 	}
 	
-	public CustBillingRepresentation addBillingDetails(BillingRequest billRequest) {
+	public StringRepresentation addBillingDetails(BillingRequest billRequest) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		mapRequest(billRequest);
-		billRepo.addCardDetails(billingDetail);
-		Integer billId = billRepo.getBillId(billRequest.getCustomerId(), billRequest.getCardType());
+		Integer count = billRepo.addCardDetails(billingDetail);
+		//Integer billId = billRepo.getBillId(billRequest.getCustomerId(), billRequest.getCardType());
+		if(count == 1) {
+			stringRepresentation.setMessage("Billing Details updated Successfully");
+			setLinks(stringRepresentation, billRequest.getCustomerId());
+			return stringRepresentation;	
+		}
+		else
+			return null;
+	}
+	
+	public StringRepresentation deleteBillingInfo(Integer billingId) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		billingDetail = new CustomerBillingDetails();
-		billingDetail = billRepo.findOne(billId);
-		return mapRepresentation(billingDetail);
+		billingDetail = billRepo.findOne(billingId);
+		billRepo.delete(billingId);
+		stringRepresentation.setMessage("Billing Details deleted successfully");
+		setLinks(stringRepresentation, billingDetail.getCustomerId());
+		return stringRepresentation;
 	}
 	
 	public List<CustBillingRepresentation> getBillingDetails(Integer customerId) {
@@ -54,13 +71,13 @@ public class CustomerBillingActivity {
 		return resultList;
 	}
 	
-	
-	public CustBillingRepresentation processPayment(Integer customerId, Integer billId, Double amount, String type) {
+	public StringRepresentation processPayment(Integer customerId, Integer billId, Double amount, String type) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		Integer count = billRepo.updateAmount(customerId, billId, amount, type);
 		if(count == null)
 			return null;
 		billingDetail = billRepo.findOne(billId);
-		return mapRepresentation(billingDetail);
+		return stringRepresentation;
 	}
 	
 	public CustomerBillingDetails mapRequest(BillingRequest billRequest) {
@@ -90,12 +107,21 @@ public class CustomerBillingActivity {
 		billRepresentation.setCardNo("************" + cardNo.substring(cardNo.length()-4, cardNo.length()));
 		billRepresentation.setCardType(billingDetail.getCardType());
 		billRepresentation.setCustomerId(billingDetail.getCustomerId());
+		billRepresentation.setCustBillId(billingDetail.getCustBillId());
 		setLinks(billRepresentation);
 		return billRepresentation;
 	}
+
+	private void setLinks(StringRepresentation stringRepresentation, Integer customerId) {
+		Link viewBilling = new Link("get", baseUrl + "/billing/?customerId=" + customerId, "viewBilling", mediaType);
+		Link viewCustomer = new Link("get", baseUrl + "/customer/?customerId=" + customerId, "viewCustomer", mediaType);
+		billRepresentation.setLinks(viewBilling, viewCustomer);
+	}
 	
 	private void setLinks(CustBillingRepresentation billRepresentation) {
-		Link billingAdd = new Link("post", baseUrl + "/billing/", "billing");
-		billRepresentation.setLinks(billingAdd);
+		Link addBilling = new Link("post", baseUrl + "/billing/", "addBilling", mediaType);
+		Link deleteBilling = new Link("delete", baseUrl + "/billing/?billingId=" + billRepresentation.getCustBillId(), "deleteBilling", mediaType);
+		Link selectPayment = new Link("put", baseUrl + "/cart/selectPayment?customerId=" + billRepresentation.getCustomerId() + "&billId=" + billRepresentation.getCustBillId(), "selectPayment", mediaType);
+		billRepresentation.setLinks(addBilling, deleteBilling, selectPayment);
 	}
 }

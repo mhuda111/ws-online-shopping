@@ -144,45 +144,12 @@ public class CustomerController {
 	 * Update customer using PUT
 	 */
 	@RequestMapping(value="/customer/updateCustomer", method=RequestMethod.PUT)
-	 public StringRepresentation updateEmail(@RequestBody CustomerUpdateRequest customerUpdateRequest) {
-		int customerId = customerUpdateRequest.getId();
+	 public StringRepresentation updateEmail(@RequestBody CustomerRequest customerRequest) {
+		int customerId = customerRequest.getCustomerId();
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
-		return customerActivity.updateCustomer(customerUpdateRequest);
+		return customerActivity.updateCustomer(customerRequest);
 	}
 
 }
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class ResourceNotFoundException extends RuntimeException {
-	private static final long serialVersionUID = -7531082778174131155L;
-	public ResourceNotFoundException() {
-	    super("Resource you are trying to access does not exist. Please check your link again");
-	}
-}
-
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-class ServerErrorException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-	public ServerErrorException() {
-		super("Server is Not Responding Currently. Please try again later");
-	}
-}
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class PageNotFoundException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-
-	public PageNotFoundException() {
-		super("The link you are trying to access does not exist. Please check it again");
-	}
-}
-
-@ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-class MethodNotAllowedException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-
-	public MethodNotAllowedException() {
-		super("The method mapped via the url is not allowed. Please contact the System Administrator");
-	}
-}

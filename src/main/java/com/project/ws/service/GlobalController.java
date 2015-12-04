@@ -22,8 +22,8 @@ import com.project.ws.representation.StringRepresentation;
 class GlobalController {
 	
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler({CustomerNotFoundException.class, NumberFormatException.class})
-    public @ResponseBody StringRepresentation handleCustomerNotFoundException(HttpServletRequest request, CustomerNotFoundException ex) {
+	@ExceptionHandler({com.project.ws.service.CustomerNotFoundException.class, NumberFormatException.class, java.lang.IllegalStateException.class})
+    public @ResponseBody StringRepresentation handleCustomerNotFoundException(HttpServletRequest request, RuntimeException ex) {
 //		String message = "";
 //		if(ex.getMessage() != null)
 //			message = ex.getMessage();
@@ -101,26 +101,14 @@ class GlobalController {
     }
 	
 //	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler({PageNotFoundException.class})
-	public ModelAndView handlePageNotFoundException(HttpServletRequest request, PageNotFoundException ex) {
-		String message = "The page being accessessed does not exist.";
-		ex.printStackTrace();
-		String error = "Error: " + message + " : " + request.getRequestURI() + ". Please rectify and submit again.";
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("errorMessage", error);
-		mav.setViewName("globalerror");
-		return mav;
-	}
-	
-//	@ResponseStatus(HttpStatus.NOT_FOUND)
-//	@ExceptionHandler({})
-//	public ModelAndView handleNumberFormatException(HttpServletRequest request, NumberFormatException ex) {
-//		String message = "The page being accessessed does not exist.";
+//	@ExceptionHandler({Exception.class})
+//	public @ResponseBody StringRepresentation handleOtherException(HttpServletRequest request, Exception ex) {
+//		StringRepresentation stringRepresentation = new StringRepresentation();
+//		String message = ex.getMessage();
 //		ex.printStackTrace();
-//		String error = "Error: " + message + " : " + request.getRequestURI() + ". Please rectify and submit again.";
-//		ModelAndView mav = new ModelAndView();
-//		mav.addObject("errorMessage", error);
-//		mav.setViewName("globalerror");
-//		return mav;
+//		String error = "Error: " + message + " : " + request.getRequestURI() + ".";
+//		stringRepresentation.setMessage(error);
+//		return stringRepresentation;
 //	}
+	
 }

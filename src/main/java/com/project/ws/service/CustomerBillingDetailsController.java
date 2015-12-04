@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import com.project.ws.repository.CustomerBillingRepository;
 import com.project.ws.representation.BillingRequest;
 import com.project.ws.representation.CustBillingRepresentation;
+import com.project.ws.representation.StringRepresentation;
 import com.project.ws.workflow.CustomerActivity;
 import com.project.ws.workflow.CustomerBillingActivity;
 
@@ -42,13 +43,14 @@ public class CustomerBillingDetailsController {
 	 * PUT to process a customer payment for an order
 	 */
 	@RequestMapping(value="/billing/processPayment", method=RequestMethod.PUT, params={"customerId", "billId", "amount"})
-    public CustBillingRepresentation processPayment(HttpServletRequest request) {
+    public StringRepresentation processPayment(HttpServletRequest request) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		Integer customerId = Integer.parseInt(request.getParameter("customerId"));
 		Integer billId = Integer.parseInt(request.getParameter("billId"));
 		Double amount = Double.parseDouble(request.getParameter("amount"));
-		String type = request.getParameter("type");
-		billRepresentation = billActivity.processPayment(customerId, billId, amount, type);
-		return billRepresentation;
+		String type = "Debit";
+		stringRepresentation = billActivity.processPayment(customerId, billId, amount, type);
+		return stringRepresentation;
     }
 
 	/*
@@ -65,15 +67,27 @@ public class CustomerBillingDetailsController {
     }
 	
 	/*
+	 * DELETE to delete customer billing details by billingId
+	 */
+	@RequestMapping(value="/billing/", method=RequestMethod.DELETE, params="billingId")
+    public StringRepresentation deleteBilling(HttpServletRequest request) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		Integer billingId = Integer.parseInt(request.getParameter("billingId"));
+		stringRepresentation = billActivity.deleteBillingInfo(billingId);
+		return stringRepresentation;
+    }
+	
+	/*
 	 * POST to add new billing details for a customer using billing Request
 	 */
 	@RequestMapping(value="/billing/", method=RequestMethod.POST)
-    public CustBillingRepresentation getBillingInfo(@RequestBody BillingRequest request) {
+    public StringRepresentation getBillingInfo(@RequestBody BillingRequest request) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		Integer customerId = request.getCustomerId();
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
-		billRepresentation = billActivity.addBillingDetails(request);
-		return billRepresentation;
+		stringRepresentation = billActivity.addBillingDetails(request);
+		return stringRepresentation;
     }
 
 }

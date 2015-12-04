@@ -9,15 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.ws.domain.Customer;
-import com.project.ws.domain.CustomerAddress;
-import com.project.ws.domain.CustomerBillingDetails;
 import com.project.ws.domain.Link;
 import com.project.ws.repository.CustomerRepository;
-import com.project.ws.representation.AbstractRepresentation;
 import com.project.ws.representation.CustomerRepresentation;
 import com.project.ws.representation.CustomerRequest;
-import com.project.ws.representation.CustomerUpdateRequest;
-import com.project.ws.representation.ProductRepresentation;
 import com.project.ws.representation.StringRepresentation;
 
 @Component
@@ -34,6 +29,7 @@ public class CustomerActivity {
 	CustomerRepresentation customerRepresentation;
 	
 	private static final String baseUrl = "http://localhost:8080";
+	private static final String mediaType = "application/json";
 	
 	@Autowired
 	CustomerActivity(CustomerRepository custRepo) {
@@ -69,7 +65,7 @@ public class CustomerActivity {
 	public StringRepresentation updateName(Integer customerId, String firstName, String lastName) {
 		Integer count = custRepo.updateName(customerId, firstName, lastName);
 		StringRepresentation stringRepresentation = new StringRepresentation();
-		setLinks(stringRepresentation);
+		setLinks(stringRepresentation, customerId);
 		if(count == 0) {
 			stringRepresentation.setMessage("Error updating customer " + customerId);
 		} else
@@ -80,7 +76,7 @@ public class CustomerActivity {
 	public StringRepresentation updateEmail(Integer customerId, String email) {
 		Integer count = custRepo.updateEmail(customerId, email);
 		StringRepresentation stringRepresentation = new StringRepresentation();
-		setLinks(stringRepresentation);
+		setLinks(stringRepresentation, customerId);
 		if(count == 0)
 			stringRepresentation.setMessage("Error updating customer " + customerId);
 		else
@@ -88,21 +84,21 @@ public class CustomerActivity {
 		return stringRepresentation;
 	}
 	
-	public StringRepresentation updateCustomer(CustomerUpdateRequest customerUpdateRequest) {
-		Integer count = custRepo.updateCustomer(customerUpdateRequest.getId(), customerUpdateRequest.getFirstName(), customerUpdateRequest.getLastName(), customerUpdateRequest.getEmail());
+	public StringRepresentation updateCustomer(CustomerRequest customerRequest) {
+		Integer count = custRepo.updateCustomer(customerRequest.getCustomerId(), customerRequest.getFirstName(), customerRequest.getLastName(), customerRequest.getEmail());
 		StringRepresentation stringRepresentation = new StringRepresentation();
-		setLinks(stringRepresentation);
+		setLinks(stringRepresentation, customerRequest.getCustomerId());
 		if(count == 0)
-			stringRepresentation.setMessage("Error updating customer " + customerUpdateRequest.getId());
+			stringRepresentation.setMessage("Error updating customer " + customerRequest.getCustomerId());
 		else
-			stringRepresentation.setMessage("Updated customer " + customerUpdateRequest.getId() + " 's name successfully to " + customerUpdateRequest.getFirstName() + " " + customerUpdateRequest.getLastName());
+			stringRepresentation.setMessage("Updated customer " + customerRequest.getCustomerId() + " 's name successfully to " + customerRequest.getFirstName() + " " + customerRequest.getLastName());
 		return stringRepresentation;
 	}
 
 	public StringRepresentation deleteCustomer(Integer customerId) {
 		Integer count = custRepo.deleteCustomer(customerId);
 		StringRepresentation stringRepresentation = new StringRepresentation();
-		setLinks(stringRepresentation);
+		setLinks(stringRepresentation, customerId);
 		if(count == 0)
 			stringRepresentation.setMessage("Error deleting Customer");
 		else
@@ -159,25 +155,18 @@ public class CustomerActivity {
 	}
 	
 	private void setLinks(CustomerRepresentation customerRepresentation) {
-		Link address = new Link("get", baseUrl + "/customeraddress/?customerId=", "address");
-		Link billing = new Link("get", baseUrl + "/billing/?customerId=", "billing");
-		Link orders = new Link("get", baseUrl + "/order?customerId=", "orders");
-		Link cart = new Link("get", baseUrl + "/cart/view?customerId=", "cart");
-		customerRepresentation.setLinks(address, billing, orders, cart);
+		Link updateCustomer = new Link("put", baseUrl + "/customer/updateCustomer", "updateCustomer", mediaType);
+		Link viewAddress = new Link("get", baseUrl + "/customeraddress/?customerId=" + customerRepresentation.getCustId(), "viewAddress", mediaType);
+		Link viewBilling = new Link("get", baseUrl + "/billing/?customerId=" + customerRepresentation.getCustId(), "viewBilling", mediaType);
+		Link viewOrders = new Link("get", baseUrl + "/order?customerId=" + customerRepresentation.getCustId(), "viewOrders", mediaType);
+		Link viewCart = new Link("get", baseUrl + "/cart/view?customerId=" + customerRepresentation.getCustId(), "viewCart", mediaType);
+		Link showAll = new Link("get", baseUrl + "/products", "showAll", mediaType);
+		customerRepresentation.setLinks(updateCustomer, viewAddress, viewBilling, viewOrders, viewCart, showAll);
 	}
 	
-	private void setLinks(StringRepresentation stringRepresentation) {
-		Link address = new Link("get", baseUrl + "/customeraddress/?customerId=", "address");
-		Link billing = new Link("get", baseUrl + "/billing/?customerId=", "billing");
-		Link orders = new Link("get", baseUrl + "/order?customerId=", "orders");
-		Link cart = new Link("get", baseUrl + "/cart/view?customerId=", "cart");
-		stringRepresentation.setLinks(address, billing, orders, cart);
+	private void setLinks(StringRepresentation stringRepresentation, Integer customerId) {
+		Link address = new Link("get", baseUrl + "/customer/?customerId=" + customerId, "viewCustomer", mediaType);
+		stringRepresentation.setLinks(address);
 	}
-
-	
-	//	private void setLinks(CustomerRepresentation customerRepresentation) {
-//		Link cart = new Link("PUT", baseUrl + "/customer/updateCustomer/", "update email");
-//		customerRepresentation.setLinks(cart);
-//	}
 
 }

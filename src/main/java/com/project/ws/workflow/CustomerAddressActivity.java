@@ -23,6 +23,7 @@ import com.project.ws.representation.StringRepresentation;
 public class CustomerAddressActivity {
 
 	private static final String baseUrl = "http://localhost:8080";
+	private static final String mediaType = "application/json";
 	
 	private final CustomerAddressRepository addrRepo;
 	
@@ -56,7 +57,7 @@ public class CustomerAddressActivity {
 			stringRepresentation.setMessage("Address updated Successfully");
 		else
 			return null;
-		setLinks(stringRepresentation);
+		setLinks(stringRepresentation, addr.getCustomerId());
 		return stringRepresentation;
 	}
 	
@@ -67,12 +68,12 @@ public class CustomerAddressActivity {
 			return null;
 		if(customerAddress.getDefaultAddr().equals("Y")) {
 			stringRepresentation.setMessage("Default address cannot be deleted");
-			setLinks(stringRepresentation);
+			setLinks(stringRepresentation, customerAddress.getCustomerId());
 			return stringRepresentation;
 		}
 		addrRepo.delete(addrId);
 		stringRepresentation.setMessage("Address deleted Successfully");
-		setLinks(stringRepresentation);
+		setLinks(stringRepresentation, customerAddress.getCustomerId());
 		return stringRepresentation;
 	}
 	
@@ -84,7 +85,7 @@ public class CustomerAddressActivity {
 			stringRepresentation.setMessage("Address Added Successfully");
 		else
 			return null;
-		setLinks(stringRepresentation);
+		setLinks(stringRepresentation, addr.getCustomerId());
 		return stringRepresentation;
 	}
 	
@@ -114,14 +115,15 @@ public class CustomerAddressActivity {
 	}
 	
 	private void setLinks(CustAddrRepresentation custAddrRepresentation) {
-		Link addressUpdate = new Link("put", baseUrl + "/customeraddress/update/", "address");
-		Link addressAdd = new Link("post", baseUrl + "/customeraddress/add/", "address");
-		Link addressDelete = new Link("delete", baseUrl + "/customeraddress/", "address");
-		custAddrRepresentation.setLinks(addressUpdate, addressAdd, addressDelete);
+		Link updateAddress = new Link("put", baseUrl + "/customeraddress/update/", "updateAddress", mediaType);
+		Link addAddress = new Link("post", baseUrl + "/customeraddress/add/", "addAddress", mediaType);
+		Link deleteAddress = new Link("delete", baseUrl + "/customeraddress/?addrId=" + custAddrRepresentation.getAddrId(), "deleteAddress", mediaType);
+		custAddrRepresentation.setLinks(deleteAddress, addAddress, updateAddress);
 	}
 	
-	private void setLinks(StringRepresentation stringRepresentation) {
-		Link addressView = new Link("get", baseUrl + "/customeraddress/?customerId=", "address");
-		stringRepresentation.setLinks(addressView);
+	private void setLinks(StringRepresentation stringRepresentation, Integer customerId) {
+		Link viewAddress = new Link("get", baseUrl + "/customeraddress/?customerId=" + customerId, "viewAddress", mediaType);
+		Link viewCustomer = new Link("get", baseUrl + "/customer/?customerId=" + customerId, "viewCustomer", mediaType);
+		stringRepresentation.setLinks(viewAddress, viewCustomer);
 	}
 }

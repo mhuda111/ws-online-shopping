@@ -67,6 +67,7 @@ public class OrderActivity {
 	private final VendorRepository vendorRepo;
 	
 	private final String baseUrl = "http://localhost:8080";
+	private final String mediaType = "application/json";
 	
 	
 	@Autowired
@@ -82,14 +83,14 @@ public class OrderActivity {
 	
 	public StringRepresentation placeOrder(Integer customerId) {
 		StringRepresentation stringRepresentation = new StringRepresentation();
+		Integer billId = 0;
 		try {
 			List<Cart> cartList = cartRepo.findByCustomerId(customerId);
 			for(Cart cart: cartList) {
 				orderAmount = orderAmount + cart.getPrice() * cart.getQuantity();
+				billId = cart.getCardId();
 			}
-			
-			Integer billId = billRepo.getBillId(customerId, "VISA");
-	
+			//Integer billId = billRepo.getBillId(customerId, "VISA");
 			billRepo.updateAmount(customerId, billId, orderAmount, "Debit");
 	
 			List<CustomerAddress> addrList = addrRepo.getAddress(customerId);
@@ -108,26 +109,24 @@ public class OrderActivity {
 			Order newOrder = orderRepo.findOne(orderRepo.findLatestOrder(customerId));
 			orderLineRepo.addOrderLine(customerId, newOrder.getOrderId());
 			cartRepo.deleteCart(customerId);
-			
 			stringRepresentation.setMessage("Order Placed Successfully");
+			setLinks(stringRepresentation, customerId, newOrder.getOrderId());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		setLinks(stringRepresentation);
+		
 		return stringRepresentation;
 	}
 	
-	private void setLinks(StringRepresentation stringRepresentation) {
-		Link order = new Link("get", baseUrl + "/order/activeOrders?customerId=", "order");
-		stringRepresentation.setLinks(order);
-	}
 
-	private void setLinks(OrderRepresentation orderRepresentation) {
-		Link order = new Link("get", baseUrl + "/order/checkOrderStatus?orderId=", "order");
-		orderRepresentation.setLinks(order);
+	public OrderRepresentation findOneOrder(Integer orderId) {
+		Order order = new Order();
+		order = orderRepo.findOne(orderId);
+		return mapRepresentation(order);
 	}
 	
-	public OrderRepresentation cancelOrder(Integer orderId) {
+	public StringRepresentation cancelOrder(Integer orderId) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		VendorActivity vendorActivity = new VendorActivity(vendorRepo);
 		Integer vendorId;
 		List<OrderLineItem> orderList = orderLineRepo.findByOrderId(orderId);
@@ -139,7 +138,9 @@ public class OrderActivity {
 		orderRepo.updateOrderStatus(orderId, "CAN");
 		Order order = orderRepo.findOrder(orderId);
 		billRepo.updateAmount(order.getCustomerId(), order.getBillId(), order.getOrderAmount(), "credit");
-		return mapRepresentation(order);
+		stringRepresentation.setMessage("Order has been cancelled");
+		setLinks(stringRepresentation, order.getCustomerId(), order.getOrderId());
+		return stringRepresentation;
 	}
 	
 	public OrderRepresentation shipOrder(Integer orderId) {
@@ -152,7 +153,6 @@ public class OrderActivity {
 				vendorId = prodRepo.findByProductId(item.getProductId()).getVendorId();
 				vendorActivity.settleAccount(vendorId, item.getOrderLinePrice(), "credit");
 			}
-		
 			orderRepo.updateOrderStatus(orderId, "SHP");
 			order = orderRepo.findOne(orderId);
 		} catch(Exception e) {
@@ -188,6 +188,7 @@ public class OrderActivity {
 			return true;
 	}
 	
+	
 	public OrderRepresentation mapRepresentation(Order order) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
 		orderRepresentation.setOrderId(order.getOrderId());
@@ -203,9 +204,7 @@ public class OrderActivity {
 		for(OrderLineItem ol: subResultList) {
 			orderLineReprList.add(mapOrderLineRepresentation(ol));
 		}
-		
 		orderRepresentation.setLineItems(orderLineReprList);
-
 		setLinks(orderRepresentation);
 		return orderRepresentation;
 	}
@@ -221,5 +220,20 @@ public class OrderActivity {
 		return orderLineRepresentation;
 	}
 	
+
+	private void setLinks(StringRepresentation stringRepresentation, Integer customerId, Integer orderId) {
+		Link viewOrders = new Link("get", baseUrl + "/order/activeOrders?customerId=" + customerId, "viewOrders", mediaType);
+		Link orderStatus = new Link("get", baseUrl + "/order/checkOrderStatus?orderId=" + orderRepresentation.getOrderId(), "checkStatus", mediaType);
+		Link cancelOrder = new Link("put", baseUrl + "/order/cancelOrder?orderId=" + orderId, "cancelOrder", mediaType);
+		Link viewOrderDetails = new Link("get", baseUrl + "/order/view?orderId=" + orderRepresentation.getOrderId(), "viewOrderDetails", mediaType);
+		stringRepresentation.setLinks(viewOrders, cancelOrder, orderStatus, viewOrderDetails);
+	}
+
+	private void setLinks(OrderRepresentation orderRepresentation) {
+		Link cancelOrder = new Link("put", baseUrl + "/order/cancelOrder?orderId=" + orderRepresentation.getOrderId(), "cancelOrder", mediaType);
+		Link orderStatus = new Link("get", baseUrl + "/order/checkOrderStatus?orderId=" + orderRepresentation.getOrderId(), "checkStatus", mediaType);
+		Link viewOrderDetails = new Link("get", baseUrl + "/order/view?orderId=" + orderRepresentation.getOrderId(), "viewOrderDetails", mediaType);
+		orderRepresentation.setLinks(orderStatus, viewOrderDetails, cancelOrder);
+	}
 	
 }

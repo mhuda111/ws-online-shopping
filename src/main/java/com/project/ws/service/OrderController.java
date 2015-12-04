@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +53,18 @@ public class OrderController {
 		if(customerActivity.validateCustomer(customerId) == false)
 			throw new CustomerNotFoundException(customerId);
 		orderRepr = orderActivity.allOrders(customerId, "all");
+		return orderRepr;
+    }
+	
+	/*
+	 * GET to retrieve a given order
+	 */
+	@RequestMapping(value="/order/view", method=RequestMethod.GET, params="orderId")
+	public @ResponseBody OrderRepresentation findOneOrder(HttpServletRequest request) {
+		Integer orderId = 0;
+		OrderRepresentation orderRepr = new OrderRepresentation();
+		orderId = Integer.parseInt(request.getParameter("orderId"));
+		orderRepr = orderActivity.findOneOrder(orderId);
 		return orderRepr;
     }
 
@@ -100,19 +113,19 @@ public class OrderController {
 	 * PUT to cancel and order using orderId
 	 */
 	@RequestMapping(value="/order/cancelOrder", method=RequestMethod.PUT, params="orderId")
-	 public @ResponseBody OrderRepresentation cancelOrder(HttpServletRequest request) {
-		OrderRepresentation orderRepresentation = new OrderRepresentation();
+	 public @ResponseBody StringRepresentation cancelOrder(HttpServletRequest request) {
+		StringRepresentation stringRepresentation = new StringRepresentation();
 		Integer orderId = Integer.parseInt(request.getParameter("orderId"));
 		if(orderActivity.validateOrder(orderId) == false)
 			throw new OrderNotFoundException(orderId);
-		orderRepresentation = orderActivity.cancelOrder(orderId);
-		return orderRepresentation;
+		stringRepresentation = orderActivity.cancelOrder(orderId);
+		return stringRepresentation;
 	}
 	
 	/*
 	 * GET to check order status using orderId
 	 */
-	@RequestMapping(value="/order/checkOrderStatus", method=RequestMethod.GET, params="orderId")
+	@RequestMapping(value="/order/checkOrderStatus", method=RequestMethod.GET, params="orderId", produces = {"application/json"})
 	public @ResponseBody OrderRepresentation checkOrderStatus(HttpServletRequest request) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
 		Integer orderId = Integer.parseInt(request.getParameter("orderId"));

@@ -8,6 +8,7 @@ public interface CartCustomRepository {
 		
 //		public List<Cart> getCartByCustomerId(Integer customerId);
 		public Integer addCart(Cart cart);
-		public Integer deleteCart(Integer customerId); 
+		public Integer deleteCart(Integer customerId);
+		public Integer updateCart(Integer customerId, Integer billId);
 	
 }

@@ -19,7 +19,6 @@ import com.project.ws.domain.Product;
 @XmlRootElement(name = "Order")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Component
 public class OrderRepresentation extends AbstractRepresentation {
 

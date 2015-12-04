@@ -27,9 +27,9 @@ import com.project.ws.representation.StringRepresentation;
 public class ProductActivity {
 
 	private final ProductRepository prodRepo;
-	private final CartRepository cartRepo;
 	private final VendorRepository vendorRepo;
 	private final String baseUrl = "http://localhost:8080";
+	private final String mediaType = "application/json";
 	
 	@Autowired
 	Product product;
@@ -41,38 +41,9 @@ public class ProductActivity {
 	CartRepresentation cartRepresentation;
 	
 	@Autowired
-	public ProductActivity(ProductRepository prodRepo, CartRepository cartRepo, VendorRepository vendorRepo) {
+	public ProductActivity(ProductRepository prodRepo, VendorRepository vendorRepo) {
 		this.prodRepo = prodRepo; 
-		this.cartRepo = cartRepo;
 		this.vendorRepo = vendorRepo;
-	}
-	
-	public List<CartRepresentation> viewCart(Integer customerId) {
-		List<Cart> cartList = new ArrayList<Cart>();
-		cartList = cartRepo.findByCustomerId(customerId);
-		List<CartRepresentation> resultList = new ArrayList<CartRepresentation>();
-		for(Cart c: cartList) {
-			System.out.println(c.getCustomerId() + "-" + c.getPrice() + "=" + c.getProductId() + "=" + c.getQuantity());
-			resultList.add(mapCartRepresentation(c));
-		}
-		return resultList;
-	}
-	
-	public StringRepresentation buyProduct(CartRequest cartRequest) {
-		Boolean check = false;
-		Cart cart = new Cart();
-		check = prodRepo.getProductAvailability(cartRequest.getProductId(), cartRequest.getQuantity());
-		if(check == false)
-			return null;
-		cart.setPrice(prodRepo.findOne(cartRequest.getProductId()).getPrice());
-		cart.setProductId(cartRequest.getProductId());
-		cart.setCustomerId(cartRequest.getCustomerId());
-		cart.setQuantity(cartRequest.getQuantity());
-		cartRepo.addCart(cart);
-		StringRepresentation stringRepresentation = new StringRepresentation();
-		stringRepresentation.setMessage("Cart Updated Successfully");
-		setLinks(stringRepresentation);
-		return stringRepresentation;
 	}
 	
 	public List<ProductRepresentation> allProducts() {
@@ -149,33 +120,14 @@ public class ProductActivity {
 		setLinks(prodRepresentation);
 		return prodRepresentation;
 	}
-	
-	public CartRepresentation mapCartRepresentation(Cart cart) {
-		CartRepresentation cartRepresentation = new CartRepresentation();
-		cartRepresentation.setProductId(cart.getProductId());
-		cartRepresentation.setPrice(cart.getPrice());
-		cartRepresentation.setQuantity(cart.getQuantity());
-		Product product = prodRepo.findByProductId(cart.getProductId());
-		cartRepresentation.setProductName(product.getName());
-		setLinks(cartRepresentation);
-		return cartRepresentation;
-	}
-	
+
 	private void setLinks(ProductRepresentation prodRepresentation) {
-		Link cart = new Link("post", baseUrl + "/cart/add", "cart");
-		Link reviewsToShow = new Link("get", baseUrl + "/review/view?productId=", "reviews");
-		Link reviewToAdd = new Link("post", baseUrl + "/review/add", "addReview");
-		prodRepresentation.setLinks(cart, reviewsToShow, reviewToAdd);
+		Link addCart = new Link("post", baseUrl + "/cart/add", "addCart", mediaType);
+		Link reviewsToShow = new Link("get", baseUrl + "/review/view?productId=" + prodRepresentation.getProductId(), "showReviews", mediaType);
+		Link reviewToAdd = new Link("post", baseUrl + "/review/add", "addReview", mediaType);
+		prodRepresentation.setLinks(addCart, reviewsToShow, reviewToAdd);
 	}
 	
-	private void setLinks(CartRepresentation cartRepresentation) {
-		Link order = new Link("put", baseUrl + "/order/placeOrder?customerId=", "order");
-		cartRepresentation.setLinks(order);
-	}
-	
-	private void setLinks(StringRepresentation stringRepresentation) {
-		Link cart = new Link("get", baseUrl + "/cart/view?customerId=", "cart");
-		Link order = new Link("put", baseUrl + "/order/placeOrder?customerId=", "order");
-		stringRepresentation.setLinks(cart, order);
+	private void setLinks(StringRepresentation stringRepresentation, Integer customerId) {
 	}
 }

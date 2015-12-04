@@ -74,5 +74,19 @@ public class CartRepositoryImpl implements CartCustomRepository{
 			return count;
 		}
 
+		@Override
+		@Transactional
+		public Integer updateCart(Integer customerId, Integer billId) {
+			Integer count = 0;
+			String SQL="update cart set cust_bill_id = " + billId + " where cust_id = " + customerId;
+			System.out.println(SQL);
+			count = em.createNativeQuery(SQL).executeUpdate();
+			if (count == 0) 
+				System.out.println("ERROR!!! Check logs/database");
+			else
+				System.out.println("Billing Details set successfully");
+			
+			return count;
+		}
 
 }

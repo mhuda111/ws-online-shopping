@@ -17,10 +17,7 @@ public class CustomerRequest {
 	private String lastName;
 	private String email;
 	private String password = "DefaultPassword";
-	
-	public String getPassword() {
-		return password;
-	}
+	private Integer customerId;
 
 	public CustomerRequest() {}
 	
@@ -28,6 +25,22 @@ public class CustomerRequest {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
 	
 	public String getFirstName() {

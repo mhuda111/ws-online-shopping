@@ -10,15 +10,25 @@ public class Link {
 	private String action;
 	private String url;
 	private String rel;
+	private String mediaType;
 	
 	public Link() {}
 	
-	public Link(String action, String url, String rel) {
+	public Link(String action, String url, String rel, String mediaType) {
 		this.action = action;
 		this.url = url;
 		this.rel = rel;
+		this.mediaType = mediaType;
 	}
 	
+	public String getMediaType() {
+		return mediaType;
+	}
+
+	public void setMediaType(String mediaType) {
+		this.mediaType = mediaType;
+	}
+
 	public String getAction() {
 		return action;
 	}

@@ -27,6 +27,7 @@ public class ReviewActivity {
 	private final ProductRepository prodRepo;
 	private final VendorRepository vendorRepo;
 	private final String baseUrl = "http://localhost:8080";
+	private static final String mediaType = "application/json";
 	
 	@Autowired
 	Review review;
@@ -122,7 +123,7 @@ public class ReviewActivity {
 	}
 	
 	private void setLinks(ReviewRepresentation reviewRepresentation) {
-		Link product = new Link("get", baseUrl + "/product?name=", "search_product");
+		Link product = new Link("get", baseUrl + "/product?name=", "searchProduct", mediaType);
 		reviewRepresentation.setLinks(product);
 	}
 	
