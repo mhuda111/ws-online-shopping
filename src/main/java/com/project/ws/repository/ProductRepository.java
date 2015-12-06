@@ -21,5 +21,6 @@ public interface ProductRepository extends CrudRepository<Product, Integer>, Pro
 	public List<Product> findByProductName(String productName);
 	public Product findByProductId(Integer productId);
 	public List<Product> findAll();
+	public List<Product> findByVendorId(Integer vendorId);
 
 }

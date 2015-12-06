@@ -54,7 +54,20 @@ public class ProductActivity {
 		for(Product p:productList) {
 			vendor = vendorRepo.findOne(p.getVendorId());
 			vendorName = vendor.getVendorName();
-			resultList.add(mapProductRepresentation(p, vendorName));
+			resultList.add(mapProductRepresentation(p, vendorName, false));
+		}
+		return resultList;
+	}
+	
+	public List<ProductRepresentation> findAllProductsByVendorId(Integer vendorId) {
+		List<Product> productList = prodRepo.findByVendorId(vendorId);
+		List<ProductRepresentation> resultList = new ArrayList<ProductRepresentation>();
+		Vendor vendor;
+		String vendorName;
+		for(Product p:productList) {
+			vendor = vendorRepo.findOne(p.getVendorId());
+			vendorName = vendor.getVendorName();
+			resultList.add(mapProductRepresentation(p, vendorName, true));
 		}
 		return resultList;
 	}
@@ -69,7 +82,7 @@ public class ProductActivity {
 			System.out.println(p.getProductId() + p.getName() + p.getPrice());
 			vendor = vendorRepo.findOne(p.getVendorId());
 			vendorName = vendor.getVendorName();
-			resultList.add(mapProductRepresentation(p, vendorName));
+			resultList.add(mapProductRepresentation(p, vendorName, false));
 		}
 		return resultList;
 	}
@@ -83,7 +96,7 @@ public class ProductActivity {
 			vendor = vendorRepo.findOne(productRequest.getVendorId());
 			vendorName = vendor.getVendorName();
 		}
-		return mapProductRepresentation(product, vendorName);
+		return mapProductRepresentation(product, vendorName, true);
 	}
 	
 	public Integer deleteProduct(Integer productId) {
@@ -109,7 +122,7 @@ public class ProductActivity {
 		return product;
 	}
 	
-	public ProductRepresentation mapProductRepresentation(Product product, String vendorName) {
+	public ProductRepresentation mapProductRepresentation(Product product, String vendorName, boolean showLinksForVendor) {
 		prodRepresentation = new ProductRepresentation();
 		prodRepresentation.setProductName(product.getName());
 		prodRepresentation.setPrice(product.getPrice());
@@ -117,17 +130,24 @@ public class ProductActivity {
 		prodRepresentation.setVendorName(vendorName);
 		prodRepresentation.setProductType(product.getType());
 		prodRepresentation.setProductId(product.getProductId());
-		setLinks(prodRepresentation);
+		if (showLinksForVendor) {
+			setLinksForVendor(prodRepresentation);
+		} else {
+			setLinksForCustomer(prodRepresentation);
+		}
 		return prodRepresentation;
 	}
 
-	private void setLinks(ProductRepresentation prodRepresentation) {
+	private void setLinksForCustomer(ProductRepresentation prodRepresentation) {
 		Link addCart = new Link("post", baseUrl + "/cart/add", "addCart", mediaType);
 		Link reviewsToShow = new Link("get", baseUrl + "/review/view?productId=" + prodRepresentation.getProductId(), "showReviews", mediaType);
 		Link reviewToAdd = new Link("post", baseUrl + "/review/add", "addReview", mediaType);
 		prodRepresentation.setLinks(addCart, reviewsToShow, reviewToAdd);
 	}
 	
-	private void setLinks(StringRepresentation stringRepresentation, Integer customerId) {
+	private void setLinksForVendor(ProductRepresentation prodRepresentation) {
+		Link addProduct = new Link("post", baseUrl + "/product/add", "addProduct", mediaType);
+		Link deleteProduct = new Link("delete", baseUrl + "/product/delete?productId=" + prodRepresentation.getProductId(), "deleteProduct", mediaType);
+		prodRepresentation.setLinks(addProduct, deleteProduct);
 	}
 }

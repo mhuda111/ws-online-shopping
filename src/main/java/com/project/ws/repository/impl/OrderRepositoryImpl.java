@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
@@ -46,6 +47,15 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 	public List<Order> findAllOrders(Integer customerId) {
 		String SQL = "select o from Order o where cust_id = " + customerId;
 		TypedQuery<Order> query = em.createQuery(SQL, Order.class);
+		List<Order> resultList = query.getResultList();
+		return resultList;
+	}
+	
+	@Override
+	public List<Order> findAllOrdersForVendor(Integer vendorId, String orderStatus) {
+		String SQL = "select distinct o.* from order_details o, order_line_item ol, product p where o.order_id = ol.order_id"
+				+ " and ol.product_id = p.product_id and p.vendor_id = '" + vendorId + "' and o.status_cd = '" + orderStatus + "'";
+		Query query = em.createNativeQuery(SQL, Order.class);
 		List<Order> resultList = query.getResultList();
 		return resultList;
 	}

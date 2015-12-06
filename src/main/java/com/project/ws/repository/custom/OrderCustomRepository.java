@@ -16,4 +16,5 @@ public interface OrderCustomRepository {
 	public Integer addOrder(Order order);
 	public Integer findLatestOrder(Integer customerId);
 	public Integer updateOrderStatus(Integer orderId, String status);
+	public List<Order> findAllOrdersForVendor(Integer vendorId, String orderStatus);
 }

@@ -122,7 +122,7 @@ public class OrderActivity {
 	public OrderRepresentation findOneOrder(Integer orderId) {
 		Order order = new Order();
 		order = orderRepo.findOne(orderId);
-		return mapRepresentation(order);
+		return mapRepresentation(order, false);
 	}
 	
 	public StringRepresentation cancelOrder(Integer orderId) {
@@ -158,7 +158,7 @@ public class OrderActivity {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return mapRepresentation(order);
+		return mapRepresentation(order, true);
 	}
 	
 	public List<OrderRepresentation> allOrders(Integer customerId, String subset) {
@@ -169,7 +169,7 @@ public class OrderActivity {
 			orderList = orderRepo.findAllActiveOrders(customerId);
 		List<OrderRepresentation> resultList = new ArrayList<OrderRepresentation>();
 		for(Order o:orderList) {
-			resultList.add(mapRepresentation(o));
+			resultList.add(mapRepresentation(o, false));
 		}
 		return resultList;
 	}
@@ -177,7 +177,7 @@ public class OrderActivity {
 	public OrderRepresentation checkOrderStatus(Integer orderId) {
 		Order order = new Order();
 		order = orderRepo.findOne(orderId);
-		return mapRepresentation(order);
+		return mapRepresentation(order, false);
 	}
 	
 	public Boolean validateOrder(Integer orderId) {
@@ -188,8 +188,17 @@ public class OrderActivity {
 			return true;
 	}
 	
+	public List<OrderRepresentation> findAllOrdersForVendor(Integer vendorId, String orderStatus) {
+		List<Order> orderList = new ArrayList<Order>();
+		orderList = orderRepo.findAllOrdersForVendor(vendorId, orderStatus);
+		List<OrderRepresentation> resultList = new ArrayList<OrderRepresentation>();
+		for(Order o:orderList) {
+			resultList.add(mapRepresentation(o, true));
+		}
+		return resultList;
+	}
 	
-	public OrderRepresentation mapRepresentation(Order order) {
+	public OrderRepresentation mapRepresentation(Order order, boolean showLinksForVendor) {
 		OrderRepresentation orderRepresentation = new OrderRepresentation();
 		orderRepresentation.setOrderId(order.getOrderId());
 		orderRepresentation.setOrderAmount(order.getOrderAmount());
@@ -205,7 +214,11 @@ public class OrderActivity {
 			orderLineReprList.add(mapOrderLineRepresentation(ol));
 		}
 		orderRepresentation.setLineItems(orderLineReprList);
-		setLinks(orderRepresentation);
+		if (showLinksForVendor) {
+			setVendorLinks(orderRepresentation);
+		} else {
+			setCustomerLinks(orderRepresentation);
+		}
 		return orderRepresentation;
 	}
 	
@@ -229,11 +242,17 @@ public class OrderActivity {
 		stringRepresentation.setLinks(viewOrders, cancelOrder, orderStatus, viewOrderDetails);
 	}
 
-	private void setLinks(OrderRepresentation orderRepresentation) {
+	private void setCustomerLinks(OrderRepresentation orderRepresentation) {
 		Link cancelOrder = new Link("put", baseUrl + "/order/cancelOrder?orderId=" + orderRepresentation.getOrderId(), "cancelOrder", mediaType);
 		Link orderStatus = new Link("get", baseUrl + "/order/checkOrderStatus?orderId=" + orderRepresentation.getOrderId(), "checkStatus", mediaType);
 		Link viewOrderDetails = new Link("get", baseUrl + "/order/view?orderId=" + orderRepresentation.getOrderId(), "viewOrderDetails", mediaType);
 		orderRepresentation.setLinks(orderStatus, viewOrderDetails, cancelOrder);
+	}
+	
+	private void setVendorLinks(OrderRepresentation orderRepresentation) {
+		Link shipOrder = new Link("put", baseUrl + "/order/ship?orderId=" + orderRepresentation.getOrderId(), "shipOrder", mediaType);
+		Link viewOrderDetails = new Link("get", baseUrl + "/order/view?orderId=" + orderRepresentation.getOrderId(), "viewOrderDetails", mediaType);
+		orderRepresentation.setLinks(shipOrder, viewOrderDetails);
 	}
 	
 }

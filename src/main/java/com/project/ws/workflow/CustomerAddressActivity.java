@@ -40,8 +40,10 @@ public class CustomerAddressActivity {
 	
 	public List<CustAddrRepresentation> getAddress(Integer customerId) {
 		List<CustomerAddress> custAddrList = addrRepo.findByCustomerId(customerId);
-		if(custAddrList == null)
-			return null;
+		if(custAddrList.size() == 0){
+			CustomerAddress custAddr = new CustomerAddress();
+			custAddrList.add(custAddr);
+		}
 		List<CustAddrRepresentation> returnList = new ArrayList<CustAddrRepresentation>();
 		for(CustomerAddress a:custAddrList) {
 			returnList.add(mapRepresentation(a));

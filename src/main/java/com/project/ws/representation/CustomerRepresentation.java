@@ -21,6 +21,7 @@ public class CustomerRepresentation extends AbstractRepresentation {
 	private String custLastName;
 	private String custEmail;
 	private String message;
+	private String activeFlag;
 	
 	public CustomerRepresentation() {
 	}
@@ -64,6 +65,16 @@ public class CustomerRepresentation extends AbstractRepresentation {
 		return this.message;
 	}
 	
+	public String getActiveFlag() {
+		return activeFlag;
+	}
+
+
+	public void setActiveFlag(String activeFlag) {
+		this.activeFlag = activeFlag;
+	}
+
+
 	@Override
 	public String toString() {
 		return this.custId + "-" + this.custFirstname + "-" + this.custLastName + "-" + this.custEmail;

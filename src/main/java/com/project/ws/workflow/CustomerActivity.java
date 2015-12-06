@@ -53,12 +53,10 @@ public class CustomerActivity {
 		newCustomer = mapRequest(customerRequest);
 		Customer checkCustomer = custRepo.findByCustEmail(customerRequest.getEmail());
 		if(checkCustomer != null) {
-			CustomerRepresentation nullCustomerRepr = new CustomerRepresentation();
-			nullCustomerRepr.setMessage("Customer Already Exists");
-			return nullCustomerRepr;
+			return null;
 		}
 		custRepo.addCustomer(newCustomer.getCustFirstname(), newCustomer.getCustLastName(), newCustomer.getCustEmail(), newCustomer.getCustPassword());
-		newCustomer = custRepo.findByCustFirstName(newCustomer.getCustFirstname());
+		newCustomer = custRepo.findByCustEmail(customerRequest.getEmail());
 		return mapRepresentation(newCustomer);
 	}
 	
@@ -144,24 +142,33 @@ public class CustomerActivity {
 		return customer;
 	}
 	
-	public CustomerRepresentation mapRepresentation(Customer customer) {
+	private CustomerRepresentation mapRepresentation(Customer customer) {
 		customerRepresentation = new CustomerRepresentation();
 		customerRepresentation.setCustFirstname(customer.getCustFirstname());
 		customerRepresentation.setCustLastName(customer.getCustLastName());
 		customerRepresentation.setCustEmail(customer.getCustEmail());
 		customerRepresentation.setCustId(customer.getCustId());
+		customerRepresentation.setActiveFlag(customer.getActiveFlag());
 		setLinks(customerRepresentation);
 		return customerRepresentation;
 	}
 	
 	private void setLinks(CustomerRepresentation customerRepresentation) {
-		Link updateCustomer = new Link("put", baseUrl + "/customer/updateCustomer", "updateCustomer", mediaType);
-		Link viewAddress = new Link("get", baseUrl + "/customeraddress/?customerId=" + customerRepresentation.getCustId(), "viewAddress", mediaType);
-		Link viewBilling = new Link("get", baseUrl + "/billing/?customerId=" + customerRepresentation.getCustId(), "viewBilling", mediaType);
-		Link viewOrders = new Link("get", baseUrl + "/order?customerId=" + customerRepresentation.getCustId(), "viewOrders", mediaType);
-		Link viewCart = new Link("get", baseUrl + "/cart/view?customerId=" + customerRepresentation.getCustId(), "viewCart", mediaType);
-		Link showAll = new Link("get", baseUrl + "/products", "showAll", mediaType);
-		customerRepresentation.setLinks(updateCustomer, viewAddress, viewBilling, viewOrders, viewCart, showAll);
+		if (("V").equals(customerRepresentation.getActiveFlag())) {
+			Link addProduct = new Link("post", baseUrl + "/product/add", "addProduct", mediaType);
+			Link deleteProduct = new Link("get", baseUrl + "/product/viewProductsForVendor?vendorId=" + customerRepresentation.getCustId(), "viewProductsForVendor", mediaType);
+			Link viewActiveOrders = new Link("get", baseUrl + "/order/viewActiveOrdersForVendor/?vendorId=" + customerRepresentation.getCustId(), "viewActiveOrders", mediaType);
+			customerRepresentation.setLinks(addProduct, deleteProduct, viewActiveOrders);
+		} else {
+			Link updateCustomer = new Link("put", baseUrl + "/customer/updateCustomer", "updateCustomer", mediaType);
+			Link viewAddress = new Link("get", baseUrl + "/customeraddress/?customerId=" + customerRepresentation.getCustId(), "viewAddress", mediaType);
+			Link viewBilling = new Link("get", baseUrl + "/billing/?customerId=" + customerRepresentation.getCustId(), "viewBilling", mediaType);
+			Link viewOrders = new Link("get", baseUrl + "/order?customerId=" + customerRepresentation.getCustId(), "viewOrders", mediaType);
+			Link viewCart = new Link("get", baseUrl + "/cart/view?customerId=" + customerRepresentation.getCustId(), "viewCart", mediaType);
+			Link showAll = new Link("get", baseUrl + "/products", "showAll", mediaType);
+			customerRepresentation.setLinks(updateCustomer, viewAddress, viewBilling, viewOrders, viewCart, showAll);
+		}
+		
 	}
 	
 	private void setLinks(StringRepresentation stringRepresentation, Integer customerId) {

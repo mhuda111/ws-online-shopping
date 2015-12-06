@@ -65,6 +65,10 @@ public class CustomerBillingActivity {
 		List<CustomerBillingDetails> billingList = new ArrayList<CustomerBillingDetails>();
 		List<CustBillingRepresentation> resultList = new ArrayList<CustBillingRepresentation>();
 		billingList = billRepo.findByCustomerId(customerId);
+		if(billingList.size() == 0) {
+			CustomerBillingDetails custBilling = new CustomerBillingDetails();
+			billingList.add(custBilling);
+		}
 		for(CustomerBillingDetails b:billingList) {
 			resultList.add(mapRepresentation(b));
 		}
@@ -104,7 +108,8 @@ public class CustomerBillingActivity {
 		billRepresentation.setBillState(billingDetail.getBillState());
 		billRepresentation.setBillZipCode(billingDetail.getBillZipCode());
 		String cardNo = billingDetail.getCardNo();
-		billRepresentation.setCardNo("************" + cardNo.substring(cardNo.length()-4, cardNo.length()));
+		if(cardNo != null && !cardNo.isEmpty())
+			billRepresentation.setCardNo("************" + cardNo.substring(cardNo.length()-4, cardNo.length()));
 		billRepresentation.setCardType(billingDetail.getCardType());
 		billRepresentation.setCustomerId(billingDetail.getCustomerId());
 		billRepresentation.setCustBillId(billingDetail.getCustBillId());

@@ -35,6 +35,9 @@ public class Customer implements Serializable{
 	private String custEmail;
 	@Column(name="cust_password")
 	private String custPassword;
+	@Column(name="active_flag")
+	private String activeFlag;
+	
 	
 	public Customer() {
 		this.custFirstName = "";
@@ -81,6 +84,14 @@ public class Customer implements Serializable{
 		this.custPassword = custPassword;
 	}
 	
+	public String getActiveFlag() {
+		return activeFlag;
+	}
+
+	public void setActiveFlag(String activeFlag) {
+		this.activeFlag = activeFlag;
+	}
+
 	@Override
 	public String toString() {
 		return this.custFirstName + "-" + this.custLastName + "-" + this.custEmail + "-" + this.custPassword;

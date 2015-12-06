@@ -60,6 +60,20 @@ public class ProductController {
     }
 	
 	/*
+	 * GET to search all products for a particular vendor id 
+	 */
+	@RequestMapping(value="/product/viewProductsForVendor", method=RequestMethod.GET, params="vendorId")
+    public List<ProductRepresentation> viewAllProductsForVendor(HttpServletRequest request) {
+		List<ProductRepresentation> productRepresentations = new ArrayList<ProductRepresentation>();
+			String vendorId = request.getParameter("vendorId");
+			productRepresentations = productActivity.findAllProductsByVendorId(Integer.parseInt(vendorId));
+			if(productRepresentations == null) {
+				throw new VendorNotFoundException(vendorId);
+			}
+    	return productRepresentations;
+    }
+	
+	/*
 	 * POST to add a new product
 	 */
 	@RequestMapping(value="/product/add", method=RequestMethod.POST)
@@ -74,7 +88,7 @@ public class ProductController {
 	/*
 	 * DELETE to delete a product
 	 */
-	@RequestMapping(value="/product", method=RequestMethod.DELETE, params="productId")
+	@RequestMapping(value="/product/delete", method=RequestMethod.DELETE, params="productId")
     public String deleteProduct(HttpServletRequest request) {
 		int productDeleted = 0;
 		Integer productId = Integer.parseInt(request.getParameter("productId"));

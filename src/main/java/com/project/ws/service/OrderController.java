@@ -29,6 +29,7 @@ import com.project.ws.representation.CartRequest;
 import com.project.ws.workflow.CustomerActivity;
 import com.project.ws.workflow.OrderActivity;
 import com.project.ws.workflow.ProductActivity;
+import com.project.ws.workflow.VendorActivity;
 
 @RestController
 public class OrderController {
@@ -41,6 +42,9 @@ public class OrderController {
 	
 	@Autowired
 	private CustomerActivity customerActivity;
+	
+	@Autowired
+	private VendorActivity vendorActivity;
 
 	/*
 	 * GET to retrieve all orders by customerId
@@ -134,6 +138,20 @@ public class OrderController {
 		orderRepresentation = orderActivity.checkOrderStatus(orderId);
 		return orderRepresentation; 
 	}
+	
+	/*
+	 * GET to retrieve all orders by customerId
+	 */
+	@RequestMapping(value="/order/viewActiveOrdersForVendor", method=RequestMethod.GET, params="vendorId")
+	public @ResponseBody List<OrderRepresentation> findAllActiveOrdersForVendor(HttpServletRequest request) {
+		Integer vendorId = 0;
+		List<OrderRepresentation> orderRepr = new ArrayList<OrderRepresentation>();
+		vendorId = Integer.parseInt(request.getParameter("vendorId"));
+		if(vendorActivity.validateVendor(vendorId) == false)
+			throw new VendorIdNotFoundException(vendorId);
+		orderRepr = orderActivity.findAllOrdersForVendor(vendorId, "ACT");
+		return orderRepr;
+    }
 
 }
 
@@ -153,6 +171,16 @@ class OrderNotFoundException extends RuntimeException {
 
 	public OrderNotFoundException(Integer orderId) {
 		super("Could not find order - " + orderId);
+	}
+}
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class VendorIdNotFoundException extends RuntimeException {
+
+	private static final long serialVersionUID = -5356641914207234841L;
+
+	public VendorIdNotFoundException(Object vendor) {
+		super("Could not find vendor - " + vendor);
 	}
 }
 
