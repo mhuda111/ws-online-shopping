@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.ws.domain.Customer;
+import com.project.ws.domain.Link;
 import com.project.ws.domain.Product;
 import com.project.ws.domain.Vendor;
 import com.project.ws.repository.VendorRepository;
 import com.project.ws.representation.CustomerRepresentation;
+import com.project.ws.representation.StringRepresentation;
 import com.project.ws.representation.VendorRepresentation;
 import com.project.ws.representation.VendorRequest;
 
@@ -28,6 +30,8 @@ public class VendorActivity {
 	
 	@Autowired
 	VendorRepresentation vendorRepresentation;
+	private static final String baseUrl = "http://localhost:8080";
+	private static final String mediaType = "application/json";
 	
 	@Autowired
 	VendorActivity(VendorRepository vendorRepo) {
@@ -65,12 +69,15 @@ public class VendorActivity {
 		return mapRepresentation(vendor);
 	}
 	
-	public String updateName(Integer vendorId, String name) {
+	public StringRepresentation updateName(Integer vendorId, String name) {
 		Integer count = vendorRepo.updateVendorName(vendorId, name);
-		if(count == 0)
-			return "Error updating Vendor " + vendorId;
-		else
-			return "Vendor Name updated Successfully to - " + name + " for " + vendorId;
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		setLinks(stringRepresentation, vendorId);
+		if(count == 0) {
+			stringRepresentation.setMessage("Error updating customer " + vendorId);
+		} else
+			stringRepresentation.setMessage("Updated customer " + vendorId + " 's name successfully to " + name);
+		return stringRepresentation;
 	}
 	
 	public VendorRepresentation updateAddress(VendorRequest vendorRequest) {
@@ -80,10 +87,17 @@ public class VendorActivity {
 		return mapRepresentation(vendor);
 	}
 	
-	public Integer deleteVendor(Integer vendorId) {
+	public StringRepresentation deleteVendor(Integer vendorId) {
 //		vendorRepo.updateStatus(vendorId, "N");
 		Integer count = vendorRepo.deleteVendor(vendorId);
-		return count;
+		StringRepresentation stringRepresentation = new StringRepresentation();
+		setLinks(stringRepresentation, vendorId);
+		if(count == 0)
+			stringRepresentation.setMessage("Error deleting Vendor");
+		else
+			stringRepresentation.setMessage("Vendor deleted Successfully");
+		return stringRepresentation;
+
 	}
 	
 	public Boolean validateVendor(Integer vendorId) {
@@ -126,4 +140,10 @@ public class VendorActivity {
 		vendor.setVendorZipCode(vendorRequest.getVendorZipCode());
 		return vendor;
 	}
+	
+	private void setLinks(StringRepresentation stringRepresentation, Integer vendorId) {
+		Link address = new Link("get", baseUrl + "/customer/?customerId=" + vendorId, "viewVendor", mediaType);
+		stringRepresentation.setLinks(address);
+	}
+
 }

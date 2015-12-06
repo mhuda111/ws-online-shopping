@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.ImmutableMap;
 import com.project.ws.representation.CustomerRepresentation;
+import com.project.ws.representation.StringRepresentation;
 import com.project.ws.representation.VendorRepresentation;
 import com.project.ws.representation.VendorRequest;
 import com.project.ws.workflow.VendorActivity;
@@ -79,7 +80,7 @@ public class VendorController {
 	 * PUT to update vendor Name using vendorId
 	 */
 	@RequestMapping(value="/vendor/", method=RequestMethod.PUT, params={"vendorId", "vendorName"})
-	public @ResponseBody String updateVendorName(HttpServletRequest request) {
+	public @ResponseBody StringRepresentation updateVendorName(HttpServletRequest request) {
 		String vendorName = request.getParameter("vendorName");
 		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
 		if(vendorActivity.validateVendor(vendorId) == false) 
@@ -91,17 +92,16 @@ public class VendorController {
 	 * DELETE to delete vendor information using vendorId
 	 */
 	@RequestMapping(value="/vendor", method=RequestMethod.DELETE, params="vendorId")
-	public @ResponseBody String deleteVendor(HttpServletRequest request) {
-		Integer count = 0;
+	public @ResponseBody StringRepresentation deleteVendor(HttpServletRequest request) {
+		StringRepresentation message;
 		Integer vendorId = Integer.parseInt(request.getParameter("vendorId"));
 		if(vendorActivity.validateVendor(vendorId) == false) 
 			throw new VendorNotFoundException(vendorId);
-		count = vendorActivity.deleteVendor(vendorId);
-		if(count == 1)
-			return "Vendor Deleted Successfully";
-		else
-			return "Error deleting vendor. Please check the logs.";
-	}
+		message = vendorActivity.deleteVendor(vendorId);
+		return message;
+	
+	
+		}
 	
 	/*
 	 * PUT to settle vendor account
